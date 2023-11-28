@@ -1,0 +1,50 @@
+{
+  "name": "privacynetwork",
+  "version": "1.0.0",
+  "description": "A Privacy-Preserving Efficient Location-Sharing Scheme for Mobile Online Social Network Applications",
+  "main": "index.js",
+  "scripts": {
+    "start": "npx parcel public/index.html",
+    "build": "npx parcel build public/index.html",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/sanam2405/PrivacyNetwork.git"
+  },
+  "keywords": [
+    "mern",
+    "google",
+    "maps",
+    "api",
+    "postgresql",
+    "postgis"
+  ],
+  "author": "Manas Pratim Biswas",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sanam2405/PrivacyNetwork/issues"
+  },
+  "homepage": "https://github.com/sanam2405/PrivacyNetwork#readme",
+  "dependencies": {
+    "@react-google-maps/api": "^2.19.2",
+    "browserlist": "^1.0.1",
+    "dotenv": "^16.3.1",
+    "parcel": "^2.10.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "buffer": "^6.0.3",
+    "crypto-browserify": "^3.12.0",
+    "events": "^3.3.0",
+    "os-browserify": "^0.3.0",
+    "parcel": "^2.10.3",
+    "path-browserify": "^1.0.1",
+    "process": "^0.11.10",
+    "stream-browserify": "^3.0.0"
+  },
+  "browserslist": [
+    "last 2 versions"
+  ]
+}
