@@ -19,14 +19,16 @@ const App = () => {
         <GoogleMap
           mapContainerClassName="map-container"
           center={center}
-          zoom={18.25}
-          >
+          zoom={14.25}
+        >
 
-        <Marker position={{ lat: 22.561083, lng: 88.412665 }} />
-        
+          <Marker position={{ lat: 22.561083, lng: 88.412665 }} />
+          <Marker position={{ lat: 22.561090, lng: 88.412665 }} />
+          <Marker position={{ lat: 22.561076, lng: 88.412665 }} />
+
         </GoogleMap>
 
-        
+
       )}
     </div>
   );
