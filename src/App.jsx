@@ -1,7 +1,7 @@
 import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
 import { useMemo } from "react";
 import "./App.css";
-require("dotenv").config()
+require("dotenv").config();
 
 const apiKey = process.env.GOOGLE_MAP_API_KEY;
 
@@ -21,14 +21,10 @@ const App = () => {
           center={center}
           zoom={14.25}
         >
-
           <Marker position={{ lat: 22.561083, lng: 88.412665 }} />
-          <Marker position={{ lat: 22.561090, lng: 88.412665 }} />
+          <Marker position={{ lat: 22.56109, lng: 88.412665 }} />
           <Marker position={{ lat: 22.561076, lng: 88.412665 }} />
-
         </GoogleMap>
-
-
       )}
     </div>
   );

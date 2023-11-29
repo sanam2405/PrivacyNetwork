@@ -25,7 +25,7 @@
   "bugs": {
     "url": "https://github.com/sanam2405/PrivacyNetwork/issues"
   },
-  "homepage": "https://github.com/sanam2405/PrivacyNetwork#readme",
+  "homepage": "https://github.com/sanam2405/PrivacyNetwork",
   "dependencies": {
     "@react-google-maps/api": "^2.19.2",
     "browserlist": "^1.0.1",
