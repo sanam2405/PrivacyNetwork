@@ -5,6 +5,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useContext } from "react";
 import { LoginContext } from "./context/LoginContext"; 
+import logo from "../public/images/sign-up.png";
 
 const Login = () => {
   
@@ -70,18 +71,20 @@ const Login = () => {
 
   return (
     <div className="signUp">
+      <div className="wrapper-container">
+				<div className="project-title-container">
+					<h1>Privacy Network</h1>
+				</div>
       <div className="form-container input-div">
         <div className="form">
-          <p className="loginPara">
-            Sign up to see photos and videos <br /> from your friends
-          </p>
+          <img src={logo}/>
           <div>
             <input
               type="email"
               name="email"
               id="email"
               value={credentials.email}
-              placeholder="Email   Id"
+              placeholder="Email Id"
               onChange={inputEvent}
             />
           </div>
@@ -95,13 +98,6 @@ const Login = () => {
               onChange={inputEvent}
             />
           </div>
-          <p
-            className="loginPara"
-            style={{ fontSize: "12px", margin: "3px 0px" }}
-          >
-            By signing up, you agree to our Terms, <br /> privacy policy and
-            cookies policy.
-          </p>
           <input
             type="submit"
             id="submit-btn"
@@ -109,7 +105,7 @@ const Login = () => {
             onClick={postData}
           />
         </div>
-        <div className="form2">
+        <div className="form-footer">
           Don't have an account ?
           <Link to="/" style={{textDecoration:"none"}}>
             <span
@@ -120,6 +116,7 @@ const Login = () => {
           </Link>
         </div>
         <ToastContainer autoClose={3000} theme="dark" />
+      </div>
       </div>
     </div>
   );
