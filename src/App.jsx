@@ -1,31 +1,29 @@
-import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
-import { useMemo } from "react";
-import "./App.css";
-require("dotenv").config();
+import React, { useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Signup from "./Signup";
+import Login from "./Login";
+import Client from "./Client";
+import { LoginContext } from "./context/LoginContext";
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
-const apiKey = process.env.GOOGLE_MAP_API_KEY;
 
 const App = () => {
-  const { isLoaded } = useLoadScript({
-    googleMapsApiKey: process.env.GOOGLE_API_KEY,
-  });
-  const center = useMemo(() => ({ lat: 22.561083, lng: 88.412665 }), []);
+  const [userLogin, setUserLogin] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
 
   return (
     <div className="App">
-      {!isLoaded ? (
-        <h1>Loading...</h1>
-      ) : (
-        <GoogleMap
-          mapContainerClassName="map-container"
-          center={center}
-          zoom={14.25}
-        >
-          <Marker position={{ lat: 22.561083, lng: 88.412665 }} />
-          <Marker position={{ lat: 22.56109, lng: 88.412665 }} />
-          <Marker position={{ lat: 22.561076, lng: 88.412665 }} />
-        </GoogleMap>
-      )}
+      <GoogleOAuthProvider clientId="914751995071-333ch7m1495282l7ne9p2hbjgdk7ia4j.apps.googleusercontent.com">;
+        <LoginContext.Provider value={{ setUserLogin, setModalOpen, userLogin }}>
+          <BrowserRouter> 
+            <Routes>
+              <Route path="/" element={<Signup />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/client" element={<Client />} />
+            </Routes>
+          </BrowserRouter>
+        </LoginContext.Provider>
+      </GoogleOAuthProvider>
     </div>
   );
 };
