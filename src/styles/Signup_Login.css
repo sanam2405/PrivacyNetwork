@@ -1,0 +1,105 @@
+
+* {
+    margin: 0px;
+    padding: 0px;
+}
+
+.signUp {
+    min-height: 100vh;
+    /* background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSB1lN1hGZAj0MpZ1ZoN7tt7q38JyzTvjmSMQ&usqp=CAU"); */
+    background-color: #f0f2f5;
+    background-size: cover;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.form {
+    background-color: transparent;
+    padding: 30px;
+    border: none;
+}
+
+.signUpLogo {
+    width: 250px;
+    object-fit: contain;
+    padding: 10px 0px;
+}
+
+.loginPara {
+    color: rgba(var(--f52, 142, 142, 142), 1);
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 20px;
+    margin: 0px 40px 20px 40px;
+}
+
+.input-div {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 5px 5px -5px -5px #c4cad1;
+}
+
+input {
+    background-color: transparent;
+    color: #ffffff;
+    margin: 3px 0px;
+    outline: none;
+    font-size: 16px;
+    width: 100%;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    padding-left: 10px;
+    padding-right: 10px;
+    box-sizing: border-box;
+    border: 1px solid black;
+    border-radius: 5px;
+    text-align: center;
+    transition-duration: 1.5s;
+}
+
+::placeholder {
+    color: #c4cad1;
+}
+
+input:hover {
+    border-color: #0c56b8;
+    border-width: 3px;
+}
+
+.form>div {
+    width: 80%;
+    margin: auto;
+}
+
+.form {
+    text-align: center;
+}
+
+#submit-btn {
+    background-color: #1877f2;
+    border: none;
+    border-radius: 3px;
+    font-weight: bold;
+    padding: 10px 10px;
+    width: 80%;
+    cursor: pointer;
+    margin-top: 8px;
+    outline: none;
+    box-shadow: 4px 4px #02234f;
+}
+
+#submit-btn:hover {
+    background-color: white;
+    color: #1773EA;
+    transition-duration: 0.5s;
+}
+
+.form2 {
+    background-color: transparent;
+    padding: 15px;
+    margin-top: 5px;
+    border: none;
+    text-align: center;
+}

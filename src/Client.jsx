@@ -1,6 +1,7 @@
 import React from "react";
 import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
 import { useState, useEffect, useMemo } from "react";
+require("dotenv").config();
 // import { io } from 'socket.io-client';
 // const URL = process.env.NODE_ENV === 'production' ? undefined : 'http://localhost:4000';
 
