@@ -4,8 +4,8 @@ const app = express();
 const path = require("path");
 const cors = require("cors");
 const PORT = process.env.PORT || 5000;
+const mongodb = require("./db");
 
-// const mongodb = require("./db");
 // require("./models/model");
 // require("./models/post"); 
 
@@ -33,8 +33,9 @@ app.listen(PORT,()=>{
 //   )
 // })
 
-// mongodb().then(() => {
-//   app.listen(PORT, () => {
-//     console.log("Server is listening at port no", PORT);
-//   });
-// });
+
+mongodb().then(() => {
+  app.listen(PORT, () => {
+    console.log("Server is listening at port no", PORT);
+  });
+});
