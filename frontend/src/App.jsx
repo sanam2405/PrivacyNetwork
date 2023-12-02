@@ -15,7 +15,7 @@ const App = () => {
     <div className="App">
       <GoogleOAuthProvider clientId="914751995071-333ch7m1495282l7ne9p2hbjgdk7ia4j.apps.googleusercontent.com">
         <LoginContext.Provider value={{ setUserLogin, setModalOpen, userLogin }}>
-          <BrowserRouter> 
+          <BrowserRouter>
             <Routes>
               <Route path="/" element={<Signup />} />
               <Route path="/login" element={<Login />} />

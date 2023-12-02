@@ -32,7 +32,7 @@ const Login = () => {
   const postData = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch("/api/login", {
+      const response = await fetch("http://localhost:5000/api/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -42,7 +42,6 @@ const Login = () => {
           password: credentials.password,
         }),
       }); 
-
       const status = response.status;
       const jsonData = await response.json(); 
       // console.log(jsonData);
@@ -54,9 +53,10 @@ const Login = () => {
         localStorage.setItem("jwt", jsonData.token);
         localStorage.setItem("user",JSON.stringify(jsonData.user));
         setTimeout(() => {
-          navigate("/");
+          navigate("/client");
         }, 5000);
       } else if (status === 422) {
+        console.log(jsonData.token);
         notifyB(jsonData.error);
       } else if (status === 432) {
         notifyB(jsonData.errors[0].msg);
