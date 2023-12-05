@@ -3,8 +3,8 @@ import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
 require("dotenv").config();
 
 const containerStyle = {
-    width: '100vw',
-    height: '100vh'
+    width: '70vw',
+    height: '100vh' 
 };
 
 const center = {

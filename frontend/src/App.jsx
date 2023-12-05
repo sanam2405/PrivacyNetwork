@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Signup from "./Signup";
 import Login from "./Login";
+import FriendsPage from "./FriendsPage";
 import Client from "./Client";
 import { LoginContext } from "./context/LoginContext";
 import { GoogleOAuthProvider } from '@react-oauth/google';
@@ -19,6 +20,7 @@ const App = () => {
             <Routes>
               <Route path="/" element={<Signup />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/friendsPage" element={<FriendsPage />} />
               <Route path="/client" element={<Client />} />
             </Routes>
           </BrowserRouter>

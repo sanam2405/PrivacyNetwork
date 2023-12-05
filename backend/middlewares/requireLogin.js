@@ -9,13 +9,9 @@ module.exports = async (req, res, next) => {
     return res.status(401).send({ errors: "You must have logged in" });
   } else { 
     const token = authorization.replace("Bearer ", "");
-    // console.log(token);
-    // console.log(jwtSecret);
     try {
-      const info = jwt.verify(token, jwtSecret);
-      // console.log(info);
+      const info = jwt.verify(token, "iamanumoynandyverysimplecollegestudentwholovescodinganddevelopmentalot");
       const currUser = await User.findById({ _id: info._id });
-      // console.log(currUser);
       req.user = currUser;
       next();
     } catch (error) {

@@ -53,7 +53,7 @@ const Login = () => {
         localStorage.setItem("jwt", jsonData.token);
         localStorage.setItem("user",JSON.stringify(jsonData.user));
         setTimeout(() => {
-          navigate("/client");
+          navigate("/friendsPage");
         }, 5000);
       } else if (status === 422) {
         console.log(jsonData.token);
