@@ -7,7 +7,7 @@ const bcrypt = require("bcryptjs");
 const { body, validationResult } = require("express-validator");
 const jwt = require("jsonwebtoken");
 const requireLogin = require("../middlewares/requireLogin");
-const secretKey = process.env.SECRET_KEY;
+const SECRET_KEY = process.env.SECRET_KEY;
 
 app.use(express.json());
 
@@ -83,7 +83,7 @@ router.post(
                 const hashedPassword = userData.password;
                 const isMatch = await bcrypt.compare(password, hashedPassword);
                 if (isMatch) {
-                    const jwtToken = jwt.sign({ _id: userData.id }, 'iamanumoynandyverysimplecollegestudentwholovescodinganddevelopmentalot');
+                    const jwtToken = jwt.sign({ _id: userData.id }, SECRET_KEY);
                     return res
                         .status(200)
                         .json({
@@ -120,7 +120,7 @@ router.post("/googleLogin", async (req, res) => {
             const userData = await User.findOne({ email: email });
             // If the email is already present into our database, then allow sign in to the application.
             if (userData) {
-                const jwtToken = jwt.sign({ _id: userData.id }, 'iamanumoynandyverysimplecollegestudentwholovescodinganddevelopmentalot');
+                const jwtToken = jwt.sign({ _id: userData.id }, SECRET_KEY);
                 return res
                     .status(200)
                     .json({
@@ -141,7 +141,7 @@ router.post("/googleLogin", async (req, res) => {
                     Photo: Photo
                 });
                 await user.save();
-                const jwtToken = jwt.sign({ _id: user.id }, 'iamanumoynandyverysimplecollegestudentwholovescodinganddevelopmentalot');
+                const jwtToken = jwt.sign({ _id: user.id }, SECRET_KEY);
                 return res
                     .status(200)
                     .json({

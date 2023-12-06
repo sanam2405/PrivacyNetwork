@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
+require("dotenv").config();
+const PORT = process.env.PORT || 5050;
+const BASE_API_URI = `http://localhost:${PORT}`;
 
 const FriendsPage = () => {
 
@@ -10,7 +13,7 @@ const FriendsPage = () => {
     const [changePic, setChangePic] = useState(false);
 
     useEffect(() => {
-        fetch(`http://localhost:5000/api/user/${JSON.parse(localStorage.getItem("user"))._id}`, {
+        fetch(`${BASE_API_URI}/api/user/${JSON.parse(localStorage.getItem("user"))._id}`, {
             headers: {
                 "Content-Type": "application/json",
                 Authorization: "Bearer " + localStorage.getItem("jwt"),
@@ -28,7 +31,7 @@ const FriendsPage = () => {
     }, []);
 
     useEffect(() => {
-        fetch(`http://localhost:5000/api/allusers`, {
+        fetch(`${BASE_API_URI}/api/allusers`, {
             headers: {
                 "Content-Type": "application/json",
                 Authorization: "Bearer " + localStorage.getItem("jwt"),

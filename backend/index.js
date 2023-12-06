@@ -1,12 +1,11 @@
-require("dotenv").config();
+require('dotenv').config();
+require("./models/model");
 const express = require("express");
 const app = express();
 const path = require("path");
 const cors = require("cors");
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5050;
 const mongodb = require("./db");
-
-require("./models/model");
 
 app.use(cors());
 app.use(express.json());
@@ -28,6 +27,9 @@ app.use("/api", require("./routes/user"));
 //   )
 // })
 
+// app.listen(PORT, () => {
+//   console.log("Server is listening at port no", PORT);
+// });
 
 mongodb().then(() => {
   app.listen(PORT, () => {

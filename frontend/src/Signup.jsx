@@ -8,6 +8,9 @@ import { jwtDecode } from "jwt-decode";
 import { useContext } from "react";
 import { LoginContext } from "./context/LoginContext";
 import logo from "../public/images/sign-up.png";
+require("dotenv").config();
+const PORT = process.env.PORT || 5050;
+const BASE_API_URI = `http://localhost:${PORT}`;
 
 const Signup = () => {
 	const [credentials, setCredentials] = useState({
@@ -42,7 +45,7 @@ const Signup = () => {
 			);
 		} else {
 			try {
-				const response = await fetch("http://localhost:5000/api/signup", {
+				const response = await fetch(`${BASE_API_URI}/api/signup`, {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",
@@ -87,7 +90,7 @@ const Signup = () => {
 			console.log(credentialResponse);
 			const jwtDetail = jwtDecode(credentialResponse.credential);
 			console.log(jwtDetail);
-			const response = await fetch("http://localhost:5000/api/googleLogin", {
+			const response = await fetch(`${BASE_API_URI}/api/googleLogin`, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",

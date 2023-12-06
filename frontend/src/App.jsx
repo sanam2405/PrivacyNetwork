@@ -6,7 +6,9 @@ import FriendsPage from "./FriendsPage";
 import Client from "./Client";
 import { LoginContext } from "./context/LoginContext";
 import { GoogleOAuthProvider } from '@react-oauth/google';
+require("dotenv").config();
 
+const GOOGLE_CLIENT = process.env.GOOGLE_CLIENT;
 
 const App = () => {
   const [userLogin, setUserLogin] = useState(false);
@@ -14,7 +16,7 @@ const App = () => {
 
   return (
     <div className="App">
-      <GoogleOAuthProvider clientId="914751995071-333ch7m1495282l7ne9p2hbjgdk7ia4j.apps.googleusercontent.com">
+      <GoogleOAuthProvider clientId={GOOGLE_CLIENT}>
         <LoginContext.Provider value={{ setUserLogin, setModalOpen, userLogin }}>
           <BrowserRouter>
             <Routes>

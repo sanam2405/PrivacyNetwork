@@ -1,7 +1,7 @@
 require("dotenv").config(); 
 const User = require("../models/model"); 
 const jwt = require("jsonwebtoken"); 
-const jwtSecret = process.env.SECRET_KEY;
+const SECRET_KEY = process.env.SECRET_KEY;
 
 module.exports = async (req, res, next) => {
   const { authorization } = req.headers;
@@ -10,7 +10,7 @@ module.exports = async (req, res, next) => {
   } else { 
     const token = authorization.replace("Bearer ", "");
     try {
-      const info = jwt.verify(token, "iamanumoynandyverysimplecollegestudentwholovescodinganddevelopmentalot");
+      const info = jwt.verify(token, SECRET_KEY);
       const currUser = await User.findById({ _id: info._id });
       req.user = currUser;
       next();
