@@ -93,7 +93,7 @@
 
 input {
     background-color: transparent;
-    color: #ffffff;
+    color: #a28f8f;
     margin: 3px 0px;
     outline: none;
     font-size: 16px;
@@ -130,6 +130,7 @@ input:hover {
 
 #submit-btn {
     background-color: #1877f2;
+    color: #ffffff;
     border: none;
     border-radius: 3px;
     font-weight: bold;
