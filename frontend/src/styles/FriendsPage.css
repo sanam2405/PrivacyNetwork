@@ -1,12 +1,12 @@
 .friends-container {
     background-color: #f0f2f5;
     max-width: 100vw;
-    overflow: auto;
+    overflow: scroll; 
 }
 
 .friends-modal {
   display: grid;
-  grid-template-columns: repeat(4, 250px);
+  grid-template-columns: repeat(4, 350px);
   grid-auto-rows: auto;
-  grid-gap: 1rem;
+  grid-gap: 1rem; 
 }

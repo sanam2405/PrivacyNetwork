@@ -11,14 +11,13 @@ const FriendsPage = () => {
   const defaultPicLink =
     "https://cdn-icons-png.flaticon.com/128/3177/3177440.png";
   const navigate = useNavigate();
-  const [user, setUser] = useState("");
+  const [curruser, setcurrUser] = useState("");
   const [users, setUsers] = useState([]);
   const [changePic, setChangePic] = useState(false);
 
   useEffect(() => {
     fetch(
-      `${BASE_API_URI}/api/user/${
-        JSON.parse(localStorage.getItem("user"))._id
+      `${BASE_API_URI}/api/user/${JSON.parse(localStorage.getItem("user"))._id
       }`,
       {
         headers: {
@@ -32,7 +31,7 @@ const FriendsPage = () => {
         if (data.error) {
           console.log(data.error);
         } else {
-          setUser(data.user);
+          setcurrUser(data.user);
         }
       })
       .catch((err) => console.log(err));
@@ -64,15 +63,15 @@ const FriendsPage = () => {
     if (localStorage.getItem("user")) {
       return (
         <>
-            <div className="user-banner">
-                <UserBanner
-                key={user.username}
-                username={user.username}
-                name={user.name}    
-                dp_link={user.Photo ? user.Photo : defaultPicLink}
+          <div className="user-banner">
+            <UserBanner
+              key={curruser.username}
+              username={curruser.username}
+              name={curruser.name}
+              dp_link={curruser.Photo ? curruser.Photo : defaultPicLink}
             />
-            </div>
-            <div className="friends-modal">
+          </div>
+          <div className="friends-modal">
             {users.length > 0 &&
               users.map((user) => (
                 <UserCard
@@ -80,22 +79,11 @@ const FriendsPage = () => {
                   username={user.username}
                   name={user.name}
                   dp_link={user.Photo ? user.Photo : defaultPicLink}
+                  current_username={curruser.username}
                 />
               ))}
 
-              
-              <UserCard/>
-              <UserCard/>
-              <UserCard/>
-              <UserCard/>
-              <UserCard/>
-              <UserCard/>
-              <UserCard/>   
-              <UserCard/>
-              <UserCard/>
-              <UserCard/>
-
-            </div>
+          </div>
         </>
       );
     } else {
@@ -105,11 +93,11 @@ const FriendsPage = () => {
 
   return (
     <>
-          <div className="friends-container">
-            {
-                checker()
-            }
-          </div>
+      <div className="friends-container">
+        {
+          checker()
+        }
+      </div>
     </>
   );
 };
