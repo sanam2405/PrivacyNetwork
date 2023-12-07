@@ -1,11 +1,11 @@
 import React, { useState } from "react";   
 import { Link, useNavigate } from "react-router-dom";
-import "./styles/Signup_Login.css";
+import "../styles/Signup_Login.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useContext } from "react";
-import { LoginContext } from "./context/LoginContext"; 
-import logo from "../public/images/sign-up.png";
+import { LoginContext } from "../context/LoginContext"; 
+import logo from "../../public/images/sign-up.png";
 require("dotenv").config();
 const PORT = process.env.PORT || 5050;
 const BASE_API_URI = `http://localhost:${PORT}`;

@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Signup from "./Signup";
-import Login from "./Login";
-import FriendsPage from "./FriendsPage";
-import Client from "./Client";
+import Signup from "./components/Signup";
+import Login from "./components/Login";
+import FriendsPage from "./components/FriendsPage";
+import Client from "./components/Client";
 import { LoginContext } from "./context/LoginContext";
 import { GoogleOAuthProvider } from '@react-oauth/google';
 require("dotenv").config();
