@@ -19,6 +19,11 @@ const Signup = () => {
 		username: "",
 		password: "",
 	});
+	const [showPassword, setShowPassword] = useState(false);
+
+	const togglePasswordVisibility = () => {
+		setShowPassword(!showPassword);
+	  };
 
 	const notifyA = (str) => toast.success(str);
 	const notifyB = (str) => toast.error(str);
@@ -173,13 +178,15 @@ const Signup = () => {
 						</div>
 						<div>
 							<input
-								type="password"
+								type={showPassword ? 'text' : 'password'}
 								name="password"
 								id="password"
 								placeholder="Password"
 								value={credentials.password}
 								onChange={inputEvent}
-							/>
+							/> <button type="button" id="show-password-btn" onClick={togglePasswordVisibility}>
+							{showPassword ? 'Hide' : 'Show'} Password
+						  </button>
 						</div>
 						<input
 							type="submit"

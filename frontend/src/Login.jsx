@@ -14,6 +14,13 @@ const Login = () => {
   
   const [credentials, setCredentials] = useState({ email: "", password: "", npassword:"" });
 
+  const [showPassword, setShowPassword] = useState(false);
+
+	const togglePasswordVisibility = () => {
+		setShowPassword(!showPassword);
+	  };
+
+
   const inputEvent = (event) => {
     const name = event.target.name;
     const value = event.target.value;
@@ -92,14 +99,16 @@ const Login = () => {
             />
           </div>
           <div>
-            <input
-              type="password"
+          <input
+              type={showPassword ? 'text' : 'password'}
               name="password"
               id="password"
               placeholder="Password"
               value={credentials.password}
               onChange={inputEvent}
-            />
+            /> <button type="button" id="show-password-btn" onClick={togglePasswordVisibility}>
+            {showPassword ? 'Hide' : 'Show'} Password
+            </button>
           </div>
           <input
             type="submit"
