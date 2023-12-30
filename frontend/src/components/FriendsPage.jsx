@@ -71,7 +71,7 @@ function FriendsPage() {
 							key={curruser.username}
 							username={curruser.username}
 							name={curruser.name}
-							dp_link={curruser.Photo ? curruser.Photo : defaultPicLink}
+							dpLink={curruser.Photo ? curruser.Photo : defaultPicLink}
 						/>
 					</div>
 					<div className='friends-modal'>
@@ -81,7 +81,7 @@ function FriendsPage() {
 									key={user.username} // Ensure each UserCard has a unique key
 									username={user.username}
 									name={user.name}
-									dp_link={user.Photo ? user.Photo : defaultPicLink}
+									dpLink={user.Photo ? user.Photo : defaultPicLink}
 									current_username={curruser.username}
 								/>
 							))}
