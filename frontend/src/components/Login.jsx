@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 import React, { useState, useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import '../styles/Signup_Login.css'
@@ -6,7 +8,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import { LoginContext } from '../context/LoginContext'
 import logo from '../../public/images/sign-up.png'
 
-require('dotenv').config()
+
 
 const PORT = process.env.PORT || 5050
 const BASE_API_URI = `http://localhost:${PORT}`
@@ -92,20 +94,20 @@ function Login() {
 						<img src={logo} alt='User Profile Photo' />
 						<div>
 							<input
-								type='email'
-								name='email'
+								type="email"
+								name="email"
 								id='email'
 								value={credentials.email}
 								placeholder='Email Id'
 								onChange={inputEvent}
 							/>
-						</div>
+							</div>
 						<div>
 							<input
 								type={showPassword ? 'text' : 'password'}
 								name='password'
 								id='password'
-								placeholder='Password'
+								placeholder="Password"
 								value={credentials.password}
 								onChange={inputEvent}
 							/>{' '}
@@ -126,7 +128,7 @@ function Login() {
 					</div>
 					<div className='form-footer'>
 						Don't have an account ?
-						<Link to='/' style={{ textDecoration: 'none' }}>
+									<Link to='/' style={{ textDecoration: 'none' }}>
 							<span
 								style={{
 									color: '#1877f2',
@@ -135,11 +137,11 @@ function Login() {
 								}}
 							>
 								{'   '} Sign up
-							</span>
+									</span>
 						</Link>
-					</div>
+											</div>
 					<ToastContainer autoClose={3000} theme='dark' />
-				</div>
+						</div>
 			</div>
 		</div>
 	)
