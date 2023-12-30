@@ -1,0 +1,21 @@
+{
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "es2021": true
+    },
+    "extends": ["airbnb", "airbnb/hooks", "prettier"],
+    "plugins": ["prettier"],
+    "parserOptions": {
+        "ecmaVersion": "latest"
+    },
+    "rules": {
+        "no-shadow": "warn",
+        "consistent-return": "warn",
+        "no-underscore-dangle": "warn",
+        "react/prop-types": "warn",
+        "import/prefer-default-export": "warn",
+        "new-cap": "warn",
+        "prefer-regex-literals": "warn"
+    }
+}
