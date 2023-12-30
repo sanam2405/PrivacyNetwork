@@ -18,10 +18,10 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 12
+          node-version: 21.1.0
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --only=dev
 
       - name: Run ESLint
         run: npm run eslint:github-action
@@ -31,7 +31,7 @@ jobs:
         run: |
           npm run eslint:github-action || echo 'failed'
           echo "::set-output name=eslint-status::${{ steps.eslint-status.outputs.stdout }}"
-          
+
   enforce-eslint:
     name: Enforce ESLint
     needs: eslint
