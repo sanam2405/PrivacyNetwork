@@ -10,8 +10,7 @@ const PORT = process.env.PORT || 5050
 const BASE_API_URI = `http://localhost:${PORT}`
 
 function FriendsPage() {
-	const defaultPicLink =
-		'https://cdn-icons-png.flaticon.com/128/3177/3177440.png'
+	const defaultPicLink = 'https://cdn-icons-png.flaticon.com/128/3177/3177440.png';
 	const navigate = useNavigate()
 	const [curruser, setcurrUser] = useState('')
 	const [users, setUsers] = useState([])
@@ -69,9 +68,9 @@ function FriendsPage() {
 					<div className='user-banner'>
 						<UserBanner
 							key={curruser.username}
-							username={curruser.username}
+							username={curruser.username} 
 							name={curruser.name}
-							dp_link={curruser.Photo ? curruser.Photo : defaultPicLink}
+							dpLink={curruser.Photo ? curruser.Photo : defaultPicLink}
 						/>
 					</div>
 					<div className='friends-modal'>
@@ -81,8 +80,8 @@ function FriendsPage() {
 									key={user.username} // Ensure each UserCard has a unique key
 									username={user.username}
 									name={user.name}
-									dp_link={user.Photo ? user.Photo : defaultPicLink}
-									current_username={curruser.username}
+									dpLink={user.Photo ? user.Photo : defaultPicLink}
+									currentUsername={curruser.username}
 								/>
 							))}
 					</div>
