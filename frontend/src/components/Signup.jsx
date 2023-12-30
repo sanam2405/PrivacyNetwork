@@ -146,7 +146,7 @@ function Signup() {
 				</div>
 				<div className='form-container input-div'>
 					<div className='form'>
-						<img src={logo} />
+						<img src={logo} alt='User Profile Photo' />
 						<div>
 							<input
 								type='email'

@@ -16,6 +16,13 @@
         "react/prop-types": "warn",
         "import/prefer-default-export": "warn",
         "new-cap": "warn",
-        "prefer-regex-literals": "warn"
+        "prefer-regex-literals": "warn",
+        "no-unused-vars": "warn",
+        "react/jsx-filename-extension": "warn",
+        "react/jsx-no-useless-fragment": "warn",
+        "jsx-a11y/img-redundant-alt": "warn",
+        "react/jsx-no-constructed-context-values": "warn",
+        "react/no-unescaped-entities": "warn",
+        "react-hooks/exhaustive-deps": "warn"
     }
 }

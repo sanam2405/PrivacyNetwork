@@ -130,7 +130,9 @@ function Map() {
 			>
 				<Marker position={{ lat: location.lat, lng: location.lng }} />
 			</GoogleMap>
-			<button onClick={sendLocation}>Click Me</button>
+			<button type='button' onClick={sendLocation}>
+				Click Me
+			</button>
 		</>
 	) : (
 		<></>

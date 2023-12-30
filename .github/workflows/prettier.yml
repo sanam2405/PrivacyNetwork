@@ -1,0 +1,37 @@
+name: Prettier Check
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  prettier:
+    name: Run Prettier 
+    runs-on: ubuntu-latest
+
+    steps:
+
+      # Check out the repository
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Install Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 12
+
+      # Install the dependencies
+      - name: Install dependencies
+        run: npm ci
+
+      # Check Prettier formatting
+      - name: Check Prettier formatting
+        run: |
+          npm run format -- --check
+          if [ $? -ne 0 ]; then
+            echo "Prettier formatting check failed"
+            exit 1
+          fi
