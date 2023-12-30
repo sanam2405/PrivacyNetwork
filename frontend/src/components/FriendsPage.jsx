@@ -10,7 +10,8 @@ const PORT = process.env.PORT || 5050
 const BASE_API_URI = `http://localhost:${PORT}`
 
 function FriendsPage() {
-	const defaultPicLink = 'https://cdn-icons-png.flaticon.com/128/3177/3177440.png';
+	const defaultPicLink =
+		'https://cdn-icons-png.flaticon.com/128/3177/3177440.png'
 	const navigate = useNavigate()
 	const [curruser, setcurrUser] = useState('')
 	const [users, setUsers] = useState([])
@@ -68,7 +69,7 @@ function FriendsPage() {
 					<div className='user-banner'>
 						<UserBanner
 							key={curruser.username}
-							username={curruser.username} 
+							username={curruser.username}
 							name={curruser.name}
 							dpLink={curruser.Photo ? curruser.Photo : defaultPicLink}
 						/>
@@ -81,7 +82,7 @@ function FriendsPage() {
 									username={user.username}
 									name={user.name}
 									dpLink={user.Photo ? user.Photo : defaultPicLink}
-									currentUsername={curruser.username}
+									currentUserName={curruser.username}
 								/>
 							))}
 					</div>

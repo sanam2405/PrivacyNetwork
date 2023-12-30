@@ -2,10 +2,10 @@ import React from 'react'
 
 import '../styles/UserCard.css'
 
-function UserCard({ username, name, dpLink, currentUsername }) {
+function UserCard({ username, name, dpLink, currentUserName }) {
 	return (
 		<>
-			{currentUsername !== username ? (
+			{currentUserName !== username ? (
 				<div className='container'>
 					<div className='card_item'>
 						<div className='card_inner'>
