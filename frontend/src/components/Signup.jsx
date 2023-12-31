@@ -160,11 +160,11 @@ function Signup() {
 						<div>
 							<input
 								type='text'
-								name='name'
+												name='name'
 								id='name'
-								placeholder='Full Name'
-								value={credentials.name}
-								onChange={inputEvent}
+													placeholder='Full Name'
+									value={credentials.name}
+					onChange={inputEvent}
 							/>
 						</div>
 						<div>
