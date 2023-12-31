@@ -105,11 +105,11 @@ function Login() {
 											<div>
 							<input
 								type={showPassword ? 'text' : 'password'}
-								name='password'
-								id='password'
+											name='password'
+															id='password'
 								placeholder="Password"
-								value={credentials.password}
-								onChange={inputEvent}
+						value={credentials.password}
+															onChange={inputEvent}
 							/>{' '}
 							<button
 								type='button'
