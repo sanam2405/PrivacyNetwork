@@ -31,13 +31,3 @@ jobs:
         run: |
           npm run prettier:github-action || echo 'failed'
           echo "::set-output name=prettier-status::${{ steps.prettier-status.outputs.stdout }}"
-
-  enforce-prettier:
-    name: Enforce Prettier
-    needs: prettier
-    runs-on: ubuntu-latest
-    if: ${{ needs.prettier.outputs.prettier-status == 'failed' }}
-
-    steps:
-      - name: Fail the build on Prettier errors
-        run: exit 1

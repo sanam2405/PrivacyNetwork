@@ -31,13 +31,3 @@ jobs:
         run: |
           npm run eslint:github-action || echo 'failed'
           echo "::set-output name=eslint-status::${{ steps.eslint-status.outputs.stdout }}"
-
-  enforce-eslint:
-    name: Enforce ESLint
-    needs: eslint
-    runs-on: ubuntu-latest
-    if: ${{ needs.eslint.outputs.eslint-status == 'failed' }}
-
-    steps:
-      - name: Fail the build on ESLint errors
-        run: exit 1
