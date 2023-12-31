@@ -87,7 +87,7 @@ function Login() {
 		<div className='signUp'>
 			<div className='wrapper-container'>
 				<div className='project-title-container'>
-					<h1>Privacy Network</h1>
+								<h1>Privacy Network</h1>
 				</div>
 				<div className='form-container input-div'>
 					<div className='form'>
@@ -102,7 +102,7 @@ function Login() {
 								onChange={inputEvent}
 							/>
 							</div>
-						<div>
+											<div>
 							<input
 								type={showPassword ? 'text' : 'password'}
 								name='password'

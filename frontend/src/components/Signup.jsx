@@ -140,11 +140,11 @@ function Signup() {
 
 	return (
 		<div className='signUp'>
-			<div className='wrapper-container'>
+							<div className='wrapper-container'>
 				<div className='project-title-container'>
 					<h1>Privacy Network</h1>
-				</div>
-				<div className='form-container input-div'>
+		</div>
+					<div className='form-container input-div'>
 					<div className='form'>
 						<img src={logo} alt='User Profile Photo' />
 						<div>
@@ -170,10 +170,10 @@ function Signup() {
 						<div>
 							<input
 								type='text'
-								name='username'
+									name='username'
 								id='username'
-								placeholder='Username'
-								value={credentials.username}
+										placeholder='Username'
+						value={credentials.username}
 								onChange={inputEvent}
 							/>
 						</div>
