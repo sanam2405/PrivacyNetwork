@@ -8,30 +8,36 @@ on:
 
 jobs:
   prettier:
-    name: Run Prettier 
+    name: Run Prettier
     runs-on: ubuntu-latest
 
     steps:
-
-      # Check out the repository
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Install Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 21.1.0
 
-      # Install the dependencies
       - name: Install dependencies
         run: npm ci --only=dev
 
-      # Check Prettier formatting
+      - name: Run Prettier
+        run: npm run prettier:github-action
+
       - name: Check Prettier formatting
+        id: prettier-status
         run: |
-          npm run format -- --check
-          if [ $? -ne 0 ]; then
-            echo "Prettier formatting check failed"
-            exit 1
-          fi
+          npm run prettier:github-action || echo 'failed'
+          echo "::set-output name=prettier-status::${{ steps.prettier-status.outputs.stdout }}"
+
+  enforce-prettier:
+    name: Enforce Prettier
+    needs: prettier
+    runs-on: ubuntu-latest
+    if: ${{ needs.prettier.outputs.prettier-status == 'failed' }}
+
+    steps:
+      - name: Fail the build on Prettier errors
+        run: exit 1

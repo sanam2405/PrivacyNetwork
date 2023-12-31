@@ -10,7 +10,8 @@
     "lint": "eslint \"./{frontend,backend}/**/*.{js,jsx}\" --quiet",
     "lint-fix": "eslint --fix \"./{frontend,backend}/**/*.{js,jsx}\" --quiet",
     "format": "prettier --write \"./{frontend,backend}/**/*.{html,css,js,jsx}\"",
-    "eslint:github-action": "eslint \"./{frontend,backend}/**/*.{js,jsx}\" --quiet"
+    "eslint:github-action": "eslint \"./{frontend,backend}/**/*.{js,jsx}\" --quiet",
+    "prettier:github-action": "prettier --check \"./{frontend,backend}/**/*.{html,css,js,jsx}\""
   },
   "repository": {
     "type": "git",
