@@ -8,7 +8,7 @@ const requireLogin = require('../middlewares/requireLogin')
 router.put('/follow', requireLogin, async (req, res) => {
 	try {
 		const toFollow = req.body.userID
-		const wantToFollow = req.user._id
+		const wantToFollow = req.user._id.toString()
 
 		await User.findByIdAndUpdate(toFollow, {
 			$addToSet: { friends: wantToFollow },
@@ -28,8 +28,8 @@ router.put('/follow', requireLogin, async (req, res) => {
 // unfriend a user
 router.put('/unfollow', requireLogin, async (req, res) => {
 	try {
-		const toFollow = req.body.userID // ayush
-		const wantToFollow = req.user._id // anumoy
+		const toFollow = req.body.userID
+		const wantToFollow = req.user._id.toString()
 
 		await User.findByIdAndUpdate(
 			toFollow,

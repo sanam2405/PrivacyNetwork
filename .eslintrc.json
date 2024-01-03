@@ -23,6 +23,7 @@
         "jsx-a11y/img-redundant-alt": "warn",
         "react/jsx-no-constructed-context-values": "warn",
         "react/no-unescaped-entities": "warn",
-        "react-hooks/exhaustive-deps": "warn"
+        "react-hooks/exhaustive-deps": "warn",
+        "array-callback-return": "warn"
     }
 }

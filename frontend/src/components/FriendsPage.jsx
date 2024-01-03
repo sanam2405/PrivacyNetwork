@@ -66,6 +66,17 @@ function FriendsPage() {
 		if (localStorage.getItem('user')) {
 			return (
 				<>
+					<div className='button-container'>
+						<button
+							type='button'
+							className='large-button'
+							onClick={() => {
+								navigate('/client')
+							}}
+						>
+							Go To Map
+						</button>
+					</div>
 					<div className='user-banner'>
 						<UserBanner
 							key={curruser.username}
@@ -83,6 +94,8 @@ function FriendsPage() {
 									name={user.name}
 									dpLink={user.Photo ? user.Photo : defaultPicLink}
 									currentUserName={curruser.username}
+									user={user}
+									curruser={curruser}
 								/>
 							))}
 					</div>

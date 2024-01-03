@@ -1,0 +1,13 @@
+.map-container {
+	display: flex;
+}
+
+.enlarge-button {
+	padding: 10px 20px;
+	font-size: 20px;
+	transition: transform 0.3s ease;
+}
+
+.enlarge-button:hover {
+	transform: scale(1.1);
+}
