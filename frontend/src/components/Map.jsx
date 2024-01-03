@@ -131,17 +131,21 @@ function Map() {
 						zoom={18.25}
 					>
 						<Marker position={{ lat: location.lat, lng: location.lng }} />
-						{/* <Marker position={{
-                            lat: 22.549152,
-                            lng: 88.378260,
-                        }} /> */}
-						{/* <Marker position={{
-                            lat: 22.559132,
-                            lng: 88.388270,
-                        }} /> */}
-						{locationArray.map(loc => {
-							;<Marker position={{ lat: loc.lat, lng: loc.lng }} />
-						})}
+						<Marker
+							position={{
+								lat: 22.54905,
+								lng: 88.37816,
+							}}
+						/>
+						<Marker
+							position={{
+								lat: 22.559132,
+								lng: 88.38827,
+							}}
+						/>
+						{/* {locationArray.map(loc => {
+							; <Marker position={{ lat: loc.lat, lng: loc.lng }} />
+						})} */}
 					</GoogleMap>
 				</div>
 				<div className='button-container'>

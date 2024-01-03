@@ -28,7 +28,8 @@
 	display: flex;
 	flex: 0 0 70%;
 	flex-direction: column;
-	justify-content: left;
+	justify-content: center;
+	/* align-items: center; */
 }
 
 .user-full-name > h1 {
