@@ -10,3 +10,34 @@
 	grid-auto-rows: auto;
 	grid-gap: 1rem;
 }
+
+.button-container {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+	align-items: end;
+}
+
+.large-button {
+	padding: 15px 30px;
+	/* Adjust padding to increase button size */
+	font-size: 18px;
+	/* Adjust font size */
+	border: none;
+	border-radius: 8px;
+	/* Rounded corners */
+	background-color: #3498db;
+	/* Button color */
+	color: white;
+	/* Text color */
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	transition-duration: 0.4s;
+	cursor: pointer;
+}
+
+.large-button:hover {
+	background-color: #2980b9;
+	/* Change color on hover */
+}

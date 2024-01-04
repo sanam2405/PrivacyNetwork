@@ -1,11 +1,57 @@
 import React from 'react'
-
 import '../styles/UserCard.css'
+import { useNavigate } from 'react-router-dom'
 
-function UserCard({ username, name, dpLink, currentUserName }) {
+require('dotenv').config()
+
+const PORT = process.env.PORT || 5050
+const BASE_API_URI = `http://localhost:${PORT}`
+
+function UserCard({ username, name, dpLink, currentUsername, user, curruser }) {
+	const navigate = useNavigate()
+
+	const handleFollow = id => {
+		fetch(`${BASE_API_URI}/api/follow`, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${localStorage.getItem('jwt')}`,
+			},
+			body: JSON.stringify({
+				userID: id,
+			}),
+		})
+			.then(res => res.json())
+			.then(result => {
+				console.log(result)
+				// setIsFollow(false)
+			})
+			.catch(err => console.log(err))
+	}
+
+	const handleUnFollow = id => {
+		fetch(`${BASE_API_URI}/api/unfollow`, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${localStorage.getItem('jwt')}`,
+			},
+			body: JSON.stringify({
+				userID: id,
+			}),
+		})
+			.then(res => res.json())
+			.then(result => {
+				console.log(result)
+				// setIsFollow(true)
+			})
+			.catch(err => console.log(err))
+	}
+
 	return (
 		<>
-			{currentUserName !== username ? (
+			{currentUsername !== username &&
+			curruser.friends.includes(user._id) === false ? (
 				<div className='container'>
 					<div className='card_item'>
 						<div className='card_inner'>
@@ -24,7 +70,11 @@ function UserCard({ username, name, dpLink, currentUserName }) {
 									<span>Followers</span>11
 								</div>
 							</div>
-							<button type='button' className='addFriend'>
+							<button
+								type='button'
+								className='addFriend'
+								onClick={() => handleFollow(user._id)}
+							>
 								Add Friend
 							</button>
 						</div>

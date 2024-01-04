@@ -9,7 +9,9 @@
     "test": "jest",
     "lint": "eslint \"./{frontend,backend}/**/*.{js,jsx}\" --quiet",
     "lint-fix": "eslint --fix \"./{frontend,backend}/**/*.{js,jsx}\" --quiet",
-    "format": "prettier --write \"./{frontend,backend}/**/*.{html,css,js,jsx}\""
+    "format": "prettier --write \"./{frontend,backend}/**/*.{html,css,js,jsx}\"",
+    "eslint:github-action": "eslint \"./{frontend,backend}/**/*.{js,jsx}\" --quiet",
+    "prettier:github-action": "prettier --check \"./{frontend,backend}/**/*.{html,css,js,jsx}\""
   },
   "repository": {
     "type": "git",
@@ -64,6 +66,8 @@
     "eslint-plugin-jsx-a11y": "^6.8.0",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.1.2",
     "events": "^3.3.0",
     "os-browserify": "^0.3.0",
     "parcel": "^2.10.3",
