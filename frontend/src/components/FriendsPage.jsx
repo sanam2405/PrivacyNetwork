@@ -1,5 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import Box from '@mui/material/Box'
+import TextField from '@mui/material/TextField'
+import MenuItem from '@mui/material/MenuItem'
+import FormGroup from '@mui/material/FormGroup'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Checkbox from '@mui/material/Checkbox'
+import Stack from '@mui/material/Stack'
+import Button from '@mui/material/Button'
+import GroupAddRoundedIcon from '@mui/icons-material/GroupAddRounded'
+import PeopleAltRoundedIcon from '@mui/icons-material/PeopleAltRounded'
+import TravelExploreRoundedIcon from '@mui/icons-material/TravelExploreRounded'
 import UserCard from './UserCard'
 import UserBanner from './UserBanner'
 import '../styles/FriendsPage.css'
@@ -16,6 +27,40 @@ function FriendsPage() {
 	const [curruser, setcurrUser] = useState('')
 	const [users, setUsers] = useState([])
 	const [changePic, setChangePic] = useState(false)
+
+	const colleges = [
+		{
+			value: 'Jadavpur University',
+			label: 'Jadavpur University',
+		},
+		{
+			value: 'Calcutta University',
+			label: 'Calcutta University',
+		},
+		{
+			value: 'Presidency University',
+			label: 'Presidency University',
+		},
+		{
+			value: 'Kalyani University',
+			label: 'Kalyani University',
+		},
+	]
+
+	const genders = [
+		{
+			value: 'Male',
+			label: 'Male',
+		},
+		{
+			value: 'Female',
+			label: 'Female',
+		},
+		{
+			value: 'Non Binary',
+			label: 'Non Binary',
+		},
+	]
 
 	useEffect(() => {
 		fetch(
@@ -66,26 +111,121 @@ function FriendsPage() {
 		if (localStorage.getItem('user')) {
 			return (
 				<>
-					<div className='button-container'>
-						<button
-							type='button'
-							className='large-button'
-							onClick={() => {
-								navigate('/client')
-							}}
-						>
-							Go To Map
-						</button>
-					</div>
-					<div className='user-banner'>
-						<UserBanner
-							key={curruser.username}
-							username={curruser.username}
-							name={curruser.name}
-							dpLink={curruser.Photo ? curruser.Photo : defaultPicLink}
-						/>
-					</div>
-					<div className='friends-modal'>
+					<div className='container'>
+						<div className='button-container'>
+							<Button
+								variant='outlined'
+								onClick={() => {
+									navigate('/client')
+								}}
+								startIcon={<TravelExploreRoundedIcon />}
+							>
+								Go To Map
+							</Button>
+						</div>
+						<div className='user-banner'>
+							<UserBanner
+								key={curruser.username}
+								username={curruser.username}
+								name={curruser.name}
+								dpLink={curruser.Photo ? curruser.Photo : defaultPicLink}
+							/>
+						</div>
+						<div className='option-container'>
+							<div className='form-container'>
+								<Box
+									component='form'
+									sx={{
+										'& .MuiTextField-root': { m: 1, width: '25ch' },
+									}}
+									noValidate
+									autoComplete='off'
+								>
+									<div>
+										<TextField
+											required
+											id='outlined-number'
+											label='Required'
+											type='number'
+											InputLabelProps={{
+												shrink: true,
+											}}
+											helperText='Please select your age'
+										/>
+									</div>
+								</Box>
+
+								<Box
+									component='form'
+									sx={{
+										'& .MuiTextField-root': { m: 1, width: '25ch' },
+									}}
+									noValidate
+									autoComplete='off'
+								>
+									<div>
+										<TextField
+											id='outlined-select-gender'
+											select
+											label='Required'
+											required
+											defaultValue='Male'
+											helperText='Please select your gender'
+										>
+											{genders.map(option => (
+												<MenuItem key={option.value} value={option.value}>
+													{option.label}
+												</MenuItem>
+											))}
+										</TextField>
+									</div>
+								</Box>
+
+								<Box
+									component='form'
+									sx={{
+										'& .MuiTextField-root': { m: 1, width: '25ch' },
+									}}
+									noValidate
+									autoComplete='off'
+								>
+									<div>
+										<TextField
+											id='outlined-select-college'
+											select
+											label='Required'
+											required
+											defaultValue='Jadavpur University'
+											helperText='Please select your college'
+										>
+											{colleges.map(option => (
+												<MenuItem key={option.value} value={option.value}>
+													{option.label}
+												</MenuItem>
+											))}
+										</TextField>
+									</div>
+								</Box>
+							</div>
+							<div className='checkbox-container'>
+								<FormGroup>
+									<FormControlLabel
+										control={<Checkbox defaultChecked />}
+										label='Show my visibility'
+									/>
+								</FormGroup>
+							</div>
+							<Stack direction='row' spacing={3}>
+								<Button variant='outlined' startIcon={<PeopleAltRoundedIcon />}>
+									My Friends
+								</Button>
+								<Button variant='contained' endIcon={<GroupAddRoundedIcon />}>
+									Add Friends
+								</Button>
+							</Stack>
+						</div>
+
+						{/* <div className='friends-modal'>
 						{users.length > 0 &&
 							users.map(user => (
 								<UserCard
@@ -98,6 +238,7 @@ function FriendsPage() {
 									curruser={curruser}
 								/>
 							))}
+					</div> */}
 					</div>
 				</>
 			)
