@@ -1,14 +1,26 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
+
+import Box from '@mui/material/Box'
+import Slider from '@mui/material/Slider'
+import TextField from '@mui/material/TextField'
+import MenuItem from '@mui/material/MenuItem'
+import Stack from '@mui/material/Stack'
+import Button from '@mui/material/Button'
+import TravelExploreRoundedIcon from '@mui/icons-material/TravelExploreRounded'
+import ExitToAppRoundedIcon from '@mui/icons-material/ExitToAppRounded'
+
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api'
 import io from 'socket.io-client'
 import '../styles/Map.css'
+import { useNavigate } from 'react-router-dom'
+import { LoginContext } from '../context/LoginContext'
 
 require('dotenv').config()
 
 const socket = io.connect('http://localhost:5050')
 
 const containerStyle = {
-	width: '70vw',
+	width: '60vw',
 	height: '100vh',
 }
 
@@ -18,6 +30,8 @@ const center = {
 }
 
 function Map() {
+	const navigate = useNavigate()
+
 	const { isLoaded } = useJsApiLoader({
 		id: 'google-map-script',
 		googleMapsApiKey: process.env.GOOGLE_API_KEY,
@@ -121,41 +135,238 @@ function Map() {
 		setMap(null)
 	}, [])
 
+	const distances = [
+		{
+			value: 0,
+			label: '0 km',
+		},
+		{
+			value: 10,
+			label: '10',
+		},
+		{
+			value: 20,
+			label: '20',
+		},
+		{
+			value: 30,
+			label: '30',
+		},
+		{
+			value: 40,
+			label: '40',
+		},
+		{
+			value: 50,
+			label: '50',
+		},
+		{
+			value: 60,
+			label: '60',
+		},
+		{
+			value: 70,
+			label: '70',
+		},
+		{
+			value: 80,
+			label: '80',
+		},
+		{
+			value: 90,
+			label: '90',
+		},
+		{
+			value: 100,
+			label: '100 km',
+		},
+	]
+
+	const genders = [
+		{
+			value: 'Male',
+			label: 'Male',
+		},
+		{
+			value: 'Female',
+			label: 'Female',
+		},
+		{
+			value: 'Non Binary',
+			label: 'Non Binary',
+		},
+	]
+
+	const colleges = [
+		{
+			value: 'Jadavpur University',
+			label: 'Jadavpur University',
+		},
+		{
+			value: 'Calcutta University',
+			label: 'Calcutta University',
+		},
+		{
+			value: 'Presidency University',
+			label: 'Presidency University',
+		},
+		{
+			value: 'Kalyani University',
+			label: 'Kalyani University',
+		},
+	]
+
+	function valuetext(value) {
+		return `${value}km`
+	}
+
+	const { setModalOpen } = useContext(LoginContext)
+	const handleClick = () => {
+		setModalOpen(true)
+	}
+
 	return isLoaded ? (
 		<>
-			<div className='map-container'>
-				<div>
-					<GoogleMap
-						mapContainerStyle={containerStyle}
-						center={currentCenter}
-						zoom={18.25}
-					>
-						<Marker position={{ lat: location.lat, lng: location.lng }} />
-						<Marker
-							position={{
-								lat: 22.54905,
-								lng: 88.37816,
-							}}
-						/>
-						<Marker
-							position={{
-								lat: 22.559132,
-								lng: 88.38827,
-							}}
-						/>
-						{/* {locationArray.map(loc => {
+			<div className='complete-container'>
+				<div className='map-container'>
+					<div>
+						<GoogleMap
+							mapContainerStyle={containerStyle}
+							center={currentCenter}
+							zoom={18.25}
+						>
+							<Marker position={{ lat: location.lat, lng: location.lng }} />
+							<Marker
+								position={{
+									lat: 22.54905,
+									lng: 88.37816,
+								}}
+							/>
+							<Marker
+								position={{
+									lat: 22.559132,
+									lng: 88.38827,
+								}}
+							/>
+							{/* {locationArray.map(loc => {
 							; <Marker position={{ lat: loc.lat, lng: loc.lng }} />
 						})} */}
-					</GoogleMap>
+						</GoogleMap>
+					</div>
 				</div>
-				<div className='button-container'>
-					<button
-						type='button'
-						className='enlarge-button'
-						onClick={sendLocation}
+				<div className='option-container'>
+					<div className='button-container-2'>
+						<Stack direction='row' spacing={25}>
+							<Button
+								variant='contained'
+								size='large'
+								onClick={() => {
+									navigate('/friendsPage')
+								}}
+								startIcon={<TravelExploreRoundedIcon />}
+							>
+								Profile
+							</Button>
+							<Button
+								variant='outlined'
+								size='large'
+								color='success'
+								onClick={handleClick}
+								startIcon={<ExitToAppRoundedIcon />}
+							>
+								Logout
+							</Button>
+						</Stack>
+					</div>
+					<Box sx={{ width: '27.5rem' }}>
+						<Slider
+							aria-label='Custom marks'
+							defaultValue={20}
+							step={10}
+							valueLabelDisplay='auto'
+							marks={distances}
+						/>
+					</Box>
+					<Box
+						component='form'
+						sx={{
+							'& .MuiTextField-root': {
+								m: 1,
+								width: '27.5rem',
+								marginTop: '4.5rem',
+							},
+						}}
+						noValidate
+						autoComplete='off'
 					>
-						Click Me
-					</button>
+						<div>
+							<TextField
+								required
+								id='outlined-number'
+								label='Age'
+								type='number'
+								InputLabelProps={{
+									shrink: true,
+								}}
+							/>
+						</div>
+					</Box>
+					<Box
+						component='form'
+						sx={{
+							'& .MuiTextField-root': {
+								m: 1,
+								width: '27.5rem',
+								marginTop: '4rem',
+							},
+						}}
+						noValidate
+						autoComplete='off'
+					>
+						<div>
+							<TextField
+								id='outlined-select-gender'
+								select
+								label='Gender'
+								required
+								defaultValue='Male'
+							>
+								{genders.map(option => (
+									<MenuItem key={option.value} value={option.value}>
+										{option.label}
+									</MenuItem>
+								))}
+							</TextField>
+						</div>
+					</Box>
+					<Box
+						component='form'
+						sx={{
+							'& .MuiTextField-root': {
+								m: 1,
+								width: '27.5rem',
+								marginTop: '4rem',
+							},
+						}}
+						noValidate
+						autoComplete='off'
+					>
+						<div>
+							<TextField
+								id='outlined-select-college'
+								select
+								label='College'
+								required
+								defaultValue='Jadavpur University'
+							>
+								{colleges.map(option => (
+									<MenuItem key={option.value} value={option.value}>
+										{option.label}
+									</MenuItem>
+								))}
+							</TextField>
+						</div>
+					</Box>
 				</div>
 			</div>
 		</>

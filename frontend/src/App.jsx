@@ -5,6 +5,7 @@ import Signup from './components/Signup'
 import Login from './components/Login'
 import FriendsPage from './components/FriendsPage'
 import Client from './components/Client'
+import LogoutModal from './components/LogoutModal'
 import { LoginContext } from './context/LoginContext'
 
 require('dotenv').config()
@@ -29,6 +30,7 @@ function App() {
 							<Route path='/client' element={<Client />} />
 						</Routes>
 					</BrowserRouter>
+					{modalOpen ? <LogoutModal /> : ''}
 				</LoginContext.Provider>
 			</GoogleOAuthProvider>
 		</div>

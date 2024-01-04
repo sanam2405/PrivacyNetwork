@@ -24,6 +24,7 @@
         "react/jsx-no-constructed-context-values": "warn",
         "react/no-unescaped-entities": "warn",
         "react-hooks/exhaustive-deps": "warn",
-        "array-callback-return": "warn"
+        "array-callback-return": "warn",
+        "jsx-a11y/no-noninteractive-element-interactions": "warn"
     }
 }
