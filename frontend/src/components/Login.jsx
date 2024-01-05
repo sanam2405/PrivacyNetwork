@@ -123,21 +123,24 @@ function Login() {
 							value='Log in'
 							onClick={postData}
 						/>
+						<div className='form-footer'>
+							<br />
+							Don't have an account ?
+							<br />
+							<Link to='/' style={{ textDecoration: 'none' }}>
+								<span
+									style={{
+										color: '#1877f2',
+										cursor: 'pointer',
+										fontWeight: 'bold',
+									}}
+								>
+									{'   '} Sign up
+								</span>
+							</Link>
+						</div>
 					</div>
-					<div className='form-footer'>
-						Don't have an account ?
-						<Link to='/' style={{ textDecoration: 'none' }}>
-							<span
-								style={{
-									color: '#1877f2',
-									cursor: 'pointer',
-									fontWeight: 'bold',
-								}}
-							>
-								{'   '} Sign up
-							</span>
-						</Link>
-					</div>
+
 					<ToastContainer autoClose={3000} theme='dark' />
 				</div>
 			</div>

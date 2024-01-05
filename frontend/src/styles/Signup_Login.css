@@ -185,8 +185,8 @@ input:hover {
 
 .form-footer {
 	background-color: transparent;
-	padding: 15px;
-	margin-top: 5px;
+	padding: 2rem;
+	margin-top: 2rem;
 	border: none;
 	text-align: center;
 	font-family: var(--font-courier-prime);

@@ -84,4 +84,24 @@ router.get('/allusers', requireLogin, async (req, res) => {
 	}
 })
 
+// save profile picture of users inside mongodb (through cloudinary)
+
+router.put('/uploadProfilePic', requireLogin, async (req, res) => {
+	try {
+		const userData = await User.findByIdAndUpdate(
+			req.user._id,
+			{
+				$set: { Photo: req.body.pic },
+			},
+			{
+				new: true,
+			},
+		)
+		res.status(200).json({ success: true })
+	} catch (error) {
+		console.log(error)
+		res.status(422).json({ error: 'Something went wrong...' })
+	}
+})
+
 module.exports = router

@@ -28,7 +28,8 @@
 	display: flex;
 	flex: 0 0 70%;
 	flex-direction: column;
-	justify-content: left;
+	justify-content: center;
+	/* align-items: center; */
 }
 
 .user-full-name > h1 {
@@ -39,4 +40,15 @@
 .user-username {
 	font-family: var(--font-courier-prime);
 	font-size: var(--font-size-small);
+}
+
+.user-profile-img {
+	width: 8.5rem;
+	height: 8.5rem;
+	border-radius: 50%;
+	object-fit: cover;
+}
+
+.user-profile-img:hover {
+	cursor: pointer;
 }

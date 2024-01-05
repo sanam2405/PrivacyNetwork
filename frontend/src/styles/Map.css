@@ -1,5 +1,20 @@
+.complete-container {
+	display: flex;
+	flex-direction: row;
+}
+
 .map-container {
 	display: flex;
+	border-right: 0.15rem solid black;
+}
+
+.option-container {
+	padding-top: 2rem;
+	width: 40vw;
+	height: 100vh;
+	padding-left: 4.5rem;
+	padding-right: 2.5rem;
+	background-color: #fff;
 }
 
 .enlarge-button {

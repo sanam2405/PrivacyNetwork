@@ -211,20 +211,22 @@ function Signup() {
 								}}
 							/>
 						</div>
-					</div>
-					<div className='form-footer'>
-						Already have an account ?
-						<Link to='/login' style={{ textDecoration: 'none' }}>
-							<span
-								style={{
-									color: '#1877f2',
-									cursor: 'pointer',
-									fontWeight: 'bold',
-								}}
-							>
-								{'   '} Sign In
-							</span>
-						</Link>
+						<div className='form-footer'>
+							<br />
+							Already have an account ?
+							<br />
+							<Link to='/login' style={{ textDecoration: 'none' }}>
+								<span
+									style={{
+										color: '#1877f2',
+										cursor: 'pointer',
+										fontWeight: 'bold',
+									}}
+								>
+									{'   '} Sign In
+								</span>
+							</Link>
+						</div>
 					</div>
 					<ToastContainer autoClose={3000} theme='dark' />
 				</div>

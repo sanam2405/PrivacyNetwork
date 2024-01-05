@@ -1,15 +1,4 @@
-.container {
-	padding: 40px 20px 20px 20px;
-	margin: auto;
-	/* flex-wrap: wrap; */
-	/* display: flex; */
-	/* justify-content: space-between; */
-	/* justify-content: center; */
-	/* flex-wrap: wrap; */
-}
-
 .card_item {
-	padding: 15px 30px;
 	width: 24%;
 	width: 100%;
 	text-align: center;
@@ -87,9 +76,9 @@
 }
 
 .addFriend {
-	margin: 10px auto;
-	width: 100px;
-	height: 35px;
+	margin: 25px auto;
+	width: 140px;
+	height: 40px;
 	background: #1877f2;
 	color: #fff;
 	border: none;
@@ -98,6 +87,24 @@
 	cursor: pointer;
 	box-shadow: 0 10px 10px hsl(225, 100%, 94%);
 	font-family: var(--font-courier-prime);
+}
+
+.removeFriend {
+	margin: 25px auto;
+	width: 180px;
+	height: 40px;
+	background: #1877f2;
+	color: #fff;
+	border: none;
+	border-radius: 10px;
+	font-weight: 600;
+	cursor: pointer;
+	box-shadow: 0 10px 10px hsl(225, 100%, 94%);
+	font-family: var(--font-courier-prime);
+}
+
+.top-margin {
+	margin-top: 5rem;
 }
 
 .addFriend:hover {

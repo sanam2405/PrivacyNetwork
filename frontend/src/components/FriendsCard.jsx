@@ -1,13 +1,14 @@
 import React from 'react'
 import '../styles/UserCard.css'
 import { useNavigate } from 'react-router-dom'
+import Button from '@mui/material/Button'
 
 require('dotenv').config()
 
 const PORT = process.env.PORT || 5050
 const BASE_API_URI = `http://localhost:${PORT}`
 
-function UserCard({
+function FriendsCard({
 	username,
 	name,
 	dpLink,
@@ -19,8 +20,8 @@ function UserCard({
 }) {
 	const navigate = useNavigate()
 
-	const handleFollow = id => {
-		fetch(`${BASE_API_URI}/api/follow`, {
+	const handleUnFollow = id => {
+		fetch(`${BASE_API_URI}/api/unfollow`, {
 			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json',
@@ -35,7 +36,7 @@ function UserCard({
 				console.log(result)
 				const newUsers = users.filter(u => u._id !== id)
 				setUsers(newUsers)
-				// setIsFollow(false)
+				// setIsFollow(true)
 			})
 			.catch(err => console.log(err))
 	}
@@ -44,7 +45,7 @@ function UserCard({
 		<>
 			{currentUsername !== username &&
 			curruser._id !== user._id &&
-			curruser.friends.includes(user._id) === false ? (
+			curruser.friends.includes(user._id) === true ? (
 				<div className='container'>
 					<div className='card_item'>
 						<div className='card_inner'>
@@ -63,12 +64,14 @@ function UserCard({
 									<span>Followers</span>11
 								</div>
 							</div>
+
+							{/* <Button className="top-margin" size="large" variant="contained" onClick={() => handleUnFollow(user._id)}>Remove Friend</Button> */}
 							<button
 								type='button'
-								className='addFriend'
-								onClick={() => handleFollow(user._id)}
+								className='removeFriend'
+								onClick={() => handleUnFollow(user._id)}
 							>
-								Add Friend
+								Remove Friend
 							</button>
 						</div>
 					</div>
@@ -78,4 +81,4 @@ function UserCard({
 	)
 }
 
-export default UserCard
+export default FriendsCard
