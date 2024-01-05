@@ -7,7 +7,8 @@ function Client() {
 
 	const checker = () => {
 		if (localStorage.getItem('user') !== null) {
-			;<Map />
+			return <Map />
+			// eslint-disable-next-line no-else-return
 		} else {
 			navigate('/login')
 		}

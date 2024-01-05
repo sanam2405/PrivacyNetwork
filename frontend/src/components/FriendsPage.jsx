@@ -182,7 +182,7 @@ function FriendsPage() {
 									size='large'
 									color='success'
 									onClick={handleClick}
-									startIcon={<ExitToAppRoundedIcon />}
+									endIcon={<ExitToAppRoundedIcon />}
 								>
 									Logout
 								</Button>

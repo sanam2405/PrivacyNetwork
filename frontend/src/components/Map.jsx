@@ -6,9 +6,8 @@ import TextField from '@mui/material/TextField'
 import MenuItem from '@mui/material/MenuItem'
 import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
-import TravelExploreRoundedIcon from '@mui/icons-material/TravelExploreRounded'
 import ExitToAppRoundedIcon from '@mui/icons-material/ExitToAppRounded'
-
+import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api'
 import io from 'socket.io-client'
 import '../styles/Map.css'
@@ -263,7 +262,7 @@ function Map() {
 								onClick={() => {
 									navigate('/friendsPage')
 								}}
-								startIcon={<TravelExploreRoundedIcon />}
+								startIcon={<AccountCircleIcon />}
 							>
 								Profile
 							</Button>
@@ -272,7 +271,7 @@ function Map() {
 								size='large'
 								color='success'
 								onClick={handleClick}
-								startIcon={<ExitToAppRoundedIcon />}
+								endIcon={<ExitToAppRoundedIcon />}
 							>
 								Logout
 							</Button>
