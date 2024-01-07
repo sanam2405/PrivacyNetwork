@@ -85,7 +85,6 @@ router.get('/allusers', requireLogin, async (req, res) => {
 })
 
 // save profile picture of users inside mongodb (through cloudinary)
-
 router.put('/uploadProfilePic', requireLogin, async (req, res) => {
 	try {
 		const userData = await User.findByIdAndUpdate(
@@ -98,6 +97,56 @@ router.put('/uploadProfilePic', requireLogin, async (req, res) => {
 			},
 		)
 		res.status(200).json({ success: true })
+	} catch (error) {
+		console.log(error)
+		res.status(422).json({ error: 'Something went wrong...' })
+	}
+})
+
+// posting the age, gender, college properties of an user
+router.put('/setProperties', requireLogin, async (req, res) => {
+	try {
+		const { age, gender, college } = req.body
+
+		if (!age || !gender || !college) {
+			return res
+				.status(422)
+				.json({ error: 'Please fill up all the properties...' })
+		}
+
+		console.log(age, gender, college)
+
+		await User.findByIdAndUpdate(
+			req.user._id,
+			{
+				$set: { age },
+			},
+			{
+				new: true,
+			},
+		)
+
+		await User.findByIdAndUpdate(
+			req.user._id,
+			{
+				$set: { gender },
+			},
+			{
+				new: true,
+			},
+		)
+
+		await User.findByIdAndUpdate(
+			req.user._id,
+			{
+				$set: { college },
+			},
+			{
+				new: true,
+			},
+		)
+
+		return res.status(200).json({ success: true })
 	} catch (error) {
 		console.log(error)
 		res.status(422).json({ error: 'Something went wrong...' })

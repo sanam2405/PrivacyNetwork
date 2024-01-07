@@ -49,19 +49,30 @@ function Map() {
 		lng: 88.37816,
 	})
 
+	const [age, setAge] = useState('')
+	const [gender, setGender] = useState('Male')
+	const [college, setCollege] = useState('Jadavpur University')
+	const [sliderValue, setSliderValue] = useState(50)
+
+	const handleAgeChange = event => {
+		setAge(event.target.value)
+	}
+	const handleGenderChange = event => {
+		setGender(event.target.value)
+	}
+	const handleCollegeChange = event => {
+		setCollege(event.target.value)
+	}
+	const handleSliderChange = (event, newValue) => {
+		setSliderValue(newValue)
+	}
+
 	const sendLocation = () => {
 		console.log('hello i am here...')
 		socket.emit('send-location', { location })
 	}
 
 	const [locationArray, setLocationArray] = useState([])
-
-	// Demo positions...
-	const positions = [
-		{ lat: 25.561083, lng: 88.412666 }, // New York
-		{ lat: 22.571093, lng: 85.412672 }, // Los Angeles
-		{ lat: 21.161083, lng: 87.412 }, // London
-	]
 
 	useEffect(() => {
 		if (navigator.geolocation) {
@@ -234,22 +245,138 @@ function Map() {
 							center={currentCenter}
 							zoom={18.25}
 						>
+							{/* Current Location  */}
 							<Marker position={{ lat: location.lat, lng: location.lng }} />
-							<Marker
-								position={{
-									lat: 22.54905,
-									lng: 88.37816,
-								}}
-							/>
-							<Marker
-								position={{
-									lat: 22.559132,
-									lng: 88.38827,
-								}}
-							/>
-							{/* {locationArray.map(loc => {
-							; <Marker position={{ lat: loc.lat, lng: loc.lng }} />
-						})} */}
+							{college === 'Jadavpur University' &&
+								gender === 'Male' &&
+								sliderValue >= 50 && (
+									<Marker position={{ lat: 22.4965, lng: 88.3698 }} />
+								)}
+							{college === 'Calcutta University' &&
+								gender === 'Male' &&
+								sliderValue >= 40 && (
+									<Marker position={{ lat: 22.5726, lng: 88.3639 }} />
+								)}
+							{college === 'Presidency University' &&
+								gender === 'Male' &&
+								sliderValue >= 30 && (
+									<Marker position={{ lat: 22.5752, lng: 88.3686 }} />
+								)}
+							{college === 'Kalyani University' &&
+								gender === 'Male' &&
+								sliderValue >= 40 && (
+									<Marker position={{ lat: 22.9769, lng: 88.4348 }} />
+								)}
+							{college === 'Jadavpur University' &&
+								gender === 'Female' &&
+								sliderValue >= 30 && (
+									<Marker position={{ lat: 22.4269, lng: 87.51 }} />
+								)}
+							{college === 'Calcutta University' &&
+								gender === 'Female' &&
+								sliderValue >= 70 && (
+									<Marker position={{ lat: 23.1725, lng: 88.8624 }} />
+								)}
+							{college === 'Presidency University' &&
+								gender === 'Female' &&
+								sliderValue >= 60 && (
+									<Marker position={{ lat: 22.8765, lng: 88.1234 }} />
+								)}
+							{college === 'Kalyani University' &&
+								gender === 'Female' &&
+								sliderValue >= 20 && (
+									<Marker position={{ lat: 23.5665, lng: 88.0012 }} />
+								)}
+							{college === 'Jadavpur University' &&
+								gender === 'Male' &&
+								sliderValue >= 20 && (
+									<Marker position={{ lat: 22.4021, lng: 88.2327 }} />
+								)}
+							{college === 'Presidency University' &&
+								gender === 'Male' &&
+								sliderValue >= 80 && (
+									<Marker position={{ lat: 22.2725, lng: 87.8723 }} />
+								)}
+							{college === 'Calcutta University' &&
+								gender === 'Male' &&
+								sliderValue >= 50 && (
+									<Marker position={{ lat: 23.5991, lng: 87.7623 }} />
+								)}
+							{college === 'Kalyani University' &&
+								gender === 'Male' &&
+								sliderValue >= 10 && (
+									<Marker position={{ lat: 22.2756, lng: 88.0001 }} />
+								)}
+							{college === 'Jadavpur University' &&
+								gender === 'Female' &&
+								sliderValue >= 60 && (
+									<Marker position={{ lat: 23.2345, lng: 88.78 }} />
+								)}
+							{college === 'Calcutta University' &&
+								gender === 'Female' &&
+								sliderValue >= 40 && (
+									<Marker position={{ lat: 23.5232, lng: 87.6763 }} />
+								)}
+							{college === 'Presidency University' &&
+								gender === 'Female' &&
+								sliderValue >= 30 && (
+									<Marker position={{ lat: 22.6232, lng: 88.7455 }} />
+								)}
+							{college === 'Kalyani University' &&
+								gender === 'Female' &&
+								sliderValue >= 40 && (
+									<Marker position={{ lat: 22.4569, lng: 87.7232 }} />
+								)}
+							{college === 'Calcutta University' &&
+								gender === 'Female' &&
+								sliderValue >= 70 && (
+									<Marker position={{ lat: 22.7256, lng: 88.9924 }} />
+								)}
+							{college === 'Jadavpur University' &&
+								gender === 'Male' &&
+								sliderValue >= 20 && (
+									<Marker position={{ lat: 22.5765, lng: 87.5555 }} />
+								)}
+							{college === 'Calcutta University' &&
+								gender === 'Male' &&
+								sliderValue >= 40 && (
+									<Marker position={{ lat: 22.1329, lng: 88.5013 }} />
+								)}
+							{college === 'Presidency University' &&
+								gender === 'Male' &&
+								sliderValue >= 70 && (
+									<Marker position={{ lat: 22.4021, lng: 88.2327 }} />
+								)}
+							{college === 'Kalyani University' &&
+								gender === 'Male' &&
+								sliderValue >= 50 && (
+									<Marker position={{ lat: 23.0001, lng: 88.0001 }} />
+								)}
+							{college === 'Jadavpur University' &&
+								gender === 'Female' &&
+								sliderValue >= 40 && (
+									<Marker position={{ lat: 22.3725, lng: 87.8624 }} />
+								)}
+							{college === 'Calcutta University' &&
+								gender === 'Female' &&
+								sliderValue >= 20 && (
+									<Marker position={{ lat: 22.3725, lng: 87.8624 }} />
+								)}
+							{college === 'Presidency University' &&
+								gender === 'Female' &&
+								sliderValue >= 90 && (
+									<Marker position={{ lat: 22.5667, lng: 88.1234 }} />
+								)}
+							{college === 'Kalyani University' &&
+								gender === 'Female' &&
+								sliderValue >= 50 && (
+									<Marker position={{ lat: 23.5665, lng: 88.5463 }} />
+								)}
+							{college === 'Jadavpur University' &&
+								gender === 'Male' &&
+								sliderValue >= 60 && (
+									<Marker position={{ lat: 22.4022, lng: 88.7327 }} />
+								)}
 						</GoogleMap>
 					</div>
 				</div>
@@ -280,10 +407,11 @@ function Map() {
 					<Box sx={{ width: '27.5rem' }}>
 						<Slider
 							aria-label='Custom marks'
-							defaultValue={20}
 							step={10}
 							valueLabelDisplay='auto'
 							marks={distances}
+							value={sliderValue}
+							onChange={handleSliderChange}
 						/>
 					</Box>
 					<Box
@@ -304,6 +432,8 @@ function Map() {
 								id='outlined-number'
 								label='Age'
 								type='number'
+								value={age}
+								onChange={handleAgeChange}
 								InputLabelProps={{
 									shrink: true,
 								}}
@@ -328,7 +458,8 @@ function Map() {
 								select
 								label='Gender'
 								required
-								defaultValue='Male'
+								value={gender}
+								onChange={handleGenderChange}
 							>
 								{genders.map(option => (
 									<MenuItem key={option.value} value={option.value}>
@@ -356,7 +487,8 @@ function Map() {
 								select
 								label='College'
 								required
-								defaultValue='Jadavpur University'
+								value={college}
+								onChange={handleCollegeChange}
 							>
 								{colleges.map(option => (
 									<MenuItem key={option.value} value={option.value}>

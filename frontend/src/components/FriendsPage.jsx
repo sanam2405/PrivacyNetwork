@@ -85,7 +85,7 @@ function FriendsPage() {
 		top: '50%',
 		left: '50%',
 		transform: 'translate(-50%, -50%)',
-		minWidth: '60vw',
+		minWidth: '70vw',
 		maxWidth: '95vw',
 		maxHeight: '80vh',
 		bgcolor: '#f0f0f0',
@@ -94,6 +94,7 @@ function FriendsPage() {
 		p: 4,
 		borderRadius: 5,
 		overflow: 'auto',
+		paddingLeft: '9rem',
 	}
 
 	// Closed Modal Icon stylesheet
@@ -107,12 +108,99 @@ function FriendsPage() {
 	// Modal related hooks and utilities
 	const [open, setOpen] = useState(false)
 	const handleOpen = () => setOpen(true)
-	const handleClose = () => setOpen(false)
 	const [open2, setOpen2] = useState(false)
 	const handleOpen2 = () => setOpen2(true)
-	const handleClose2 = () => setOpen2(false)
 
-	const [toggle, setToggle] = useState(false)
+	const [age, setAge] = useState('0')
+	const [prevGender, setPrevGender] = useState('')
+	const [prevCollege, setPrevCollege] = useState('')
+	const [gender, setGender] = useState('Male')
+	const [college, setCollege] = useState('Jadavpur University')
+
+	const handleAgeChange = event => {
+		setAge(event.target.value)
+	}
+	const handleGenderChange = event => {
+		setGender(event.target.value)
+	}
+	const handleCollegeChange = event => {
+		setCollege(event.target.value)
+	}
+
+	const fetchAllUserDetails = () => {
+		fetch(`${BASE_API_URI}/api/allusers`, {
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${localStorage.getItem('jwt')}`,
+			},
+		})
+			.then(res => res.json())
+			.then(data => {
+				if (data.error) {
+					console.log(data.error)
+				} else {
+					window.location.reload()
+					setUsers(data.users)
+				}
+			})
+			.catch(err => console.log(err))
+	}
+
+	const fetchCurrentUserDetails = () => {
+		fetch(
+			`${BASE_API_URI}/api/user/${
+				JSON.parse(localStorage.getItem('user'))._id
+			}`,
+			{
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${localStorage.getItem('jwt')}`,
+				},
+			},
+		)
+			.then(res => res.json())
+			.then(data => {
+				if (data.error) {
+					console.log(data.error)
+				} else {
+					setcurrUser(data.user)
+					localStorage.setItem('user', JSON.stringify(data.user))
+					fetchAllUserDetails()
+				}
+			})
+			.catch(err => console.log(err))
+	}
+
+	const postDetails = () => {
+		console.log(age, gender, college)
+		fetch(`${BASE_API_URI}/api/setProperties`, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${localStorage.getItem('jwt')}`,
+			},
+			body: JSON.stringify({
+				age,
+				gender,
+				college,
+			}),
+		})
+			.then(res => res.json())
+			.then(result => {
+				console.log(result)
+				fetchCurrentUserDetails()
+			})
+			.catch(err => console.log(err))
+	}
+
+	const handleClose = () => {
+		setOpen(false)
+		postDetails()
+	}
+	const handleClose2 = () => {
+		setOpen2(false)
+		postDetails()
+	}
 
 	useEffect(() => {
 		fetch(
@@ -132,6 +220,11 @@ function FriendsPage() {
 					console.log(data.error)
 				} else {
 					setcurrUser(data.user)
+					setAge(data.user.age)
+					setGender(data.user.gender)
+					setCollege(data.user.college)
+					setPrevGender(data.user.gender)
+					setPrevCollege(data.user.college)
 				}
 			})
 			.catch(err => console.log(err))
@@ -216,6 +309,8 @@ function FriendsPage() {
 												shrink: true,
 											}}
 											helperText='Please select your age'
+											value={age}
+											onChange={handleAgeChange}
 										/>
 									</div>
 								</Box>
@@ -234,7 +329,8 @@ function FriendsPage() {
 											select
 											label='Required'
 											required
-											defaultValue='Male'
+											value={gender}
+											onChange={handleGenderChange}
 											helperText='Please select your gender'
 										>
 											{genders.map(option => (
@@ -260,7 +356,8 @@ function FriendsPage() {
 											select
 											label='Required'
 											required
-											defaultValue='Jadavpur University'
+											value={college}
+											onChange={handleCollegeChange}
 											helperText='Please select your college'
 										>
 											{colleges.map(option => (
@@ -282,23 +379,18 @@ function FriendsPage() {
 							</div>
 							<div className='save-edit-button-container'>
 								<Stack direction='row' spacing={3}>
-									{!toggle && (
+									{!prevGender || !prevCollege ? (
 										<Button
 											variant='contained'
-											onClick={() => {
-												setToggle(!toggle)
-											}}
+											onClick={() => postDetails()}
 											startIcon={<SaveRoundedIcon />}
 										>
 											Save
 										</Button>
-									)}
-									{toggle && (
+									) : (
 										<Button
 											variant='outlined'
-											onClick={() => {
-												setToggle(!toggle)
-											}}
+											onClick={() => postDetails()}
 											startIcon={<SaveAsRoundedIcon />}
 										>
 											Edit

@@ -11,7 +11,7 @@
 
 .friends-modal {
 	display: grid;
-	grid-template-columns: repeat(3, 18.4375rem);
+	grid-template-columns: repeat(3, 20.5rem);
 	grid-template-rows: repeat(3, 28.125rem);
 }
 

@@ -66,7 +66,7 @@ function Login() {
 				localStorage.setItem('user', JSON.stringify(jsonData.user))
 				setTimeout(() => {
 					navigate('/friendsPage')
-				}, 5000)
+				}, 2000)
 			} else if (status === 422) {
 				console.log(jsonData.token)
 				notifyB(jsonData.error)
