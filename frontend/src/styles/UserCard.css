@@ -4,6 +4,10 @@
 	text-align: center;
 }
 
+.usercard-container {
+	padding: 3rem;
+}
+
 .container .card_item:hover {
 	transform: scale(1.02);
 	transition: transform 0.3s;
@@ -13,7 +17,7 @@
 .container .card_inner {
 	background: rgba(253, 253, 253, 0.808);
 	border-radius: 10px;
-	padding: 35px 20px;
+	padding: 35px 25px;
 	min-width: 225px;
 	min-height: 315px;
 	max-height: 370px;
@@ -55,6 +59,15 @@
 	color: #6ea4ea;
 	display: flex;
 	flex-direction: column;
+}
+
+.container .card_item .college-field {
+	margin-right: 0.4rem;
+}
+
+.container .card_item .college-field-2 {
+	margin-right: 0.2rem;
+	margin-top: 1.7rem;
 }
 
 .detail-box {

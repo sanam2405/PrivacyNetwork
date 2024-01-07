@@ -22,6 +22,15 @@ const userSchema = new mongoose.Schema({
 	Photo: {
 		type: String,
 	},
+	age: {
+		type: String,
+	},
+	gender: {
+		type: String,
+	},
+	college: {
+		type: String,
+	},
 	friends: [{ type: ObjectId, ref: 'user' }],
 })
 

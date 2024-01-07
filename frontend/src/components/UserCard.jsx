@@ -45,7 +45,7 @@ function UserCard({
 			{currentUsername !== username &&
 			curruser._id !== user._id &&
 			curruser.friends.includes(user._id) === false ? (
-				<div className='container'>
+				<div className='container usercard-container'>
 					<div className='card_item'>
 						<div className='card_inner'>
 							<img src={dpLink} alt='' />
@@ -53,14 +53,17 @@ function UserCard({
 							<div className='userName'>{username}</div>
 							<div className='userUrl' />
 							<div className='detail-box'>
-								<div className='gitDetail'>
-									<span>College</span>JU
+								<div className='gitDetail college-field'>
+									<span>College</span>
+									{user.college ? user.college : '〰〰〰'}
 								</div>
 								<div className='gitDetail'>
-									<span>Following</span>45
+									<span>Gender</span>
+									{user.gender ? user.gender : '〰〰〰'}
 								</div>
 								<div className='gitDetail'>
-									<span>Followers</span>11
+									<span>Age</span>
+									{user.age ? user.age : '〰〰〰'}
 								</div>
 							</div>
 							<button
