@@ -59,11 +59,11 @@ function FriendsCard({
 									{user.college ? user.college : '〰〰〰'}
 								</div>
 								<div className='gitDetail'>
-									<span>Following</span>
+									<span>Gender</span>
 									{user.gender ? user.gender : '〰〰〰'}
 								</div>
 								<div className='gitDetail'>
-									<span>Followers</span>
+									<span>Age</span>
 									{user.age ? user.age : '〰〰〰'}
 								</div>
 							</div>
