@@ -51,7 +51,7 @@ function FriendsCard({
 						<div className='card_inner'>
 							<img src={dpLink} alt='' />
 							<div className='Name'>{name}</div>
-							<div className='userName'>{username}</div> 
+							<div className='userName'>{username}</div>
 							<div className='userUrl' />
 							<div className='detail-box'>
 								<div className='gitDetail college-field-2'>
