@@ -3,35 +3,37 @@
 <i> A Privacy-Preserving Efficient Location-Sharing Scheme for Mobile Online
 Social Network Applications </i>
 
+[Link to the research paper](https://ieeexplore.ieee.org/abstract/document/9288801)
+
 ## Architecture
 
 ![](presentation/assets/architecture.png)
 
-### A. Registration Phase - <i> User </i>
+### A. Registration - <i> User </i>
 
 ![](presentation/assets/registration.png)
 
-### B. Registration Phase - <i> lssns </i>
+### B. Registration - <i> LSSNS </i>
 
 ![](presentation/assets/regnlssn.png)
 
-### C. mSON user login, authentication and key generation
+### C. <i> mSON </i> user login, authentication and key generation
 
 ![](presentation/assets/auth.png)
 
-### D. Lssns login, authentication and key generation
+### D. <i> LSSNS </i> login, authentication and key generation
 
 ![](presentation/assets/authlssns.png)
 
-### E. Distance threshold registration phase
+### E. Distance threshold registration
 
 ![](presentation/assets/distanceregistration.png)
 
-### F. User location update phase
+### F. User location update
 
 ![](presentation/assets/updatelocation.png)
 
-### G. Friend's location query phase
+### G. Friend's location query
 
 ![](presentation/assets/queryfriend.png)
 
@@ -42,6 +44,8 @@ Social Network Applications </i>
 ### Landing Page
 
 ![](presentation/assets/Landing_Speed.gif)
+
+![](presentation/assets/FriendsPage_Speed.gif)
 
 ### Map Page
 
