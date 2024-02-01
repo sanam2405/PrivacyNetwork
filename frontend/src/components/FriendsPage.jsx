@@ -118,8 +118,11 @@ function FriendsPage() {
 	const [college, setCollege] = useState('Jadavpur University')
 
 	const handleAgeChange = event => {
-		setAge(event.target.value)
+		const inputValue = parseFloat(event.target.value)
+		const newAge = inputValue <= 0 || inputValue > 125 ? 1 : inputValue
+		setAge(newAge)
 	}
+
 	const handleGenderChange = event => {
 		setGender(event.target.value)
 	}
@@ -305,6 +308,9 @@ function FriendsPage() {
 											id='outlined-number'
 											label='Required'
 											type='number'
+											InputProps={{
+												inputProps: { min: 1, max: 125 },
+											}}
 											InputLabelProps={{
 												shrink: true,
 											}}

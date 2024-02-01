@@ -55,7 +55,9 @@ function Map() {
 	const [sliderValue, setSliderValue] = useState(50)
 
 	const handleAgeChange = event => {
-		setAge(event.target.value)
+		const inputValue = parseFloat(event.target.value)
+		const newAge = inputValue <= 0 || inputValue > 125 ? 1 : inputValue
+		setAge(newAge)
 	}
 	const handleGenderChange = event => {
 		setGender(event.target.value)
@@ -434,6 +436,9 @@ function Map() {
 								type='number'
 								value={age}
 								onChange={handleAgeChange}
+								InputProps={{
+									inputProps: { min: 1, max: 125 },
+								}}
 								InputLabelProps={{
 									shrink: true,
 								}}
