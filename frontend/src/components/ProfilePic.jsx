@@ -105,18 +105,6 @@ function ProfilePic({ changeProfile }) {
 							Remove Profile Picture
 						</button>
 					</div>
-					<div
-						style={{ borderTop: '1px solid #00000070', padding: '25px 80px' }}
-					>
-						<button
-							type='button'
-							className='upload-btn'
-							style={{ color: 'red' }}
-							onClick={() => changeProfile()}
-						>
-							Cancel
-						</button>
-					</div>
 				</div>
 			</div>
 		</>
