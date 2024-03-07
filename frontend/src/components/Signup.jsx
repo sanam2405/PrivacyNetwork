@@ -4,7 +4,7 @@ import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { GoogleLogin } from '@react-oauth/google'
 import '../styles/Signup_Login.css'
-import { jwtDecode } from 'jwt-decode'
+import jwtDecode from 'jwt-decode'
 import { LoginContext } from '../context/LoginContext'
 import logo from '../../public/images/sign-up.png'
 
