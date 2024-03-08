@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import { useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -33,11 +32,11 @@ import User from '../types/types'
 const PORT = import.meta.env.VITE_PORT || 5050
 const BASE_API_URI = `http://localhost:${PORT}`
 
-function FriendsPage(): JSX.Element {
+function FriendsPage() {
 	const defaultPicLink =
 		'https://cdn-icons-png.flaticon.com/128/3177/3177440.png'
 	const navigate = useNavigate()
-	const [curruser, setcurrUser] = useState<User | null>(null)
+	const [curruser, setcurrUser] = useState<User>()
 	const [users, setUsers] = useState<User[]>([])
 
 	const { setModalOpen } = useContext(LoginContext)
@@ -247,6 +246,10 @@ function FriendsPage(): JSX.Element {
 			.catch(err => console.log(err))
 	}, [])
 
+	// const changeProfile = () => {
+	// 	setChangePic(!changePic)
+	// }
+
 	const checker = () => {
 		if (localStorage.getItem('user')) {
 			return (
@@ -277,12 +280,14 @@ function FriendsPage(): JSX.Element {
 							</Stack>
 						</div>
 						<div className='user-banner'>
-							<UserBanner
-								key={curruser!.username}
-								username={curruser!.username ? curruser!.username : 'Demo'}
-								name={curruser!.name}
-								dpLink={curruser!.Photo ? curruser!.Photo : defaultPicLink}
-							/>
+							{curruser && (
+								<UserBanner
+									key={curruser.username}
+									username={curruser.username}
+									name={curruser.name}
+									dpLink={curruser.Photo ? curruser.Photo : defaultPicLink}
+								/>
+							)}
 						</div>
 						<div className='options-container'>
 							<div className='form-container'>
@@ -440,19 +445,22 @@ function FriendsPage(): JSX.Element {
 									</IconButton>
 									<div className='friends-modal'>
 										{users.length > 0 &&
-											users.map(user => (
-												<UserCard
-													key={user.username} // Ensure each UserCard has a unique key
-													username={user.username}
-													name={user.name}
-													dpLink={user.Photo ? user.Photo : defaultPicLink}
-													currentUsername={curruser!.username}
-													user={user}
-													curruser={curruser!}
-													users={users}
-													setUsers={setUsers}
-												/>
-											))}
+											users.map(
+												user =>
+													curruser && (
+														<UserCard
+															key={user.username} // Ensure each UserCard has a unique key
+															username={user.username}
+															name={user.name}
+															dpLink={user.Photo ? user.Photo : defaultPicLink}
+															currentUsername={curruser.username}
+															user={user}
+															curruser={curruser}
+															users={users}
+															setUsers={setUsers}
+														/>
+													),
+											)}
 									</div>
 								</Box>
 							</Fade>
@@ -466,9 +474,11 @@ function FriendsPage(): JSX.Element {
 							open={open2}
 							onClose={handleClose2}
 							closeAfterTransition
-							BackdropComponent={Backdrop}
-							BackdropProps={{
-								timeout: 500,
+							slots={{ backdrop: Backdrop }}
+							slotProps={{
+								backdrop: {
+									timeout: 500,
+								},
 							}}
 						>
 							<Fade in={open2}>
@@ -482,19 +492,22 @@ function FriendsPage(): JSX.Element {
 									</IconButton>
 									<div className='friends-modal'>
 										{users.length > 0 &&
-											users.map(user => (
-												<FriendsCard
-													key={user.username} // Ensure each FriendsCard has a unique key
-													username={user.username}
-													name={user.name}
-													dpLink={user.Photo ? user.Photo : defaultPicLink}
-													currentUsername={curruser!.username}
-													user={user}
-													curruser={curruser!}
-													users={users}
-													setUsers={setUsers}
-												/>
-											))}
+											users.map(
+												user =>
+													curruser && (
+														<FriendsCard
+															key={user.username} // Ensure each FriendsCard has a unique key
+															username={user.username}
+															name={user.name}
+															dpLink={user.Photo ? user.Photo : defaultPicLink}
+															currentUsername={curruser.username}
+															user={user}
+															curruser={curruser}
+															users={users}
+															setUsers={setUsers}
+														/>
+													),
+											)}
 									</div>
 								</Box>
 							</Fade>
@@ -504,7 +517,6 @@ function FriendsPage(): JSX.Element {
 			)
 		}
 		navigate('/login')
-		return <div></div> // Return something in the non-returned branch to satisfy TypeScript
 	}
 
 	return <div className='friends-container'>{checker()}</div>
