@@ -1,0 +1,28 @@
+.complete-container {
+	display: flex;
+	flex-direction: row;
+}
+
+.map-container {
+	display: flex;
+	border-right: 0.15rem solid black;
+}
+
+.option-container {
+	padding-top: 2rem;
+	width: 40vw;
+	height: 100vh;
+	padding-left: 4.5rem;
+	padding-right: 2.5rem;
+	background-color: #fff;
+}
+
+.enlarge-button {
+	padding: 10px 20px;
+	font-size: 20px;
+	transition: transform 0.3s ease;
+}
+
+.enlarge-button:hover {
+	transform: scale(1.1);
+}
