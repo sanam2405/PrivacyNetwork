@@ -8,7 +8,6 @@ import 'react-toastify/dist/ReactToastify.css'
 // import { LoginContext } from '../context/LoginContext'
 import logo from '../../public/images/sign-up.png'
 
-
 const PORT: string | number = import.meta.env.VITE_PORT || 5050
 const BASE_API_URI: string = `http://localhost:${PORT}`
 
@@ -47,7 +46,9 @@ function Signup() {
 		'(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{8,})',
 	)
 
-	const postData = async (event: React.MouseEvent<HTMLInputElement, MouseEvent>) => {
+	const postData = async (
+		event: React.MouseEvent<HTMLInputElement, MouseEvent>,
+	) => {
 		event.preventDefault()
 		if (!strongPassword.test(credentials.password)) {
 			notifyB(
@@ -193,7 +194,7 @@ function Signup() {
 							type='submit'
 							id='submit-btn'
 							value='Sign Up'
-							onClick={ (event) => postData(event)}
+							onClick={event => postData(event)}
 							style={{ marginBottom: '5px' }}
 						/>
 						{/* <div className='google-login-container'>

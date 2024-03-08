@@ -11,11 +11,10 @@ import CloseIcon from '@mui/icons-material/Close'
 import ProfilePic from './ProfilePic'
 import '../styles/UserBanner.css'
 
-
 interface UserBannerProps {
-	username: string;
-	name: string;
-	dpLink: string;
+	username: string
+	name: string
+	dpLink: string
 }
 
 function UserBanner({ username, name, dpLink }: UserBannerProps) {
@@ -76,30 +75,32 @@ function UserBanner({ username, name, dpLink }: UserBannerProps) {
 			{/* Upload profile picture modal  */}
 			<div className='modal-container-2'>
 				<Modal
-	aria-labelledby='transition-modal-title'
-	aria-describedby='transition-modal-description'
-	open={changePic}
-	onClose={handleClose3}
-	closeAfterTransition
-	BackdropComponent={Backdrop} // Use BackdropComponent instead of backdropComponent
-	BackdropProps={{
-		timeout: 500,
-	}}
->
-	<Fade in={changePic}>
-		<Box sx={style}> {/* Cast style object as any */}
-			<IconButton
-				aria-label='close'
-				style={closeButtonStyle}
-				onClick={handleClose3}
-			>
-				<CloseIcon />
-			</IconButton>
-			{/* Component to update the profile picture of the current user  */}
-			<ProfilePic changeProfile={changeProfile} />
-		</Box>
-	</Fade>
-</Modal>
+					aria-labelledby='transition-modal-title'
+					aria-describedby='transition-modal-description'
+					open={changePic}
+					onClose={handleClose3}
+					closeAfterTransition
+					BackdropComponent={Backdrop} // Use BackdropComponent instead of backdropComponent
+					BackdropProps={{
+						timeout: 500,
+					}}
+				>
+					<Fade in={changePic}>
+						<Box sx={style}>
+							{' '}
+							{/* Cast style object as any */}
+							<IconButton
+								aria-label='close'
+								style={closeButtonStyle}
+								onClick={handleClose3}
+							>
+								<CloseIcon />
+							</IconButton>
+							{/* Component to update the profile picture of the current user  */}
+							<ProfilePic changeProfile={changeProfile} />
+						</Box>
+					</Fade>
+				</Modal>
 			</div>
 		</>
 	)

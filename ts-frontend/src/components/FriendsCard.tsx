@@ -13,9 +13,9 @@ interface FriendsCardProps {
 	dpLink: string
 	currentUsername: string
 	user: User
-	curruser: User,
-	users: User[],
-	setUsers: React.Dispatch<React.SetStateAction<User[]>>,
+	curruser: User
+	users: User[]
+	setUsers: React.Dispatch<React.SetStateAction<User[]>>
 }
 
 function FriendsCard({
@@ -28,8 +28,7 @@ function FriendsCard({
 	users,
 	setUsers,
 }: FriendsCardProps) {
-
-	const handleUnFollow = (id:string) => {
+	const handleUnFollow = (id: string) => {
 		fetch(`${BASE_API_URI}/api/unfollow`, {
 			method: 'PUT',
 			headers: {

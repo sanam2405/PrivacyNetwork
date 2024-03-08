@@ -10,14 +10,14 @@ const BASE_API_URI = `http://localhost:${PORT}`
 import User from '../types/types'
 
 interface UserCardProps {
-	username: string,
-	name: string,
-	dpLink: string,
-	currentUsername: string,
-	user: User,
-	curruser: User,
-	users: User[],
-	setUsers: React.Dispatch<React.SetStateAction<User[]>>,
+	username: string
+	name: string
+	dpLink: string
+	currentUsername: string
+	user: User
+	curruser: User
+	users: User[]
+	setUsers: React.Dispatch<React.SetStateAction<User[]>>
 }
 function UserCard({
 	username,
@@ -31,7 +31,7 @@ function UserCard({
 }: UserCardProps) {
 	const navigate = useNavigate()
 
-	const handleFollow = (id:string) => {
+	const handleFollow = (id: string) => {
 		fetch(`${BASE_API_URI}/api/follow`, {
 			method: 'PUT',
 			headers: {

@@ -26,7 +26,9 @@ function App() {
 		<div className='App'>
 			{GOOGLE_CLIENT ? (
 				<GoogleOAuthProvider clientId={GOOGLE_CLIENT}>
-					<LoginContext.Provider value={{ setUserLogin, setModalOpen, userLogin }}>
+					<LoginContext.Provider
+						value={{ setUserLogin, setModalOpen, userLogin }}
+					>
 						<BrowserRouter>
 							<Routes>
 								<Route path='/' element={<Signup />} />
@@ -39,17 +41,19 @@ function App() {
 					</LoginContext.Provider>
 				</GoogleOAuthProvider>
 			) : (
-				<LoginContext.Provider value={{ setUserLogin, setModalOpen, userLogin }}>
-						<BrowserRouter>
-							<Routes>
-								<Route path='/' element={<Signup />} />
-								<Route path='/login' element={<Login />} />
-								<Route path='/friendsPage' element={<FriendsPage />} />
-								<Route path='/client' element={<Client />} />
-							</Routes>
-						</BrowserRouter>
-						{modalOpen ? <LogoutModal /> : ''}
-					</LoginContext.Provider>
+				<LoginContext.Provider
+					value={{ setUserLogin, setModalOpen, userLogin }}
+				>
+					<BrowserRouter>
+						<Routes>
+							<Route path='/' element={<Signup />} />
+							<Route path='/login' element={<Login />} />
+							<Route path='/friendsPage' element={<FriendsPage />} />
+							<Route path='/client' element={<Client />} />
+						</Routes>
+					</BrowserRouter>
+					{modalOpen ? <LogoutModal /> : ''}
+				</LoginContext.Provider>
 			)}
 		</div>
 	)

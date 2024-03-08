@@ -34,9 +34,9 @@ const center = {
 
 function Map() {
 	const navigate = useNavigate()
-    const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
+	const apiKey = import.meta.env.VITE_GOOGLE_API_KEY
 
-    if(!apiKey) throw new Error("GOOGLE_API_KEY environment variable is not set");
+	if (!apiKey) throw new Error('GOOGLE_API_KEY environment variable is not set')
 
 	const { isLoaded } = useJsApiLoader({
 		id: 'google-map-script',
@@ -61,20 +61,26 @@ function Map() {
 	const [college, setCollege] = useState('Jadavpur University')
 	const [sliderValue, setSliderValue] = useState(50)
 
-	const handleAgeChange = (event:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+	const handleAgeChange = (
+		event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+	) => {
 		const inputValue = parseFloat(event.target.value)
 		const newAge = inputValue <= 0 || inputValue > 125 ? 1 : inputValue
 		setAge(newAge)
 	}
-	const handleGenderChange = (event:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-		setGender(event.target.value);
+	const handleGenderChange = (
+		event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+	) => {
+		setGender(event.target.value)
 	}
-	const handleCollegeChange = (event:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+	const handleCollegeChange = (
+		event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+	) => {
 		setCollege(event.target.value)
 	}
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const handleSliderChange = (event:any) => {
-		setSliderValue(event?.target?.value);
+	const handleSliderChange = (event: any) => {
+		setSliderValue(event?.target?.value)
 	}
 
 	// const sendLocation = () => {
@@ -146,14 +152,14 @@ function Map() {
 	const [map, setMap] = React.useState(null)
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const onLoad = React.useCallback( (map:any) => {
+	const onLoad = React.useCallback((map: any) => {
 		const bounds = new window.google.maps.LatLngBounds(center)
 		map.fitBounds(bounds)
 		setMap(map)
 	}, [])
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const onUnmount = React.useCallback((map:any) => {
+	const onUnmount = React.useCallback((map: any) => {
 		setMap(null)
 	}, [])
 
@@ -424,7 +430,7 @@ function Map() {
 							marks={distances}
 							value={sliderValue}
 							// eslint-disable-next-line @typescript-eslint/no-explicit-any
-							onChange={(e:any) => handleSliderChange(e)}
+							onChange={(e: any) => handleSliderChange(e)}
 						/>
 					</Box>
 					<Box
@@ -446,7 +452,7 @@ function Map() {
 								label='Age'
 								type='number'
 								value={age}
-								onChange={(e) => handleAgeChange(e)}
+								onChange={e => handleAgeChange(e)}
 								InputProps={{
 									inputProps: { min: 1, max: 125 },
 								}}
@@ -475,7 +481,7 @@ function Map() {
 								label='Gender'
 								required
 								value={gender}
-								onChange={(e) => handleGenderChange(e)}
+								onChange={e => handleGenderChange(e)}
 							>
 								{genders.map(option => (
 									<MenuItem key={option.value} value={option.value}>
@@ -504,7 +510,7 @@ function Map() {
 								label='College'
 								required
 								value={college}
-								onChange={(e) => handleCollegeChange(e)}
+								onChange={e => handleCollegeChange(e)}
 							>
 								{colleges.map(option => (
 									<MenuItem key={option.value} value={option.value}>

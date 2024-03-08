@@ -7,7 +7,7 @@ const PORT: string | number = import.meta.env.VITE_PORT || 5050
 const BASE_API_URI: string = `http://localhost:${PORT}`
 
 interface ProfilePicProps {
-	changeProfile: () => void;
+	changeProfile: () => void
 }
 
 function ProfilePic({ changeProfile }: ProfilePicProps) {

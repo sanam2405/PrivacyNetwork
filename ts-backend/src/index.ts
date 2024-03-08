@@ -7,7 +7,7 @@ const app = express()
 import cors from 'cors'
 import { Server } from 'socket.io'
 
-const PORT: string | number = process.env.PORT || 5050
+const PORT: string | number = process.env.PORT || 5051
 
 import mongoDB from './db'
 
@@ -23,26 +23,26 @@ app.use('/api', userRouter)
 
 const server = http.createServer(app)
 
-const io = new Server(server, {
-	cors: {
-		origin: 'http://localhost:1234',
-		methods: ['GET', 'POST', 'PUT'],
-	},
-})
+// const io = new Server(server, {
+// 	cors: {
+// 		origin: 'http://localhost:1234',
+// 		methods: ['GET', 'POST', 'PUT'],
+// 	},
+// })
 
-io.on('connection', socket => {
-	console.log(`User Connected: ${socket.id}`)
+// io.on('connection', socket => {
+// 	console.log(`User Connected: ${socket.id}`)
 
-	// socket.on("join_room", (data) => {
-	//   socket.join(data);
-	// });
+// 	// socket.on("join_room", (data) => {
+// 	//   socket.join(data);
+// 	// });
 
-	socket.on('send-location', data => {
-		console.log('backend send.....')
-		console.log(data)
-		socket.broadcast.emit('receive-location', data)
-	})
-})
+// 	socket.on('send-location', data => {
+// 		console.log('backend send.....')
+// 		console.log(data)
+// 		socket.broadcast.emit('receive-location', data)
+// 	})
+// })
 
 // app.get("*", (req, res) => {
 //   res.sendFile(
@@ -58,7 +58,7 @@ io.on('connection', socket => {
 // });
 
 mongoDB().then(() => {
-	server.listen(PORT, () => {
+	app.listen(PORT, () => {
 		console.log('Server is listening at port no', PORT)
 	})
 })

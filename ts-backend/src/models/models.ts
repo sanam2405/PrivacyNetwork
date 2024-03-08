@@ -6,7 +6,7 @@ export interface UserDocument extends Document {
 	email: string
 	password: string
 	Photo?: string
-	age?: string
+	age?: number
 	gender?: string
 	college?: string
 	friends: Types.ObjectId[]
@@ -18,7 +18,7 @@ const userSchema: Schema<UserDocument> = new Schema({
 	email: { type: String, required: true },
 	password: { type: String, required: true },
 	Photo: { type: String },
-	age: { type: String },
+	age: { type: Number },
 	gender: { type: String },
 	college: { type: String },
 	friends: [{ type: Schema.Types.ObjectId, ref: 'user' }],
