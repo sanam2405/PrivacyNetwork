@@ -7,6 +7,7 @@ import 'react-toastify/dist/ReactToastify.css'
 // import jwtDecode from 'jwt-decode'
 // import { LoginContext } from '../context/LoginContext'
 import logo from '../../public/images/sign-up.png'
+import HttpStatusCode from '../types/HttpStatusCode'
 
 const PORT: string | number = import.meta.env.VITE_PORT || 5050
 const BASE_API_URI: string = `http://localhost:${PORT}`
@@ -73,14 +74,14 @@ function Signup() {
 
 				const jsonData = await response.json()
 
-				if (status === 200) {
+				if (status === HttpStatusCode.OK) {
 					notifyA('Sign up successful')
 					setTimeout(() => {
 						navigate('/login')
 					}, 4000)
-				} else if (status === 432) {
+				} else if (status === HttpStatusCode.LENGTH_REQUIRED) {
 					notifyB(`${jsonData.errors[0].msg}`)
-				} else if (status === 422) {
+				} else if (status === HttpStatusCode.UNPROCESSABLE_ENTITY) {
 					notifyB(`${jsonData.error}`)
 				} else {
 					notifyB('Oops !!! enter valid credentials')
@@ -113,7 +114,7 @@ function Signup() {
 
 	// 		const jsonData = await response.json()
 
-	// 		if (status === 200) {
+	// 		if (status === HttpStatusCode.OK) {
 	// 			notifyA(`Welcome ${jsonData.username}`)
 	// 			setUserLogin(true)
 	// 			localStorage.setItem('jwt', jsonData.token)
@@ -121,9 +122,9 @@ function Signup() {
 	// 			setTimeout(() => {
 	// 				navigate('/')
 	// 			}, 5000)
-	// 		} else if (status === 432) {
+	// 		} else if (status === HttpStatusCode.LENGTH_REQUIRED) {
 	// 			notifyB(`${jsonData.errors[0].msg}`)
-	// 		} else if (status === 422) {
+	// 		} else if (status === HttpStatusCode.UNPROCESSABLE_ENTITY) {
 	// 			notifyB(`${jsonData.error}`)
 	// 		} else {
 	// 			notifyB('Oops !!! enter valid credentials')
