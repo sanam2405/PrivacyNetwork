@@ -7,7 +7,7 @@ const app = express()
 import cors from 'cors'
 import { Server } from 'socket.io'
 
-const PORT: string | number = process.env.PORT || 5051
+const PORT: string | number = process.env.PORT || 5050
 
 import mongoDB from './db'
 

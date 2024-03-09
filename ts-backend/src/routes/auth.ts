@@ -4,6 +4,7 @@ import bcrypt from 'bcryptjs'
 import { body, validationResult } from 'express-validator'
 import jwt from 'jsonwebtoken'
 import User from '../models/models'
+import HttpStatusCode from '../types/HttpStatusCode'
 const SECRET_KEY = process.env.SECRET_KEY
 
 const authRouter = express.Router()
@@ -22,12 +23,12 @@ authRouter.post(
 	async (req: Request, res: Response) => {
 		const errors = validationResult(req)
 		if (!errors.isEmpty()) {
-			return res.status(432).json({ errors: errors.array() })
+			return res.status(HttpStatusCode.LENGTH_REQUIRED).json({ errors: errors.array() })
 		}
 
 		const { name, username, email, password } = req.body
 		if (!name || !username || !email || !password) {
-			return res.status(422).json({ error: 'Please add all the fields...' })
+			return res.status(HttpStatusCode.UNPROCESSABLE_ENTITY).json({ error: 'Please add all the fields...' })
 		}
 		try {
 			const savedUser = await User.findOne({
@@ -35,7 +36,7 @@ authRouter.post(
 			})
 			if (savedUser) {
 				return res
-					.status(422)
+					.status(HttpStatusCode.UNPROCESSABLE_ENTITY)
 					.json({ error: 'A user already exists with the email or username' })
 			}
 			const salt = await bcrypt.genSalt(10)
@@ -47,10 +48,10 @@ authRouter.post(
 				password: hashedPassword,
 			})
 			await user.save()
-			res.status(200).json({ success: true })
+			res.status(HttpStatusCode.OK).json({ success: true })
 		} catch (err) {
 			console.log(err)
-			res.status(400).json({ success: false })
+			res.status(HttpStatusCode.BAD_REQUEST).json({ success: false })
 		}
 	},
 )
@@ -66,16 +67,16 @@ authRouter.post(
 	async (req: Request, res: Response) => {
 		const errors = validationResult(req)
 		if (!errors.isEmpty()) {
-			return res.status(432).json({ errors: errors.array() })
+			return res.status(HttpStatusCode.LENGTH_REQUIRED).json({ errors: errors.array() })
 		}
 
 		const { email, password } = req.body
 		if (!email || !password) {
-			return res.status(422).json({ error: 'Please add all the fields...' })
+			return res.status(HttpStatusCode.UNPROCESSABLE_ENTITY).json({ error: 'Please add all the fields...' })
 		}
 		if (!SECRET_KEY) {
 			console.error('SECRET_KEY is undefined. Check the .env')
-			return res.status(500).send({ errors: 'Internal Server Error' })
+			return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).send({ errors: 'Internal Server Error' })
 		}
 		try {
 			const userData = await User.findOne({ email })
@@ -84,23 +85,23 @@ authRouter.post(
 				const isMatch = await bcrypt.compare(password, hashedPassword)
 				if (isMatch) {
 					const jwtToken = jwt.sign({ _id: userData.id }, SECRET_KEY)
-					return res.status(200).json({
+					return res.status(HttpStatusCode.OK).json({
 						success: true,
 						username: userData.username,
 						token: jwtToken,
 						user: userData,
 					})
 				}
-				return res.status(422).json({
+				return res.status(HttpStatusCode.UNPROCESSABLE_ENTITY).json({
 					error: 'Your entered password does not match, please try again...',
 				})
 			}
 			return res
-				.status(422)
+				.status(HttpStatusCode.UNPROCESSABLE_ENTITY)
 				.json({ error: 'No user exists with this email...' })
 		} catch (err) {
 			console.log(err)
-			res.status(400).json({ success: false })
+			res.status(HttpStatusCode.BAD_REQUEST).json({ success: false })
 		}
 	},
 )
@@ -108,7 +109,7 @@ authRouter.post(
 authRouter.post('/googleLogin', async (req: Request, res: Response) => {
 	if (!SECRET_KEY) {
 		console.error('SECRET_KEY is undefined. Check the .env')
-		return res.status(500).send({ errors: 'Internal Server Error' })
+		return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).send({ errors: 'Internal Server Error' })
 	}
 	try {
 		const { emailVerified, email, name, clientId, username, Photo } = req.body
@@ -116,7 +117,7 @@ authRouter.post('/googleLogin', async (req: Request, res: Response) => {
 			const userData = await User.findOne({ email })
 			if (userData) {
 				const jwtToken = jwt.sign({ _id: userData.id }, SECRET_KEY)
-				return res.status(200).json({
+				return res.status(HttpStatusCode.OK).json({
 					success: true,
 					username: userData.username,
 					token: jwtToken,
@@ -134,7 +135,7 @@ authRouter.post('/googleLogin', async (req: Request, res: Response) => {
 			})
 			await user.save()
 			const jwtToken = jwt.sign({ _id: user.id }, SECRET_KEY)
-			return res.status(200).json({
+			return res.status(HttpStatusCode.OK).json({
 				success: true,
 				username: user.username,
 				token: jwtToken,
@@ -142,11 +143,11 @@ authRouter.post('/googleLogin', async (req: Request, res: Response) => {
 			})
 		}
 		return res
-			.status(400)
+			.status(HttpStatusCode.BAD_REQUEST)
 			.json({ success: false, message: 'Email not verified by Google' })
 	} catch (error) {
 		console.log(error)
-		res.status(400).json({ success: false })
+		res.status(HttpStatusCode.BAD_REQUEST).json({ success: false })
 	}
 })
 

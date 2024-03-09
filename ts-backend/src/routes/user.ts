@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express'
 import User, { UserDocument } from '../models/models'
 import requireLogin from '../middlewares/requireLogin'
+import HttpStatusCode from '../types/HttpStatusCode'
 
 const userRouter = express.Router()
 
@@ -25,10 +26,10 @@ userRouter.put(
 				$addToSet: { friends: toFollow },
 			})
 
-			return res.status(200).json({ success: true })
+			return res.status(HttpStatusCode.OK).json({ success: true })
 		} catch (error) {
 			console.log(error)
-			res.status(422).json({ error: 'Something went wrong...' })
+			res.status(HttpStatusCode.UNPROCESSABLE_ENTITY).json({ error: 'Something went wrong...' })
 		}
 	},
 )
@@ -62,10 +63,10 @@ userRouter.put(
 				},
 			)
 
-			return res.status(200).json({ success: true })
+			return res.status(HttpStatusCode.OK).json({ success: true })
 		} catch (error) {
 			console.log(error)
-			res.status(422).json({ error: 'Something went wrong...' })
+			res.status(HttpStatusCode.UNPROCESSABLE_ENTITY).json({ error: 'Something went wrong...' })
 		}
 	},
 )
@@ -78,10 +79,10 @@ userRouter.get(
 		try {
 			const { id } = req.params
 			const currUser = await User.findOne({ _id: id }).select('-password')
-			res.status(200).json({ user: currUser })
+			res.status(HttpStatusCode.OK).json({ user: currUser })
 		} catch (error) {
 			console.log(error)
-			res.status(422).json({ error: 'Something went wrong...' })
+			res.status(HttpStatusCode.UNPROCESSABLE_ENTITY).json({ error: 'Something went wrong...' })
 		}
 	},
 )
@@ -96,10 +97,10 @@ userRouter.get(
 				'friends',
 				'_id name username Photo',
 			)
-			res.status(200).json({ users: allUsers })
+			res.status(HttpStatusCode.OK).json({ users: allUsers })
 		} catch (error) {
 			console.log(error)
-			res.status(422).json({ error: 'Something went wrong...' })
+			res.status(HttpStatusCode.UNPROCESSABLE_ENTITY).json({ error: 'Something went wrong...' })
 		}
 	},
 )
@@ -119,10 +120,10 @@ userRouter.put(
 					new: true,
 				},
 			)
-			res.status(200).json({ success: true })
+			res.status(HttpStatusCode.OK).json({ success: true })
 		} catch (error) {
 			console.log(error)
-			res.status(422).json({ error: 'Something went wrong...' })
+			res.status(HttpStatusCode.UNPROCESSABLE_ENTITY).json({ error: 'Something went wrong...' })
 		}
 	},
 )
@@ -137,7 +138,7 @@ userRouter.put(
 
 			if (!age || !gender || !college) {
 				return res
-					.status(422)
+					.status(HttpStatusCode.UNPROCESSABLE_ENTITY)
 					.json({ error: 'Please fill up all the properties...' })
 			}
 
@@ -171,10 +172,10 @@ userRouter.put(
 				},
 			)
 
-			return res.status(200).json({ success: true })
+			return res.status(HttpStatusCode.OK).json({ success: true })
 		} catch (error) {
 			console.log(error)
-			res.status(422).json({ error: 'Something went wrong...' })
+			res.status(HttpStatusCode.UNPROCESSABLE_ENTITY).json({ error: 'Something went wrong...' })
 		}
 	},
 )
