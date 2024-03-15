@@ -3,23 +3,28 @@ import express, { Request, Response } from 'express'
 import http from 'http'
 import userRouter from './routes/user'
 import authRouter from './routes/auth'
-const app = express()
 import cors from 'cors'
 import { Server } from 'socket.io'
+import mongoDB from './db'
+import globalCatch from './middlewares/globalCatch'
 
+const app = express()
 const PORT: string | number = process.env.PORT || 5050
 
-import mongoDB from './db'
+
 
 app.use(cors())
 app.use(express.json())
 
 app.get('/', (req: Request, res: Response) => {
-	res.send('<h1>Hello World</h1>')
+	res.send(`<pre> <i> A Privacy-Preserving Efficient Location-Sharing Scheme for Mobile Online Social Network Applications </i> 🛜 </pre>
+	<pre> ~ Built with &#x1F499 by sanam </pre>`)
 })
 
 app.use('/api', authRouter)
 app.use('/api', userRouter)
+
+app.use(globalCatch)
 
 const server = http.createServer(app)
 
