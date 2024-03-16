@@ -1,0 +1,49 @@
+{
+  "name": "privacynetwork-backend",
+  "version": "1.0.0",
+  "description": "A Privacy-Preserving Efficient Location-Sharing Scheme for Mobile Online Social Network Applications",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "tsc -b && node build/index.js",
+    "dev": "npx nodemon src/index.ts",
+    "format": "prettier --write \"./src/**/*.{html,css,js,jsx,ts,tsx}\"",
+    "prettier:github-action": "prettier --check \"./src/**/*.{html,css,js,jsx,ts,tsx}\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/sanam2405/PrivacyNetwork.git"
+  },
+  "keywords": [
+    "mern",
+    "gmaps",
+    "postgresql",
+    "postgis",
+    "socket.io",
+    "redis"
+  ],
+  "author": "Manas Pratim Biswas",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sanam2405/PrivacyNetwork/issues"
+  },
+  "homepage": "https://github.com/sanam2405/PrivacyNetwork#readme",
+  "dependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/socket.io": "^3.0.2",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "express": "^4.18.3",
+    "jsonwebtoken": "^9.0.2",
+    "socket.io": "^4.7.4"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "eslint": "^8.57.0",
+    "nodemon": "^3.1.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.2"
+  }
+}

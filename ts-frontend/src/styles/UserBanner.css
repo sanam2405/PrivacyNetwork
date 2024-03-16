@@ -1,0 +1,54 @@
+:root {
+	/* fonts */
+	--font-black-ops-one: 'Black Ops One';
+	--font-courier-prime: 'Courier Prime';
+
+	/* font sizes */
+	--font-size-large: 10.5rem;
+	--font-size-medium: 2.75rem;
+	--font-size-mediumSmall: 2.5rem;
+	--font-size-small: 1.5rem;
+	--font-size-smallgo: 1.9rem;
+}
+
+.user-banner-container {
+	display: flex;
+	justify-content: space-between;
+	margin-left: 4rem;
+	margin-right: 4rem;
+	margin-top: 2rem;
+}
+
+.profile-photo-container {
+	display: flex;
+	flex: 0 0 30%;
+}
+
+.user-details-container {
+	display: flex;
+	flex: 0 0 70%;
+	flex-direction: column;
+	justify-content: center;
+	/* align-items: center; */
+}
+
+.user-full-name > h1 {
+	font-family: var(--font-black-ops-one);
+	font-size: var(--font-size-medium);
+}
+
+.user-username {
+	font-family: var(--font-courier-prime);
+	font-size: var(--font-size-small);
+}
+
+.user-profile-img {
+	width: 8.5rem;
+	height: 8.5rem;
+	border-radius: 50%;
+	object-fit: cover;
+}
+
+.user-profile-img:hover {
+	cursor: pointer;
+}
