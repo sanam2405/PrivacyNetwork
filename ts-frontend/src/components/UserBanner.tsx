@@ -19,7 +19,7 @@ interface UserBannerProps {
 
 function UserBanner({ username, name, dpLink }: UserBannerProps) {
 	const [changePic, setChangePic] = useState<boolean>(false)
-	const handleOpen3 = () => setChangePic(true)
+	// const handleOpen3 = () => setChangePic(true)
 	const handleClose3 = () => setChangePic(false)
 
 	// Modal custom stylesheet

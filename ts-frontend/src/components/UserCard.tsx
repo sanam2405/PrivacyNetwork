@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React from 'react'
 import '../styles/UserCard.css'
-import { useNavigate } from 'react-router-dom'
+// import { useNavigate } from 'react-router-dom'
 
 const PORT = import.meta.env.VITE_PORT || 5050
 const BASE_API_URI = `http://localhost:${PORT}`
@@ -29,7 +29,7 @@ function UserCard({
 	users,
 	setUsers,
 }: UserCardProps) {
-	const navigate = useNavigate()
+	// const navigate = useNavigate()
 
 	const handleFollow = (id: string) => {
 		fetch(`${BASE_API_URI}/api/follow`, {
