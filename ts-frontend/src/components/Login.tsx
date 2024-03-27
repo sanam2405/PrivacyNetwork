@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { useState, useContext, ChangeEvent } from 'react'
+import { useState, useContext, ChangeEvent, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import '../styles/Signup_Login.css'
 import { ToastContainer, toast } from 'react-toastify'
@@ -7,6 +7,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import { LoginContext } from '../context/LoginContext'
 import logo from '../../public/images/sign-up.png'
 import HttpStatusCode from '../types/HttpStatusCode'
+import Loader from './Loader'
 
 const BASE_API_URI = import.meta.env.VITE_BACKEND_URI
 
@@ -81,7 +82,41 @@ function Login(): JSX.Element {
 		}
 	}
 
+	const [isLoading, setIsLoading] = useState<boolean>(false)
+
+	const pingBackend = async ()=>{
+		try {
+				setIsLoading(true)
+				const response = await fetch(`${BASE_API_URI}/api/ping`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					}
+				})
+
+				const { status } = response
+
+				const jsonData = await response.json()
+				console.log(jsonData)
+				if (status === HttpStatusCode.OK) {
+					// handle signup if the backend is up and running
+					setIsLoading(false)
+				} 
+	} catch{
+		// handle signup if the backend is not up and running
+		setIsLoading(false)
+	}
+}
+
+	useEffect(()=>{
+		pingBackend();
+	},[])
+
+
 	return (
+
+		<>
+		{ isLoading?  <Loader/> : 
 		<div className='signUp'>
 			<div className='wrapper-container'>
 				<div className='project-title-container'>
@@ -146,6 +181,8 @@ function Login(): JSX.Element {
 				</div>
 			</div>
 		</div>
+		}
+		</>
 	)
 }
 

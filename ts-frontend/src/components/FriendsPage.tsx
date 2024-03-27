@@ -28,6 +28,8 @@ import '../styles/FriendsPage.css'
 import { LoginContext } from '../context/LoginContext'
 
 import User from '../types/types'
+import Loader from './Loader'
+import HttpStatusCode from '../types/HttpStatusCode'
 
 const BASE_API_URI = import.meta.env.VITE_BACKEND_URI
 
@@ -204,6 +206,7 @@ function FriendsPage() {
 	useEffect(() => {
 		const userDetails = localStorage.getItem('user')
 		if (userDetails) {
+			setIsLoading(true)
 			fetch(`${BASE_API_URI}/api/user/${JSON.parse(userDetails)._id}`, {
 				headers: {
 					'Content-Type': 'application/json',
@@ -222,12 +225,17 @@ function FriendsPage() {
 						setPrevGender(data.user.gender)
 						setPrevCollege(data.user.college)
 					}
+					setIsLoading(false)
 				})
-				.catch(err => console.log(err))
+				.catch((err) =>{
+					setIsLoading(false)
+					console.log(err)
+				} )
 		}
 	}, [])
 
 	useEffect(() => {
+		setIsLoading(true)
 		fetch(`${BASE_API_URI}/api/allusers`, {
 			headers: {
 				'Content-Type': 'application/json',
@@ -241,13 +249,47 @@ function FriendsPage() {
 				} else {
 					setUsers(data.users)
 				}
+				setIsLoading(false)
 			})
-			.catch(err => console.log(err))
+			.catch((err) => {
+				setIsLoading(false)
+				console.log(err)
+			})
 	}, [])
 
 	// const changeProfile = () => {
 	// 	setChangePic(!changePic)
 	// }
+
+	const [isLoading, setIsLoading] = useState<boolean>(false)
+
+	const pingBackend = async ()=>{
+		try {
+				setIsLoading(true)
+				const response = await fetch(`${BASE_API_URI}/api/ping`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					}
+				})
+
+				const { status } = response
+
+				const jsonData = await response.json()
+				console.log(jsonData)
+				if (status === HttpStatusCode.OK) {
+					// handle signup if the backend is up and running
+					setIsLoading(false)
+				} 
+	} catch{
+		// handle signup if the backend is not up and running
+		setIsLoading(false)
+	}
+}
+
+	useEffect(()=>{
+		pingBackend();
+	},[])
 
 	const checker = () => {
 		if (localStorage.getItem('user')) {
@@ -518,7 +560,13 @@ function FriendsPage() {
 		navigate('/login')
 	}
 
-	return <div className='friends-container'>{checker()}</div>
+	return (
+		<>
+		{
+			isLoading ? <Loader/> : <div className='friends-container'>{checker()}</div>
+		}
+		</>
+	) 
 }
 
 export default FriendsPage

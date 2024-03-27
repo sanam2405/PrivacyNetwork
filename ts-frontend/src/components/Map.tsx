@@ -15,6 +15,7 @@ import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api'
 import '../styles/Map.css'
 import { useNavigate } from 'react-router-dom'
 import { LoginContext } from '../context/LoginContext'
+import Loader from './Loader'
 // import { Socket } from 'socket.io'
 
 // please note that the types are reversed
@@ -519,7 +520,7 @@ function Map() {
 			</div>
 		</>
 	) : (
-		<></>
+		<Loader/>
 	)
 }
 export default Map
