@@ -4,9 +4,10 @@ import http from 'http'
 import userRouter from './routes/user'
 import authRouter from './routes/auth'
 import cors from 'cors'
-import { Server } from 'socket.io'
+// import { Server } from 'socket.io'
 import mongoDB from './db'
 import globalCatch from './middlewares/globalCatch'
+import pingRouter from './routes/ping'
 
 const app = express()
 const PORT: string | number = process.env.PORT || 5050
@@ -21,10 +22,11 @@ app.get('/', (req: Request, res: Response) => {
 
 app.use('/api', authRouter)
 app.use('/api', userRouter)
+app.use('/api', pingRouter)
 
 app.use(globalCatch)
 
-const server = http.createServer(app)
+// const server = http.createServer(app)
 
 // const io = new Server(server, {
 // 	cors: {
