@@ -5,7 +5,7 @@ import '../styles/ProfilePic.css'
 require('dotenv').config()
 
 const PORT = process.env.PORT || 5050
-const BASE_API_URI = `http://localhost:${PORT}`
+const BASE_API_URI = import.meta.env.VITE_BACKEND_URI
 
 function ProfilePic({ changeProfile }) {
 	const hiddenFileInput = useRef(null)

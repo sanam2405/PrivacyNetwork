@@ -15,14 +15,17 @@
     "@mui/icons-material": "^5.15.12",
     "@mui/material": "^5.15.12",
     "@react-google-maps/api": "^2.19.3",
+    "@react-oauth/google": "^0.12.1",
     "@types/jwt-decode": "^3.1.0",
+    "@types/react-icons": "^3.0.0",
     "@types/react-router-dom": "^5.3.3",
     "jwt-decode": "^4.0.0",
+    "prettier": "^3.1.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-icons": "^5.0.1",
     "react-router-dom": "^6.22.3",
-    "react-toastify": "^10.0.4",
-    "prettier": "^3.1.1"
+    "react-toastify": "^10.0.4"
   },
   "devDependencies": {
     "@types/dotenv": "^8.2.0",

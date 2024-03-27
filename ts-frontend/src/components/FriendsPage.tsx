@@ -29,8 +29,7 @@ import { LoginContext } from '../context/LoginContext'
 
 import User from '../types/types'
 
-const PORT = import.meta.env.VITE_PORT || 5050
-const BASE_API_URI = `http://localhost:${PORT}`
+const BASE_API_URI = import.meta.env.VITE_BACKEND_URI
 
 function FriendsPage() {
 	const defaultPicLink =

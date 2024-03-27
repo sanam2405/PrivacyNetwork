@@ -8,8 +8,7 @@ import { LoginContext } from '../context/LoginContext'
 import logo from '../../public/images/sign-up.png'
 import HttpStatusCode from '../types/HttpStatusCode'
 
-const PORT: number | string = import.meta.env.VITE_PORT || 5050
-const BASE_API_URI: string = `http://localhost:${PORT}`
+const BASE_API_URI = import.meta.env.VITE_BACKEND_URI
 
 interface Credentials {
 	email: string

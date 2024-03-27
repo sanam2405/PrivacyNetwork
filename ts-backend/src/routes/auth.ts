@@ -23,12 +23,16 @@ authRouter.post(
 	async (req: Request, res: Response) => {
 		const errors = validationResult(req)
 		if (!errors.isEmpty()) {
-			return res.status(HttpStatusCode.LENGTH_REQUIRED).json({ errors: errors.array() })
+			return res
+				.status(HttpStatusCode.LENGTH_REQUIRED)
+				.json({ errors: errors.array() })
 		}
 
 		const { name, username, email, password } = req.body
 		if (!name || !username || !email || !password) {
-			return res.status(HttpStatusCode.UNPROCESSABLE_ENTITY).json({ error: 'Please add all the fields...' })
+			return res
+				.status(HttpStatusCode.UNPROCESSABLE_ENTITY)
+				.json({ error: 'Please add all the fields...' })
 		}
 		try {
 			const savedUser = await User.findOne({
@@ -67,16 +71,22 @@ authRouter.post(
 	async (req: Request, res: Response) => {
 		const errors = validationResult(req)
 		if (!errors.isEmpty()) {
-			return res.status(HttpStatusCode.LENGTH_REQUIRED).json({ errors: errors.array() })
+			return res
+				.status(HttpStatusCode.LENGTH_REQUIRED)
+				.json({ errors: errors.array() })
 		}
 
 		const { email, password } = req.body
 		if (!email || !password) {
-			return res.status(HttpStatusCode.UNPROCESSABLE_ENTITY).json({ error: 'Please add all the fields...' })
+			return res
+				.status(HttpStatusCode.UNPROCESSABLE_ENTITY)
+				.json({ error: 'Please add all the fields...' })
 		}
 		if (!SECRET_KEY) {
 			console.error('SECRET_KEY is undefined. Check the .env')
-			return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).send({ errors: 'Internal Server Error' })
+			return res
+				.status(HttpStatusCode.INTERNAL_SERVER_ERROR)
+				.send({ errors: 'Internal Server Error' })
 		}
 		try {
 			const userData = await User.findOne({ email })
@@ -109,7 +119,9 @@ authRouter.post(
 authRouter.post('/googleLogin', async (req: Request, res: Response) => {
 	if (!SECRET_KEY) {
 		console.error('SECRET_KEY is undefined. Check the .env')
-		return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).send({ errors: 'Internal Server Error' })
+		return res
+			.status(HttpStatusCode.INTERNAL_SERVER_ERROR)
+			.send({ errors: 'Internal Server Error' })
 	}
 	try {
 		const { emailVerified, email, name, clientId, username, Photo } = req.body

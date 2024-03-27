@@ -2,8 +2,7 @@
 import React from 'react'
 import '../styles/UserCard.css'
 
-const PORT: string | number = import.meta.env.VITE_PORT || 5050
-const BASE_API_URI = `http://localhost:${PORT}`
+const BASE_API_URI = import.meta.env.VITE_BACKEND_URI
 
 import User from '../types/types'
 
