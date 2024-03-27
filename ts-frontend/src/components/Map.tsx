@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-var-requires */
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useContext } from 'react'
 
 import Box from '@mui/material/Box'
 import Slider from '@mui/material/Slider'
@@ -27,11 +27,6 @@ const containerStyle = {
 	height: '100vh',
 }
 
-const center = {
-	lat: 22.6405969,
-	lng: 88.4145109,
-}
-
 function Map() {
 	const navigate = useNavigate()
 	const apiKey = import.meta.env.VITE_GOOGLE_API_KEY
@@ -43,18 +38,18 @@ function Map() {
 		googleMapsApiKey: apiKey,
 	})
 
-	const [currentCenter, setCurrentCenter] = useState({
+	const [currentCenter] = useState({
 		lat: 22.54905,
 		lng: 88.37816,
 	})
-	const [location, setLocation] = useState({
+	const [location] = useState({
 		lat: 22.54905,
 		lng: 88.37816,
 	})
-	const [locationReceived, setLocationReceived] = useState({
-		lat: 22.54905,
-		lng: 88.37816,
-	})
+	// const [locationReceived, setLocationReceived] = useState({
+	// 	lat: 22.54905,
+	// 	lng: 88.37816,
+	// })
 
 	const [age, setAge] = useState(0)
 	const [gender, setGender] = useState('Male')
@@ -149,19 +144,19 @@ function Map() {
 	// 	}
 	// }, [socket])
 
-	const [map, setMap] = React.useState(null)
+	// const [map, setMap] = React.useState(null)
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const onLoad = React.useCallback((map: any) => {
-		const bounds = new window.google.maps.LatLngBounds(center)
-		map.fitBounds(bounds)
-		setMap(map)
-	}, [])
+	// const onLoad = React.useCallback((map: any) => {
+	// 	const bounds = new window.google.maps.LatLngBounds(center)
+	// 	map.fitBounds(bounds)
+	// 	setMap(map)
+	// }, [])
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const onUnmount = React.useCallback((map: any) => {
-		setMap(null)
-	}, [])
+	// const onUnmount = React.useCallback((map: any) => {
+	// 	setMap(null)
+	// }, [])
 
 	const distances = [
 		{
