@@ -3,8 +3,7 @@ import { useRef, useState, useEffect, ChangeEvent } from 'react'
 
 import '../styles/ProfilePic.css'
 
-const PORT: string | number = import.meta.env.VITE_PORT || 5050
-const BASE_API_URI: string = `http://localhost:${PORT}`
+const BASE_API_URI = import.meta.env.VITE_BACKEND_URI
 
 interface ProfilePicProps {
 	changeProfile: () => void

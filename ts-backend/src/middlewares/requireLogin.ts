@@ -16,7 +16,9 @@ const requireLogin = async (
 	const { authorization } = req.headers
 
 	if (!authorization) {
-		return res.status(HttpStatusCode.UNAUTHORIZED).send({ errors: 'You must be logged in' })
+		return res
+			.status(HttpStatusCode.UNAUTHORIZED)
+			.send({ errors: 'You must be logged in' })
 	}
 
 	const token = authorization.replace('Bearer ', '')
@@ -24,14 +26,18 @@ const requireLogin = async (
 	try {
 		if (!process.env.SECRET_KEY) {
 			console.error('SECRET_KEY is undefined. Check the .env')
-			return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).send({ errors: 'Internal Server Error' })
+			return res
+				.status(HttpStatusCode.INTERNAL_SERVER_ERROR)
+				.send({ errors: 'Internal Server Error' })
 		}
 
 		const info = jwt.verify(token, process.env.SECRET_KEY) as TokenPayload
 		const currUser = await User.findById(info._id)
 
 		if (!currUser) {
-			return res.status(HttpStatusCode.NOT_FOUND).send({ errors: 'User not found' })
+			return res
+				.status(HttpStatusCode.NOT_FOUND)
+				.send({ errors: 'User not found' })
 		}
 
 		interface CustomRequest extends Request {
@@ -43,7 +49,9 @@ const requireLogin = async (
 		next()
 	} catch (error) {
 		console.error(error)
-		return res.status(HttpStatusCode.UNAUTHORIZED).send({ errors: 'You must be logged in' })
+		return res
+			.status(HttpStatusCode.UNAUTHORIZED)
+			.send({ errors: 'You must be logged in' })
 	}
 }
 

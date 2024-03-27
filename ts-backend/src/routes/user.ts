@@ -29,7 +29,9 @@ userRouter.put(
 			return res.status(HttpStatusCode.OK).json({ success: true })
 		} catch (error) {
 			console.log(error)
-			res.status(HttpStatusCode.UNPROCESSABLE_ENTITY).json({ error: 'Something went wrong...' })
+			res
+				.status(HttpStatusCode.UNPROCESSABLE_ENTITY)
+				.json({ error: 'Something went wrong...' })
 		}
 	},
 )
@@ -66,7 +68,9 @@ userRouter.put(
 			return res.status(HttpStatusCode.OK).json({ success: true })
 		} catch (error) {
 			console.log(error)
-			res.status(HttpStatusCode.UNPROCESSABLE_ENTITY).json({ error: 'Something went wrong...' })
+			res
+				.status(HttpStatusCode.UNPROCESSABLE_ENTITY)
+				.json({ error: 'Something went wrong...' })
 		}
 	},
 )
@@ -82,7 +86,9 @@ userRouter.get(
 			res.status(HttpStatusCode.OK).json({ user: currUser })
 		} catch (error) {
 			console.log(error)
-			res.status(HttpStatusCode.UNPROCESSABLE_ENTITY).json({ error: 'Something went wrong...' })
+			res
+				.status(HttpStatusCode.UNPROCESSABLE_ENTITY)
+				.json({ error: 'Something went wrong...' })
 		}
 	},
 )
@@ -100,7 +106,9 @@ userRouter.get(
 			res.status(HttpStatusCode.OK).json({ users: allUsers })
 		} catch (error) {
 			console.log(error)
-			res.status(HttpStatusCode.UNPROCESSABLE_ENTITY).json({ error: 'Something went wrong...' })
+			res
+				.status(HttpStatusCode.UNPROCESSABLE_ENTITY)
+				.json({ error: 'Something went wrong...' })
 		}
 	},
 )
@@ -123,7 +131,9 @@ userRouter.put(
 			res.status(HttpStatusCode.OK).json({ success: true })
 		} catch (error) {
 			console.log(error)
-			res.status(HttpStatusCode.UNPROCESSABLE_ENTITY).json({ error: 'Something went wrong...' })
+			res
+				.status(HttpStatusCode.UNPROCESSABLE_ENTITY)
+				.json({ error: 'Something went wrong...' })
 		}
 	},
 )
@@ -175,7 +185,9 @@ userRouter.put(
 			return res.status(HttpStatusCode.OK).json({ success: true })
 		} catch (error) {
 			console.log(error)
-			res.status(HttpStatusCode.UNPROCESSABLE_ENTITY).json({ error: 'Something went wrong...' })
+			res
+				.status(HttpStatusCode.UNPROCESSABLE_ENTITY)
+				.json({ error: 'Something went wrong...' })
 		}
 	},
 )

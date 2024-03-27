@@ -11,7 +11,7 @@ import logo from '../../public/images/sign-up.png'
 require('dotenv').config()
 
 const PORT = process.env.PORT || 5050
-const BASE_API_URI = `http://localhost:${PORT}`
+const BASE_API_URI = import.meta.env.VITE_BACKEND_URI
 
 function Signup() {
 	const [credentials, setCredentials] = useState({

@@ -11,8 +11,6 @@ import globalCatch from './middlewares/globalCatch'
 const app = express()
 const PORT: string | number = process.env.PORT || 5050
 
-
-
 app.use(cors())
 app.use(express.json())
 
