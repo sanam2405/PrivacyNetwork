@@ -20,14 +20,39 @@ jobs:
         with:
           node-version: 21.1.0
 
-      - name: Install dependencies
-        run: npm ci --only=dev
+      - name: Change directory to frontend
+        run: cd ts-frontend
 
-      - name: Run Prettier
+      - name: Install frontend dependencies
+        run: npm ci
+        working-directory: ./ts-frontend
+
+      - name: Run Prettier for frontend
         run: npm run prettier:github-action
+        working-directory: ./ts-frontend
+        continue-on-error: false
 
-      - name: Check Prettier formatting
-        id: prettier-status
-        run: |
-          npm run prettier:github-action || echo 'failed'
-          echo "::set-output name=prettier-status::${{ steps.prettier-status.outputs.stdout }}"
+      - name: Check Prettier formatting for frontend
+        id: prettier-status-frontend
+        run:
+          echo "::set-output name=prettier-status-frontend::$(npm run
+          prettier:github-action || echo 'failed')"
+
+      - name: Change directory to backend
+        run: cd ../ts-backend
+        working-directory: ./ts-frontend
+
+      - name: Install backend dependencies
+        run: npm ci
+        working-directory: ./ts-backend
+
+      - name: Run Prettier for backend
+        run: npm run prettier:github-action
+        working-directory: ./ts-backend
+        continue-on-error: false
+
+      - name: Check Prettier formatting for backend
+        id: prettier-status-backend
+        run:
+          echo "::set-output name=prettier-status-backend::$(npm run
+          prettier:github-action || echo 'failed')"

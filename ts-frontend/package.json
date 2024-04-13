@@ -1,14 +1,36 @@
 {
-  "name": "ts-frontend",
+  "name": "privacynetwork-frontend",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "format": "prettier --write \"./src/**/*.{html,css,js,jsx,ts,tsx}\"",
+    "lint": "eslint \"./src/**/*.{js,jsx,ts,tsx}\" --quiet",
+    "lint-fix": "eslint --fix \"./src/**/*.{js,jsx,ts,tsx}\" --quiet",
+    "eslint:github-action": "eslint \"./src/**/*.{js,jsx,ts,tsx}\" --quiet",
+    "prettier:github-action": "prettier --check \"./src/**/*.{html,css,js,jsx,ts,tsx}\"",
     "preview": "vite preview"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/sanam2405/PrivacyNetwork.git"
+  },
+  "keywords": [
+    "mern",
+    "gmaps",
+    "postgresql",
+    "postgis",
+    "socket.io",
+    "redis"
+  ],
+  "author": "Manas Pratim Biswas",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sanam2405/PrivacyNetwork/issues"
+  },
+  "homepage": "https://github.com/sanam2405/PrivacyNetwork#readme",
   "dependencies": {
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.0",

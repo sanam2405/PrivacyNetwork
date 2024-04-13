@@ -1,108 +1,108 @@
 .profile {
-	max-width: 600px;
-	margin: 10px auto;
+  max-width: 600px;
+  margin: 10px auto;
 }
 
 .profile-frame {
-	display: flex;
-	justify-content: space-evenly;
+  display: flex;
+  justify-content: space-evenly;
 }
 
 .profile-pic {
-	height: fit-content;
+  height: fit-content;
 }
 
 .profile-pic > img {
-	width: 160px;
-	height: 160px;
-	object-fit: contain;
-	border-radius: 100px;
+  width: 160px;
+  height: 160px;
+  object-fit: contain;
+  border-radius: 100px;
 }
 
 .profile-data {
-	text-align: left;
+  text-align: left;
 }
 
 .profile-info p {
-	padding: 0px 5px;
+  padding: 0px 5px;
 }
 
 .gallery {
-	display: flex;
-	flex-wrap: wrap;
-	text-align: center;
+  display: flex;
+  flex-wrap: wrap;
+  text-align: center;
 }
 
 .gallery img {
-	width: 30%;
-	margin: 10px;
+  width: 30%;
+  margin: 10px;
 }
 
 .profile_img:hover {
-	cursor: pointer;
+  cursor: pointer;
 }
 
 .followBtn {
-	cursor: pointer;
-	font-weight: bolder;
-	padding: 0px 35px;
-	border-radius: 15px;
-	font-size: 0.8rem;
-	border: none;
-	color: white;
-	background: #0115eb;
-	transition: all 0.25s ease;
-	margin-left: 20px;
+  cursor: pointer;
+  font-weight: bolder;
+  padding: 0px 35px;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  border: none;
+  color: white;
+  background: #0115eb;
+  transition: all 0.25s ease;
+  margin-left: 20px;
 }
 
 .unfollowBtn {
-	cursor: pointer;
-	font-weight: bolder;
-	padding: 0px 35px;
-	border-radius: 15px;
-	font-size: 0.8rem;
-	border: none;
-	color: white;
-	background: #868cc8;
-	transition: all 0.25s ease;
-	margin-left: 20px;
+  cursor: pointer;
+  font-weight: bolder;
+  padding: 0px 35px;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  border: none;
+  color: white;
+  background: #868cc8;
+  transition: all 0.25s ease;
+  margin-left: 20px;
 }
 
 .inlineStyle {
-	display: flex;
+  display: flex;
 }
 
 .followBtn:hover {
-	transform: scale(1.1);
-	box-shadow: 0 10px 20px -10px #0115eb;
+  transform: scale(1.1);
+  box-shadow: 0 10px 20px -10px #0115eb;
 }
 
 .unfollowBtn:hover {
-	transform: scale(1.1);
-	box-shadow: 0 10px 20px -10px #0115eb;
+  transform: scale(1.1);
+  box-shadow: 0 10px 20px -10px #0115eb;
 }
 
 .changePic {
-	background-color: #f0f2f5;
-	border-radius: 20px;
+  background-color: #f0f2f5;
+  border-radius: 20px;
 }
 
 .changePic div {
-	padding: 15px 80px;
+  padding: 15px 80px;
 }
 
 .upload-btn {
-	cursor: pointer;
-	background: none;
-	border: none;
-	font-weight: bolder;
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-weight: bolder;
 
-	font-size: 15px;
+  font-size: 15px;
 }
 
 .profilePic {
-	margin-top: 1rem;
-	margin-left: 0.8rem;
-	margin-right: 0.8rem;
-	background-color: #f0f2f5;
+  margin-top: 1rem;
+  margin-left: 0.8rem;
+  margin-right: 0.8rem;
+  background-color: #f0f2f5;
 }
