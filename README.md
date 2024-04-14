@@ -55,6 +55,45 @@ Social Network Applications </i>
 
 ![](presentation/assets/techstack.png)
 
+## Setting up locally
+
+The codebase is organized as :
+
+1. _ts-frontend_ - The react frontend
+2. _backend/ts-backend_ - The express backend
+3. _backend/ws_ - The websocket backend
+
+- Clone the PrivacyNetwork repository
+
+```bash
+    git clone git@github.com:sanam2405/PrivacyNetwork.git
+    cd PrivacyNetwork
+```
+
+- Run the frontend
+
+```bash
+    cd ts-frontend
+    npm install
+    npm run dev
+```
+
+- Run the express backend
+
+```bash
+    cd backend/ts-backend
+    npm install
+    npm run dev
+```
+
+- Run the websocket backend
+
+```bash
+    cd backend/ws
+    npm install
+    npm run dev
+```
+
 ## Contributors
 
 - `Manas Pratim Biswas` -
