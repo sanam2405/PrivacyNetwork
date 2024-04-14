@@ -37,20 +37,38 @@ jobs:
         run: echo "::set-output name=prettier-status-frontend::$(npm run
           prettier:github-action || echo 'failed')"
 
-      - name: Change directory to backend
+      - name: Change directory to ts-backend
         run: cd ../backend/ts-backend
         working-directory: ./ts-frontend
 
-      - name: Install backend dependencies
+      - name: Install ts-backend dependencies
         run: npm ci
         working-directory: ./ts-backend
 
-      - name: Run Prettier for backend
+      - name: Run Prettier for ts-backend
         run: npm run prettier:github-action
         working-directory: ./ts-backend
         continue-on-error: false
 
-      - name: Check Prettier formatting for backend
-        id: prettier-status-backend
+      - name: Check Prettier formatting for ts-backend
+        id: prettier-status-ts-backend
         run: echo "::set-output name=prettier-status-backend::$(npm run
+          prettier:github-action || echo 'failed')"
+
+      - name: Change directory to ws
+        run: cd ../ws
+        working-directory: ./ts-backend
+
+      - name: Install ws-backend dependencies
+        run: npm ci
+        working-directory: ./ws
+
+      - name: Run Prettier for ws-backend
+        run: npm run prettier:github-action
+        working-directory: ./ws
+        continue-on-error: false
+
+      - name: Check Prettier formatting for ws-backend
+        id: prettier-status-backend
+        run: echo "::set-output name=prettier-status-ws-backend::$(npm run
           prettier:github-action || echo 'failed')"
