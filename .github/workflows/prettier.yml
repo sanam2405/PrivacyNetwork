@@ -43,11 +43,11 @@ jobs:
 
       - name: Install ts-backend dependencies
         run: npm ci
-        working-directory: ./ts-backend
+        working-directory: ./backend/ts-backend
 
       - name: Run Prettier for ts-backend
         run: npm run prettier:github-action
-        working-directory: ./ts-backend
+        working-directory: ./backend/ts-backend
         continue-on-error: false
 
       - name: Check Prettier formatting for ts-backend
@@ -57,15 +57,15 @@ jobs:
 
       - name: Change directory to ws
         run: cd ../ws
-        working-directory: ./ts-backend
+        working-directory: ./backend/ts-backend
 
       - name: Install ws-backend dependencies
         run: npm ci
-        working-directory: ./ws
+        working-directory: ./backend/ws
 
       - name: Run Prettier for ws-backend
         run: npm run prettier:github-action
-        working-directory: ./ws
+        working-directory: ./backend/ws
         continue-on-error: false
 
       - name: Check Prettier formatting for ws-backend
