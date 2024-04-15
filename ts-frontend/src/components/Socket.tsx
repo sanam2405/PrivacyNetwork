@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Loader from "./Loader";
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
 import "../styles/Map.css";
+import { useLocations } from "../context/LocationContext";
 
 interface Location {
   lat: number;
@@ -11,7 +12,8 @@ interface Location {
 export const Socket = () => {
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const [latestMessage, setLatestMessage] = useState("");
-  const [locations, setLocations] = useState<Location[]>([]);
+  // const [locations, setLocations] = useState<Location[]>([]);
+  const { locations, setLocations } = useLocations();
 
   const BASE_WS_URI = import.meta.env.VITE_WS_URI;
 
@@ -40,6 +42,7 @@ export const Socket = () => {
   });
 
   useEffect(() => {
+    // console.log("DIFF ALL LOCS: ", locations);
     const newSocket = new WebSocket(BASE_WS_URI);
     newSocket.onopen = () => {
       console.log("Connection established from Client");
@@ -145,28 +148,10 @@ export const Socket = () => {
       };
     };
     setSocket(newSocket);
-
-    //-------------------------------
-
-    {
-      locations.map((loc, index) =>
-        console.log("DEBUG LOC : ", loc.lat, loc.lng, index),
-        // <Marker
-        //   key={index} // Remember to provide a unique key for each Marker component
-        //   position={{ lat: location.lat, lng: location.lng }}
-        // />
-      );
-    }
-
-    //-------------------------------
     return () => {
       newSocket.close();
     };
-  }, [locations]);
-
-  useEffect(() => {
-    console.log("DIFF ALL LOCS: ", locations);
-  }, [locations]);
+  }, []);
 
   return isLoaded ? (
     <>
@@ -181,27 +166,26 @@ export const Socket = () => {
               {/* Current Location  */}
               <Marker position={{ lat: location.lat, lng: location.lng }} />
 
-              {/* <Marker position={{ lat: 22.4965, lng: 88.3698 }} />
-          
-              
-                  <Marker position={{ lat: 22.5726, lng: 88.3639 }} />
-          
-             
-                  <Marker position={{ lat: 22.5752, lng: 88.3686 }} /> */}
+
+
+                  {
+                    locations.map((loc, index) => {
+    console.log("DEBUG LOC : ", loc.lat, loc.lng);
+    console.log("ALL LOC from component : ", locations);
+    return (
+      loc.lat && loc.lng && <Marker
+        key={index} 
+        position={{ lat: loc.lat, lng: loc.lng }}
+      />
+    );
+  })
+                  }
             </GoogleMap>
           </div>
         </div>
       </div>
 
       {socket ? <h1>{latestMessage}</h1> : <Loader />}
-
-      {/* {
-  locations.length > 0 && locations.map((loc, index) => (
-    (loc.lat !== undefined && loc.lng !== undefined) && (
-      <h1 key={index}> {`lat: ${loc.lat}, lng: ${loc.lng}, index: ${index}`} </h1>
-    )
-  ))
-} */}
     </>
   ) : (
     <></>
