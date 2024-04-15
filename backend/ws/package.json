@@ -2,7 +2,7 @@
   "name": "privacynetwork-ws",
   "version": "1.0.0",
   "description": "A Privacy-Preserving Efficient Location-Sharing Scheme for Mobile Online Social Network Applications",
-  "main": "index.ts",
+  "main": "src/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc -b",
@@ -45,6 +45,7 @@
     "cors": "^2.8.5",
     "express": "^4.19.2",
     "prettier": "^3.2.5",
-    "ws": "^8.16.0"
+    "ws": "^8.16.0",
+    "zod": "^3.22.4"
   }
 }
