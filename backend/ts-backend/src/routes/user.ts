@@ -144,9 +144,9 @@ userRouter.put(
   requireLogin,
   async (req: CustomRequest, res: Response) => {
     try {
-      const { age, gender, college } = req.body;
+      const { age, gender, college, visibility } = req.body;
 
-      if (!age || !gender || !college) {
+      if (!age || !gender || !college || visibility === null) {
         return res
           .status(HttpStatusCode.UNPROCESSABLE_ENTITY)
           .json({ error: "Please fill up all the properties..." });
@@ -176,6 +176,16 @@ userRouter.put(
         req.user?._id,
         {
           $set: { college },
+        },
+        {
+          new: true,
+        },
+      );
+
+      await User.findByIdAndUpdate(
+        req.user?._id,
+        {
+          $set: { visibility },
         },
         {
           new: true,

@@ -10,6 +10,7 @@ export interface UserDocument extends Document {
   gender?: string;
   college?: string;
   friends: Types.ObjectId[];
+  visibility: boolean;
 }
 
 const userSchema: Schema<UserDocument> = new Schema({
@@ -22,6 +23,7 @@ const userSchema: Schema<UserDocument> = new Schema({
   gender: { type: String },
   college: { type: String },
   friends: [{ type: Schema.Types.ObjectId, ref: "user" }],
+  visibility: { type: Boolean },
 });
 
 const User = mongoose.model<UserDocument>("user", userSchema);
