@@ -36,6 +36,8 @@ const BASE_API_URI = import.meta.env.VITE_BACKEND_URI;
 function FriendsPage() {
   const defaultPicLink =
     "https://cdn-icons-png.flaticon.com/128/3177/3177440.png";
+  const defaultPicLink2 =
+    "https://cdn-icons-png.flaticon.com/128/3177/3177440.png";
   const navigate = useNavigate();
   const [curruser, setcurrUser] = useState<User>();
   const [users, setUsers] = useState<User[]>([]);
