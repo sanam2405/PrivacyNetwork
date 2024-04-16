@@ -43,11 +43,13 @@ export class UserManager {
   }
 
   removeUser(roomId: string, userId: string) {
-    const users = this.rooms.get(roomId)?.users;
-    if (users) {
-      users.filter(({ id }) => id !== userId);
+    const room = this.rooms.get(roomId);
+    if (room) {
+      room.users = room.users.filter(({ id }) => id !== userId);
+      console.log(`User with id ${userId} removed!`);
+    } else {
+      console.error(`Error occurred while removing user with id ${userId}`);
     }
-    console.log(`User with id ${userId} removed!`);
   }
 
   getUser(roomId: string, userId: string): User | null {
