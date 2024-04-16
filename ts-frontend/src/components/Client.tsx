@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import Map from "./Map";
+import { Map } from "./Map";
 
 function Client() {
   const navigate = useNavigate();
