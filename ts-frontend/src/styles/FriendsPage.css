@@ -12,7 +12,11 @@
 .friends-modal {
   display: grid;
   grid-template-columns: repeat(3, 20.5rem);
-  grid-template-rows: repeat(3, 28.125rem);
+  grid-template-rows: repeat(10, 28.125rem);
+}
+
+.zeroth-message-modal {
+  min-height: 20vh;
 }
 
 .button-container {

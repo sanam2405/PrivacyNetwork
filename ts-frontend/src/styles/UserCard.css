@@ -116,6 +116,16 @@
   font-family: var(--font-courier-prime);
 }
 
+.addFriend:hover {
+  width: 160px;
+  height: 45px;
+}
+
+.removeFriend:hover {
+  width: 200px;
+  height: 45px;
+}
+
 .top-margin {
   margin-top: 5rem;
 }

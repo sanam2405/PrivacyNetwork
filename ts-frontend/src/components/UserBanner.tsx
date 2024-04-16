@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { useState } from "react";
-
+import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Backdrop from "@mui/material/Backdrop";
 import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
+import { Skeleton } from "@mui/material";
 
 import ProfilePic from "./ProfilePic";
 import "../styles/UserBanner.css";
@@ -15,9 +15,10 @@ interface UserBannerProps {
   username: string;
   name: string;
   dpLink: string;
+  showImage: boolean;
 }
 
-function UserBanner({ username, name, dpLink }: UserBannerProps) {
+function UserBanner({ username, name, dpLink, showImage }: UserBannerProps) {
   const [changePic, setChangePic] = useState<boolean>(false);
   // const handleOpen3 = () => setChangePic(true)
   const handleClose3 = () => setChangePic(false);
@@ -51,17 +52,23 @@ function UserBanner({ username, name, dpLink }: UserBannerProps) {
     setChangePic(!changePic);
   };
 
+  useEffect(() => {}, []);
+
   return (
     <>
       <div className="user-banner-container">
         <div className="profile-photo-container">
-          <img
-            className="user-profile-img"
-            onClick={changeProfile}
-            onKeyDown={changeProfile}
-            src={dpLink}
-            alt="User Profile Photo"
-          />
+          {showImage ? (
+            <img
+              className="user-profile-img"
+              onClick={changeProfile}
+              onKeyDown={changeProfile}
+              src={dpLink}
+              alt="User Profile Photo"
+            />
+          ) : (
+            <Skeleton variant="circular" width={136} height={136} />
+          )}
         </div>
         <div className="user-details-container">
           <div className="user-full-name">
