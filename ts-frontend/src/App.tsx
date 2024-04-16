@@ -36,6 +36,7 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/friendsPage" element={<FriendsPage />} />
                 <Route path="/client" element={<Client />} />
+                <Route path="/socket" element={<Socket />} />
               </Routes>
             </BrowserRouter>
             {modalOpen ? <LogoutModal /> : ""}
