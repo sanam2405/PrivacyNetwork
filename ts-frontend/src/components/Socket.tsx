@@ -2,23 +2,16 @@ import { useEffect, useState } from "react";
 import Loader from "./Loader";
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
 import "../styles/Map.css";
-import { useLocations } from "../context/LocationContext";
-
-interface Location {
-  lat: number;
-  lng: number;
-}
+import useSocket from "../hooks/ws";
 
 export const Socket = () => {
-  const [socket, setSocket] = useState<WebSocket | null>(null);
-  const [latestMessage, setLatestMessage] = useState("");
-  // const [locations, setLocations] = useState<Location[]>([]);
-  const { locations, setLocations } = useLocations();
-
   const BASE_WS_URI = import.meta.env.VITE_WS_URI;
 
+  const { socket, latestMessage, locations, sendMessage } =
+    useSocket(BASE_WS_URI);
+
   const containerStyle = {
-    width: "60vw",
+    width: "100vw",
     height: "100vh",
   };
 
@@ -41,117 +34,68 @@ export const Socket = () => {
     lng: 88.37816,
   });
 
-  useEffect(() => {
-    // console.log("DIFF ALL LOCS: ", locations);
-    const newSocket = new WebSocket(BASE_WS_URI);
-    newSocket.onopen = () => {
-      console.log("Connection established from Client");
-      newSocket.send(
-        JSON.stringify({
-          type: "JOIN_ROOM",
-          payload: {
-            name: "Manas",
-            userId: "1a",
-            roomId: "202A",
-          },
-        }),
-      );
-      newSocket.send(
-        JSON.stringify({
-          type: "JOIN_ROOM",
-          payload: {
-            name: "Manasi",
-            userId: "1b",
-            roomId: "202A",
-          },
-        }),
-      );
-      newSocket.send(
-        JSON.stringify({
-          type: "JOIN_ROOM",
-          payload: {
-            name: "Sanam",
-            userId: "1c",
-            roomId: "202A",
-          },
-        }),
-      );
-      newSocket.send(
-        JSON.stringify({
-          type: "SEND_MESSAGE",
-          payload: {
-            userId: "1a",
-            roomId: "202A",
-            message: "Hello from WS Client!",
-          },
-        }),
-      );
+  const socketCommunication = () => {
+    if (socket) {
+      // Send initial messages after WebSocket connection is established
+      sendMessage({
+        type: "JOIN_ROOM",
+        payload: { name: "Manas", userId: "1a", roomId: "202A" },
+      });
 
-      //-----------------------
-      newSocket.send(
-        JSON.stringify({
+      sendMessage({
+        type: "JOIN_ROOM",
+        payload: { name: "Manasi", userId: "1b", roomId: "202A" },
+      });
+
+      sendMessage({
+        type: "JOIN_ROOM",
+        payload: { name: "Sanam", userId: "1c", roomId: "202A" },
+      });
+
+      setTimeout(() => {
+        sendMessage({
           type: "SEND_LOCATION",
           payload: {
             userId: "1a",
             roomId: "202A",
             position: { lat: 22.4965, lng: 88.3698 },
           },
-        }),
-      );
+        });
+      }, 5000);
 
-      newSocket.send(
-        JSON.stringify({
+      setTimeout(() => {
+        sendMessage({
           type: "SEND_LOCATION",
           payload: {
             userId: "1b",
             roomId: "202A",
             position: { lat: 22.5726, lng: 88.3639 },
           },
-        }),
-      );
+        });
+      }, 7500);
 
-      newSocket.send(
-        JSON.stringify({
+      setTimeout(() => {
+        sendMessage({
           type: "SEND_LOCATION",
           payload: {
             userId: "1c",
             roomId: "202A",
             position: { lat: 22.5752, lng: 88.3686 },
           },
-        }),
-      );
-      //-----------------------
-      newSocket.onmessage = (message) => {
-        console.log("Message received:", message.data);
-        const jsonMessage = JSON.parse(message.data);
-        const userId = jsonMessage.payload?.userId;
-        const roomId = jsonMessage.payload?.roomId;
-        const userMessage = jsonMessage.payload?.message;
-        const receivedLocationLat: number = jsonMessage.payload?.position?.lat;
-        const receivedLocationLng: number = jsonMessage.payload?.position?.lng;
-        const receivedLocation: Location = {
-          lat: receivedLocationLat,
-          lng: receivedLocationLng,
-        };
-        setLatestMessage(
-          `USER = ${userId}, from ROOM = ${roomId}, says: ${userMessage}`,
-        );
-        console.log("RECEIVED MSG: ", userId, roomId, userMessage);
-        console.log(
-          "RECEIVED LOC SEP: ",
-          receivedLocationLat,
-          receivedLocationLng,
-        );
-        console.log("RECEIVED LOC: ", receivedLocation);
-        setLocations((prevLocations) => [...prevLocations, receivedLocation]);
-        console.log("ALL LOCS: ", locations);
+        });
+      }, 11000);
+    }
+  };
+
+  useEffect(() => {
+    if (socket) {
+      socket.onopen = () => {
+        // This is called when the WebSocket connection is established
+        // console.log("WebSocket connection established from client side");
+        socketCommunication();
       };
-    };
-    setSocket(newSocket);
-    return () => {
-      newSocket.close();
-    };
-  }, []);
+    }
+  }, [socket]);
 
   return isLoaded ? (
     <>
@@ -161,25 +105,24 @@ export const Socket = () => {
             <GoogleMap
               mapContainerStyle={containerStyle}
               center={currentCenter}
-              zoom={18.25}
+              zoom={12}
             >
               {/* Current Location  */}
               <Marker position={{ lat: location.lat, lng: location.lng }} />
 
-
-
-                  {
-                    locations.map((loc, index) => {
-    console.log("DEBUG LOC : ", loc.lat, loc.lng);
-    console.log("ALL LOC from component : ", locations);
-    return (
-      loc.lat && loc.lng && <Marker
-        key={index} 
-        position={{ lat: loc.lat, lng: loc.lng }}
-      />
-    );
-  })
-                  }
+              {locations.map((loc, index) => {
+                // console.log("DEBUG LOC : ", loc.lat, loc.lng);
+                // console.log("ALL LOC from component : ", locations);
+                return (
+                  loc.lat &&
+                  loc.lng && (
+                    <Marker
+                      key={index}
+                      position={{ lat: loc.lat, lng: loc.lng }}
+                    />
+                  )
+                );
+              })}
             </GoogleMap>
           </div>
         </div>

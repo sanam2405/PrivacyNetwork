@@ -1,4 +1,4 @@
-import { FC, ReactNode, createContext, useContext, useState } from 'react';
+import { FC, ReactNode, createContext, useContext, useState } from "react";
 
 interface Location {
   lat: number;
@@ -10,17 +10,21 @@ interface LocationsContextType {
   setLocations: React.Dispatch<React.SetStateAction<Location[]>>;
 }
 
-const LocationsContext = createContext<LocationsContextType | undefined>(undefined);
+const LocationsContext = createContext<LocationsContextType | undefined>(
+  undefined,
+);
 
 export const useLocations = () => {
   const context = useContext(LocationsContext);
   if (!context) {
-    throw new Error('useLocations must be used within a LocationsProvider');
+    throw new Error("useLocations must be used within a LocationsProvider");
   }
   return context;
 };
 
-export const LocationsProvider: FC<{ children: ReactNode }> = ({ children }) => {
+export const LocationsProvider: FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const [locations, setLocations] = useState<Location[]>([]);
 
   return (
