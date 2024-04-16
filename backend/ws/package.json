@@ -1,0 +1,55 @@
+{
+  "name": "privacynetwork-ws",
+  "version": "1.0.0",
+  "description": "A Privacy-Preserving Efficient Location-Sharing Scheme for Mobile Online Social Network Applications",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc -b",
+    "start": "node dist/index.js",
+    "dev": "npx nodemon src/index.ts",
+    "format": "prettier --write \"./src/**/*.{html,css,js,jsx,ts,tsx}\"",
+    "lint": "eslint \"./src/**/*.{js,jsx,ts,tsx}\" --quiet",
+    "lint-fix": "eslint --fix \"./src/**/*.{js,jsx,ts,tsx}\" --quiet",
+    "eslint:github-action": "eslint \"./src/**/*.{js,jsx,ts,tsx}\" --quiet",
+    "prettier:github-action": "prettier --check \"./src/**/*.{html,css,js,jsx,ts,tsx}\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/sanam2405/PrivacyNetwork.git"
+  },
+  "keywords": [
+    "mern",
+    "gmaps",
+    "postgresql",
+    "postgis",
+    "websockets",
+    "redis"
+  ],
+  "author": "Manas Pratim Biswas",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sanam2405/PrivacyNetwork/issues"
+  },
+  "homepage": "https://github.com/sanam2405/PrivacyNetwork#readme",
+  "devDependencies": {
+    "@types/node": "^20.12.7",
+    "@types/ws": "^8.5.10",
+    "eslint": "^8.57.0",
+    "nodemon": "^3.1.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5",
+    "ws": "^8.16.0",
+    "zod": "^3.22.4"
+  },
+  "dependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/ws": "^8.5.10",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "prettier": "^3.2.5",
+    "ws": "^8.16.0",
+    "zod": "^3.22.4"
+  }
+}
