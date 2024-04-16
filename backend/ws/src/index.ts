@@ -21,10 +21,11 @@ const wss = new WebSocketServer({ server: httpServer });
 const userManager = new UserManager();
 const store = new InMemoryStore();
 
-wss.on("connection", function connection(ws) {
+wss.on("connection", function connection(ws: WebSocket) {
+  console.log(`WebSocketServer is running on PORT ${PORT}`);
   ws.on("error", console.error);
 
-  ws.on("message", function message(data, isBinary) {
+  ws.on("message", function message(data: any, isBinary: boolean) {
     // console.log("Inside on message fn");
     try {
       // If data is binary, convert it to a string

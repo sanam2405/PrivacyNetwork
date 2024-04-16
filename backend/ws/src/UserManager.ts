@@ -36,8 +36,8 @@ export class UserManager {
       conn: socket,
     });
     console.log(`User with id ${userId} added!`);
-    socket.on("close", (reasonCode, description) => {
-      console.log("Socket is getting closed!", reasonCode, description);
+    socket.on("close", () => {
+      console.log("Socket is getting closed!");
       this.removeUser(roomId, userId);
     });
   }
