@@ -17,6 +17,18 @@
 
 .zeroth-message-modal {
   min-height: 20vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.zeroth-message-modal h3 {
+  font-family: var(--font-courier-prime);
+  color: "black";
+  font-size: var(--font-size-small);
+  /* margin: '70'; */
+  margin-left: "110";
+  display: flex;
 }
 
 .button-container {

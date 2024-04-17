@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from "react";
 import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
@@ -28,6 +29,9 @@ import { LoginContext } from "../context/LoginContext";
 import User from "../types/types";
 import Loader from "./Loader";
 import HttpStatusCode from "../types/HttpStatusCode";
+import { colleges } from "../constants";
+import { genders } from "../constants";
+
 const BASE_API_URI = import.meta.env.VITE_BACKEND_URI;
 
 function FriendsPage() {
@@ -41,40 +45,6 @@ function FriendsPage() {
   const handleClick = () => {
     setModalOpen(true);
   };
-
-  const colleges = [
-    {
-      value: "Jadavpur University",
-      label: "Jadavpur University",
-    },
-    {
-      value: "Calcutta University",
-      label: "Calcutta University",
-    },
-    {
-      value: "Presidency University",
-      label: "Presidency University",
-    },
-    {
-      value: "Kalyani University",
-      label: "Kalyani University",
-    },
-  ];
-
-  const genders = [
-    {
-      value: "Male",
-      label: "Male",
-    },
-    {
-      value: "Female",
-      label: "Female",
-    },
-    {
-      value: "Non Binary",
-      label: "Non Binary",
-    },
-  ];
 
   // Modal custom stylesheet
   const style: React.CSSProperties = {
@@ -91,7 +61,8 @@ function FriendsPage() {
     padding: 4,
     borderRadius: 5,
     overflow: "auto",
-    paddingLeft: "9rem",
+    paddingLeft: "2rem",
+    paddingRight: "2rem",
   };
 
   // Closed Modal Icon stylesheet
@@ -111,7 +82,7 @@ function FriendsPage() {
   const [prevAge, setPrevAge] = useState<number>(0);
   const [prevGender, setPrevGender] = useState<string>("");
   const [prevCollege, setPrevCollege] = useState<string>("");
-  const [prevVisibility, setPrevVisibility] = useState<boolean>(false);
+  const [_prevVisibility, setPrevVisibility] = useState<boolean>(false);
   const [age, setAge] = useState<number>(0);
   const [gender, setGender] = useState<string>("");
   const [college, setCollege] = useState<string>("");
@@ -328,19 +299,19 @@ function FriendsPage() {
     pingBackend();
   }, []);
 
-  const checkAgeValidation = (age: any) => {
+  const checkAgeValidation = (age: number) => {
     if (canEdit) return false;
     if (!age || age <= 0) return false;
     else return true;
   };
 
-  const checkGenderValidation = (gender: any) => {
+  const checkGenderValidation = (gender: string) => {
     if (canEdit) return false;
     if (!gender || gender.length === 0) return false;
     else return true;
   };
 
-  const checkCollegeValidation = (college: any) => {
+  const checkCollegeValidation = (college: string) => {
     if (canEdit) return false;
     if (!college || college.length === 0) return false;
     else return true;
@@ -651,15 +622,9 @@ function FriendsPage() {
                     }
                   >
                     {getFriendsCount() === 0 && (
-                      <h3
-                        style={{
-                          color: "black",
-                          fontSize: 45,
-                          margin: 70,
-                          marginLeft: 110,
-                        }}
-                      >
-                        You haven't added any friends yet !!!
+                      <h3>
+                        You haven't added any friends yet. Start building a
+                        Privacy Network
                       </h3>
                     )}
                     {users.length > 0 &&

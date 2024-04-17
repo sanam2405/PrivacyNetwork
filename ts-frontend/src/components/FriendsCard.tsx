@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React from "react";
 import "../styles/UserCard.css";
@@ -13,10 +14,10 @@ interface FriendsCardProps {
   currentUsername: string;
   user: User;
   curruser: User;
-  users: User[];
-  setUsers: React.Dispatch<React.SetStateAction<User[]>>;
-  fetchAllUserDetails: any;
-  fetchCurrentUserDetails: any;
+  users?: User[];
+  setUsers?: React.Dispatch<React.SetStateAction<User[]>>;
+  fetchAllUserDetails: () => void;
+  fetchCurrentUserDetails: () => void;
 }
 
 function FriendsCard({
@@ -26,8 +27,6 @@ function FriendsCard({
   currentUsername,
   user,
   curruser,
-  users,
-  setUsers,
   fetchAllUserDetails,
   fetchCurrentUserDetails,
 }: FriendsCardProps) {

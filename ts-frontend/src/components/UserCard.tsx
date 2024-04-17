@@ -15,10 +15,10 @@ interface UserCardProps {
   currentUsername: string;
   user: User;
   curruser: User;
-  users: User[];
-  setUsers: React.Dispatch<React.SetStateAction<User[]>>;
-  fetchAllUserDetails: any;
-  fetchCurrentUserDetails: any;
+  users?: User[];
+  setUsers?: React.Dispatch<React.SetStateAction<User[]>>;
+  fetchAllUserDetails: () => void;
+  fetchCurrentUserDetails: () => void;
 }
 function UserCard({
   username,
@@ -27,8 +27,6 @@ function UserCard({
   currentUsername,
   user,
   curruser,
-  users,
-  setUsers,
   fetchAllUserDetails,
   fetchCurrentUserDetails,
 }: UserCardProps) {

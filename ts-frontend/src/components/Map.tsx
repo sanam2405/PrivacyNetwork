@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useContext, useEffect, useState } from "react";
 import Box from "@mui/material/Box";
@@ -17,7 +18,6 @@ import { distances } from "../constants";
 import { genders } from "../constants";
 import { colleges } from "../constants";
 import { LoginContext } from "../context/LoginContext";
-import Loader from "./Loader";
 
 export const Map = () => {
   /*
@@ -45,8 +45,7 @@ export const Map = () => {
   const BASE_WS_URI = import.meta.env.VITE_WS_URI;
   const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
 
-  const { socket, latestMessage, locations, sendMessage } =
-    useSocket(BASE_WS_URI);
+  const { socket, locations, sendMessage } = useSocket(BASE_WS_URI);
 
   const [currentUserPosition, setCurrentUserPosition] =
     useState(getRandomPosition());
@@ -77,7 +76,6 @@ export const Map = () => {
   const currentUserUUID = JSON.parse(userDetails)._id;
   const currentUserName = JSON.parse(userDetails).name;
 
-
   const socketCommJOINROOM = () => {
     if (socket) {
       //  Initial messages after WebSocket connection is established
@@ -106,7 +104,6 @@ export const Map = () => {
         });
       }, 5000);
 
-
       // setTimeout(() => {
       //   sendMessage({
       //     type: "SEND_LOCATION",
@@ -128,7 +125,6 @@ export const Map = () => {
       //     },
       //   });
       // }, 11000);
-
     }
   };
 
@@ -155,7 +151,7 @@ export const Map = () => {
   const [gender, setGender] = useState("Male");
   const [college, setCollege] = useState("Jadavpur University");
   const [sliderValue, setSliderValue] = useState(50);
-  const [isMinimize, setIsMinimize] = useState<boolean>(false);
+  const [isMinimize] = useState<boolean>(false);
 
   const containerStyle = {
     width: isMinimize ? "60vw" : "100vw",
@@ -189,9 +185,9 @@ export const Map = () => {
     setModalOpen(true);
   };
 
-  const toggleMinimize = () => {
-    setIsMinimize(!isMinimize);
-  };
+  // const toggleMinimize = () => {
+  //   setIsMinimize(!isMinimize);
+  // };
 
   return isLoaded ? (
     <>
@@ -203,14 +199,12 @@ export const Map = () => {
               center={currentMapCenter}
               zoom={12}
             >
-
               <Marker
                 key="11111"
                 position={{ lat: adminLocation.lat, lng: adminLocation.lng }}
               />
 
               {locations.map((loc, index) => {
-
                 return (
                   loc.lat &&
                   loc.lng && (
@@ -226,7 +220,6 @@ export const Map = () => {
               {isMinimize ? "Maximize" : "Minimize"}
             </button> */}
           </div>
-
         </Grid>
         {isMinimize && (
           <Grid item xs={4.5}>
