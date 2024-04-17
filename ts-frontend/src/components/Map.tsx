@@ -1,7 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useContext, useEffect, useState } from "react";
-// import Loader from "./Loader";
-
 import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
 import TextField from "@mui/material/TextField";
@@ -46,8 +44,10 @@ export const Map = () => {
   const navigate = useNavigate();
   const BASE_WS_URI = import.meta.env.VITE_WS_URI;
   const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
+
   const { socket, latestMessage, locations, sendMessage } =
     useSocket(BASE_WS_URI);
+
   const [currentUserPosition, setCurrentUserPosition] =
     useState(getRandomPosition());
 
@@ -77,6 +77,7 @@ export const Map = () => {
   const currentUserUUID = JSON.parse(userDetails)._id;
   const currentUserName = JSON.parse(userDetails).name;
 
+
   const socketCommJOINROOM = () => {
     if (socket) {
       //  Initial messages after WebSocket connection is established
@@ -104,6 +105,30 @@ export const Map = () => {
           },
         });
       }, 5000);
+
+
+      // setTimeout(() => {
+      //   sendMessage({
+      //     type: "SEND_LOCATION",
+      //     payload: {
+      //       userId: "1b",
+      //       roomId: "202A",
+      //       position: { lat: 22.5726, lng: 88.3639 },
+      //     },
+      //   });
+      // }, 7500);
+
+      // setTimeout(() => {
+      //   sendMessage({
+      //     type: "SEND_LOCATION",
+      //     payload: {
+      //       userId: "1c",
+      //       roomId: "202A",
+      //       position: { lat: 22.5353, lng: 88.3655 },
+      //     },
+      //   });
+      // }, 11000);
+
     }
   };
 
@@ -178,11 +203,14 @@ export const Map = () => {
               center={currentMapCenter}
               zoom={12}
             >
+
               <Marker
                 key="11111"
                 position={{ lat: adminLocation.lat, lng: adminLocation.lng }}
               />
+
               {locations.map((loc, index) => {
+
                 return (
                   loc.lat &&
                   loc.lng && (
@@ -198,6 +226,7 @@ export const Map = () => {
               {isMinimize ? "Maximize" : "Minimize"}
             </button> */}
           </div>
+
         </Grid>
         {isMinimize && (
           <Grid item xs={4.5}>
@@ -329,6 +358,7 @@ export const Map = () => {
         {/* <Grid item xs={4.5}>
           <div className="option-container">
             <div>
+
               <Stack direction="row" spacing={25}>
                 <Button
                   variant="contained"
@@ -351,7 +381,9 @@ export const Map = () => {
                 </Button>
               </Stack>
             </div>
+
             <Box sx={{ marginTop: 4 }}>
+
               <Slider
                 aria-label="Custom marks"
                 step={10}
@@ -450,8 +482,10 @@ export const Map = () => {
               </div>
             </Box>
           </div>
+
         </Grid> */}
       </Grid>
+
       {/* {socket ? <h1>{latestMessage}</h1> : <Loader />} */}
     </>
   ) : (
