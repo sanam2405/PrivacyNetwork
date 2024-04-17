@@ -7,6 +7,8 @@ Social Network Applications </i>
 
 ## Architecture
 
+![](idea/architecture-with-bg.png)
+
 ![](presentation/assets/architecture.png)
 
 ### A. Registration - <i> User </i>
