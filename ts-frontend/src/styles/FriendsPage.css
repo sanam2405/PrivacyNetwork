@@ -12,7 +12,23 @@
 .friends-modal {
   display: grid;
   grid-template-columns: repeat(3, 20.5rem);
-  grid-template-rows: repeat(3, 28.125rem);
+  grid-template-rows: repeat(10, 28.125rem);
+}
+
+.zeroth-message-modal {
+  min-height: 20vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.zeroth-message-modal h3 {
+  font-family: var(--font-courier-prime);
+  color: "black";
+  font-size: var(--font-size-small);
+  /* margin: '70'; */
+  margin-left: "110";
+  display: flex;
 }
 
 .button-container {

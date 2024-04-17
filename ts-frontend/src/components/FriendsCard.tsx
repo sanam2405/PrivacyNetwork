@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React from "react";
 import "../styles/UserCard.css";
@@ -13,8 +14,10 @@ interface FriendsCardProps {
   currentUsername: string;
   user: User;
   curruser: User;
-  users: User[];
-  setUsers: React.Dispatch<React.SetStateAction<User[]>>;
+  users?: User[];
+  setUsers?: React.Dispatch<React.SetStateAction<User[]>>;
+  fetchAllUserDetails: () => void;
+  fetchCurrentUserDetails: () => void;
 }
 
 function FriendsCard({
@@ -24,8 +27,8 @@ function FriendsCard({
   currentUsername,
   user,
   curruser,
-  users,
-  setUsers,
+  fetchAllUserDetails,
+  fetchCurrentUserDetails,
 }: FriendsCardProps) {
   const handleUnFollow = (id: string) => {
     fetch(`${BASE_API_URI}/api/unfollow`, {
@@ -41,9 +44,10 @@ function FriendsCard({
       .then((res) => res.json())
       .then((result) => {
         console.log(result);
-        const newUsers = users.filter((u) => u._id !== id);
-        setUsers(newUsers);
-        // setIsFollow(true)
+        fetchAllUserDetails();
+        fetchCurrentUserDetails();
+        // const newUsers = users.filter((u) => u._id !== id);
+        // setUsers(newUsers);
       })
       .catch((err) => console.log(err));
   };

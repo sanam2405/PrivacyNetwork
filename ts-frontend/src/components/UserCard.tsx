@@ -15,8 +15,10 @@ interface UserCardProps {
   currentUsername: string;
   user: User;
   curruser: User;
-  users: User[];
-  setUsers: React.Dispatch<React.SetStateAction<User[]>>;
+  users?: User[];
+  setUsers?: React.Dispatch<React.SetStateAction<User[]>>;
+  fetchAllUserDetails: () => void;
+  fetchCurrentUserDetails: () => void;
 }
 function UserCard({
   username,
@@ -25,8 +27,8 @@ function UserCard({
   currentUsername,
   user,
   curruser,
-  users,
-  setUsers,
+  fetchAllUserDetails,
+  fetchCurrentUserDetails,
 }: UserCardProps) {
   // const navigate = useNavigate()
 
@@ -44,9 +46,10 @@ function UserCard({
       .then((res) => res.json())
       .then((result) => {
         console.log(result);
-        const newUsers = users.filter((u) => u._id !== id);
-        setUsers(newUsers);
-        // setIsFollow(false)
+        fetchAllUserDetails();
+        fetchCurrentUserDetails();
+        // const newUsers = users.filter((u) => u._id !== id);
+        // setUsers(newUsers);
       })
       .catch((err) => console.log(err));
   };

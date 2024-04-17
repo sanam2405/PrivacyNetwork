@@ -1,7 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useContext, useEffect, useState } from "react";
-// import Loader from "./Loader";
-
 import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
 import TextField from "@mui/material/TextField";
@@ -10,7 +9,7 @@ import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import ExitToAppRoundedIcon from "@mui/icons-material/ExitToAppRounded";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-
+import { Grid } from "@mui/material";
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
 import "../styles/Map.css";
 import useSocket from "../hooks/ws";
@@ -45,7 +44,9 @@ export const Map = () => {
   const navigate = useNavigate();
   const BASE_WS_URI = import.meta.env.VITE_WS_URI;
   const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
+
   const { socket, locations, sendMessage } = useSocket(BASE_WS_URI);
+
   const [currentUserPosition, setCurrentUserPosition] =
     useState(getRandomPosition());
 
@@ -74,11 +75,6 @@ export const Map = () => {
 
   const currentUserUUID = JSON.parse(userDetails)._id;
   const currentUserName = JSON.parse(userDetails).name;
-
-  const containerStyle = {
-    width: "60vw",
-    height: "100vh",
-  };
 
   const socketCommJOINROOM = () => {
     if (socket) {
@@ -155,6 +151,12 @@ export const Map = () => {
   const [gender, setGender] = useState("Male");
   const [college, setCollege] = useState("Jadavpur University");
   const [sliderValue, setSliderValue] = useState(50);
+  const [isMinimize] = useState<boolean>(false);
+
+  const containerStyle = {
+    width: isMinimize ? "60vw" : "100vw",
+    height: "100vh",
+  };
 
   const handleAgeChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -183,25 +185,26 @@ export const Map = () => {
     setModalOpen(true);
   };
 
+  // const toggleMinimize = () => {
+  //   setIsMinimize(!isMinimize);
+  // };
+
   return isLoaded ? (
     <>
-      <div className="complete-container">
-        <div className="map-container">
-          <div>
+      <Grid container spacing={5}>
+        <Grid item xs={isMinimize ? 7 : 12}>
+          <div className="map-container">
             <GoogleMap
               mapContainerStyle={containerStyle}
               center={currentMapCenter}
               zoom={12}
             >
-              {/* Current Location  */}
               <Marker
                 key="11111"
                 position={{ lat: adminLocation.lat, lng: adminLocation.lng }}
               />
 
               {locations.map((loc, index) => {
-                // console.log("DEBUG LOC : ", loc.lat, loc.lng);
-                // console.log("ALL LOC from component : ", locations);
                 return (
                   loc.lat &&
                   loc.lng && (
@@ -213,13 +216,142 @@ export const Map = () => {
                 );
               })}
             </GoogleMap>
+            {/* <button onClick={() => toggleMinimize()}>
+              {isMinimize ? "Maximize" : "Minimize"}
+            </button> */}
           </div>
-        </div>
-
-        {
-          // THIS PART HAS SOME ERROR
+        </Grid>
+        {isMinimize && (
+          <Grid item xs={4.5}>
+            <div className="option-container">
+              <div>
+                <Stack direction="row" spacing={25}>
+                  <Button
+                    variant="contained"
+                    size="large"
+                    onClick={() => {
+                      navigate("/friendsPage");
+                    }}
+                    startIcon={<AccountCircleIcon />}
+                  >
+                    Profile
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    size="large"
+                    color="success"
+                    onClick={handleClick}
+                    endIcon={<ExitToAppRoundedIcon />}
+                  >
+                    Logout
+                  </Button>
+                </Stack>
+              </div>
+              <Box sx={{ marginTop: 4 }}>
+                <Slider
+                  aria-label="Custom marks"
+                  step={10}
+                  valueLabelDisplay="auto"
+                  marks={distances}
+                  value={sliderValue}
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  onChange={(e: any) => handleSliderChange(e)}
+                />
+              </Box>
+              <Box
+                component="form"
+                sx={{
+                  "& .MuiTextField-root": {
+                    m: 1,
+                    width: "27.5rem",
+                    marginTop: "4.5rem",
+                  },
+                }}
+                noValidate
+                autoComplete="off"
+              >
+                <div>
+                  <TextField
+                    required
+                    id="outlined-number"
+                    label="Age"
+                    type="number"
+                    value={age}
+                    onChange={(e) => handleAgeChange(e)}
+                    InputProps={{
+                      inputProps: { min: 1, max: 125 },
+                    }}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
+                </div>
+              </Box>
+              <Box
+                component="form"
+                sx={{
+                  "& .MuiTextField-root": {
+                    m: 1,
+                    width: "27.5rem",
+                    marginTop: "4rem",
+                  },
+                }}
+                noValidate
+                autoComplete="off"
+              >
+                <div>
+                  <TextField
+                    id="outlined-select-gender"
+                    select
+                    label="Gender"
+                    required
+                    value={gender}
+                    onChange={(e) => handleGenderChange(e)}
+                  >
+                    {genders.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </div>
+              </Box>
+              <Box
+                component="form"
+                sx={{
+                  "& .MuiTextField-root": {
+                    m: 1,
+                    width: "27.5rem",
+                    marginTop: "4rem",
+                  },
+                }}
+                noValidate
+                autoComplete="off"
+              >
+                <div>
+                  <TextField
+                    id="outlined-select-college"
+                    select
+                    label="College"
+                    required
+                    value={college}
+                    onChange={(e) => handleCollegeChange(e)}
+                  >
+                    {colleges.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </div>
+              </Box>
+            </div>
+          </Grid>
+        )}
+        {/* <Grid item xs={4.5}>
           <div className="option-container">
-            <div className="button-container-2">
+            <div>
+
               <Stack direction="row" spacing={25}>
                 <Button
                   variant="contained"
@@ -242,7 +374,9 @@ export const Map = () => {
                 </Button>
               </Stack>
             </div>
-            <Box sx={{ width: "27.5rem" }}>
+
+            <Box sx={{ marginTop: 4 }}>
+
               <Slider
                 aria-label="Custom marks"
                 step={10}
@@ -341,8 +475,9 @@ export const Map = () => {
               </div>
             </Box>
           </div>
-        }
-      </div>
+
+        </Grid> */}
+      </Grid>
 
       {/* {socket ? <h1>{latestMessage}</h1> : <Loader />} */}
     </>

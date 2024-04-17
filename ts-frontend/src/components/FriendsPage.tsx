@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import React from "react";
 import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
@@ -20,16 +21,16 @@ import TravelExploreRoundedIcon from "@mui/icons-material/TravelExploreRounded";
 import ExitToAppRoundedIcon from "@mui/icons-material/ExitToAppRounded";
 import SaveRoundedIcon from "@mui/icons-material/SaveRounded";
 import SaveAsRoundedIcon from "@mui/icons-material/SaveAsRounded";
-
 import UserCard from "./UserCard";
 import FriendsCard from "./FriendsCard";
 import UserBanner from "./UserBanner";
 import "../styles/FriendsPage.css";
 import { LoginContext } from "../context/LoginContext";
-
 import User from "../types/types";
 import Loader from "./Loader";
 import HttpStatusCode from "../types/HttpStatusCode";
+import { colleges } from "../constants";
+import { genders } from "../constants";
 
 const BASE_API_URI = import.meta.env.VITE_BACKEND_URI;
 
@@ -44,40 +45,6 @@ function FriendsPage() {
   const handleClick = () => {
     setModalOpen(true);
   };
-
-  const colleges = [
-    {
-      value: "Jadavpur University",
-      label: "Jadavpur University",
-    },
-    {
-      value: "Calcutta University",
-      label: "Calcutta University",
-    },
-    {
-      value: "Presidency University",
-      label: "Presidency University",
-    },
-    {
-      value: "Kalyani University",
-      label: "Kalyani University",
-    },
-  ];
-
-  const genders = [
-    {
-      value: "Male",
-      label: "Male",
-    },
-    {
-      value: "Female",
-      label: "Female",
-    },
-    {
-      value: "Non Binary",
-      label: "Non Binary",
-    },
-  ];
 
   // Modal custom stylesheet
   const style: React.CSSProperties = {
@@ -94,7 +61,8 @@ function FriendsPage() {
     padding: 4,
     borderRadius: 5,
     overflow: "auto",
-    paddingLeft: "9rem",
+    paddingLeft: "2rem",
+    paddingRight: "2rem",
   };
 
   // Closed Modal Icon stylesheet
@@ -111,23 +79,32 @@ function FriendsPage() {
   const [open2, setOpen2] = useState<boolean>(false);
   const handleOpen2 = () => setOpen2(true);
 
-  const [age, setAge] = useState<number>(0);
+  const [prevAge, setPrevAge] = useState<number>(0);
   const [prevGender, setPrevGender] = useState<string>("");
   const [prevCollege, setPrevCollege] = useState<string>("");
-  const [gender, setGender] = useState<string>("Male");
-  const [college, setCollege] = useState<string>("Jadavpur University");
+  const [_prevVisibility, setPrevVisibility] = useState<boolean>(false);
+  const [age, setAge] = useState<number>(0);
+  const [gender, setGender] = useState<string>("");
+  const [college, setCollege] = useState<string>("");
+  const [visibility, setVisibility] = useState<boolean>(false);
+  const [canEdit, setCanEdit] = useState<boolean>(false);
+  const [showImage, setShowImage] = useState<boolean>(true);
 
   const handleAgeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = parseFloat(event.target.value);
     const newAge = inputValue <= 0 || inputValue > 125 ? 1 : inputValue;
     setAge(newAge);
   };
-
   const handleGenderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setGender(event.target.value);
   };
   const handleCollegeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCollege(event.target.value);
+  };
+  const handleVisibilityChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setVisibility(event.target.checked);
   };
 
   const fetchAllUserDetails = () => {
@@ -142,7 +119,6 @@ function FriendsPage() {
         if (data.error) {
           console.log(data.error);
         } else {
-          window.location.reload();
           setUsers(data.users);
         }
       })
@@ -166,6 +142,22 @@ function FriendsPage() {
             setcurrUser(data.user);
             localStorage.setItem("user", JSON.stringify(data.user));
             fetchAllUserDetails();
+            if (data.user.age) {
+              setAge(data.user.age);
+              setPrevAge(data.user.age);
+            }
+            if (data.user.college) {
+              setCollege(data.user.college);
+              setPrevCollege(data.user.college);
+            }
+            if (data.user.gender) {
+              setGender(data.user.gender);
+              setPrevGender(data.user.gender);
+            }
+            if (data.user.visibility) {
+              setVisibility(data.user.visibility);
+              setPrevVisibility(data.user.visibility);
+            }
           }
         })
         .catch((err) => console.log(err));
@@ -173,7 +165,8 @@ function FriendsPage() {
   };
 
   const postDetails = () => {
-    console.log(age, gender, college);
+    console.log(age, gender, college, visibility);
+    setIsLoading(true);
     fetch(`${BASE_API_URI}/api/setProperties`, {
       method: "PUT",
       headers: {
@@ -184,29 +177,41 @@ function FriendsPage() {
         age,
         gender,
         college,
+        visibility,
       }),
     })
       .then((res) => res.json())
       .then((result) => {
         console.log(result);
         fetchCurrentUserDetails();
+        setCanEdit(false);
+        setIsLoading(false);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        setIsLoading(false);
+      });
   };
 
   const handleClose = () => {
     setOpen(false);
-    postDetails();
   };
   const handleClose2 = () => {
     setOpen2(false);
-    postDetails();
   };
+
+  useEffect(() => {
+    setShowImage(false);
+    setTimeout(() => {
+      setShowImage(true);
+    }, 2000);
+  }, []);
 
   useEffect(() => {
     const userDetails = localStorage.getItem("user");
     if (userDetails) {
       setIsLoading(true);
+      // setShowImage(false);
       fetch(`${BASE_API_URI}/api/user/${JSON.parse(userDetails)._id}`, {
         headers: {
           "Content-Type": "application/json",
@@ -219,16 +224,23 @@ function FriendsPage() {
             console.log(data.error);
           } else {
             setcurrUser(data.user);
-            setAge(data.user.age);
+            setAge(data.user.age ? data.user.age : 0);
             setGender(data.user.gender);
             setCollege(data.user.college);
+            setVisibility(data.user.visibility ? data.user.visibility : false);
+            setPrevAge(data.user.age ? data.user.age : 0);
             setPrevGender(data.user.gender);
             setPrevCollege(data.user.college);
+            setPrevVisibility(
+              data.user.visibility ? data.user.visibility : false,
+            );
           }
           setIsLoading(false);
+          // setShowImage(true);
         })
         .catch((err) => {
           setIsLoading(false);
+          // setShowImage(true);
           console.log(err);
         });
     }
@@ -256,10 +268,6 @@ function FriendsPage() {
         console.log(err);
       });
   }, []);
-
-  // const changeProfile = () => {
-  // 	setChangePic(!changePic)
-  // }
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -290,6 +298,55 @@ function FriendsPage() {
   useEffect(() => {
     pingBackend();
   }, []);
+
+  const checkAgeValidation = (age: number) => {
+    if (canEdit) return false;
+    if (!age || age <= 0) return false;
+    else return true;
+  };
+
+  const checkGenderValidation = (gender: string) => {
+    if (canEdit) return false;
+    if (!gender || gender.length === 0) return false;
+    else return true;
+  };
+
+  const checkCollegeValidation = (college: string) => {
+    if (canEdit) return false;
+    if (!college || college.length === 0) return false;
+    else return true;
+  };
+
+  const checkVisibilityValidation = () => {
+    if (
+      !checkAgeValidation(prevAge) ||
+      !checkGenderValidation(prevGender) ||
+      !checkCollegeValidation(prevCollege)
+    )
+      return false;
+    else return true;
+  };
+
+  const isFirstSave = () => {
+    if (canEdit) return true;
+    if (
+      !prevAge ||
+      prevAge === 0 ||
+      !prevGender ||
+      prevGender.length === 0 ||
+      !prevCollege ||
+      prevCollege.length === 0
+    )
+      return true;
+    else return false;
+  };
+
+  const getFriendsCount = () => {
+    const friendSet = users.filter((user) => {
+      return curruser?.friends.includes(user._id);
+    });
+    return friendSet.length;
+  };
 
   const checker = () => {
     if (localStorage.getItem("user")) {
@@ -327,6 +384,7 @@ function FriendsPage() {
                   username={curruser.username}
                   name={curruser.name}
                   dpLink={curruser.Photo ? curruser.Photo : defaultPicLink}
+                  showImage={showImage}
                 />
               )}
             </div>
@@ -352,7 +410,12 @@ function FriendsPage() {
                       InputLabelProps={{
                         shrink: true,
                       }}
-                      helperText="Please select your age"
+                      disabled={checkAgeValidation(prevAge)}
+                      helperText={
+                        !checkAgeValidation(age) && !canEdit
+                          ? "Please select your age"
+                          : ""
+                      }
                       value={age}
                       onChange={handleAgeChange}
                     />
@@ -373,9 +436,14 @@ function FriendsPage() {
                       select
                       label="Required"
                       required
+                      disabled={checkGenderValidation(prevGender)}
                       value={gender}
                       onChange={handleGenderChange}
-                      helperText="Please select your gender"
+                      helperText={
+                        !checkGenderValidation(gender) && !canEdit
+                          ? "Please select your gender"
+                          : ""
+                      }
                     >
                       {genders.map((option) => (
                         <MenuItem key={option.value} value={option.value}>
@@ -400,9 +468,14 @@ function FriendsPage() {
                       select
                       label="Required"
                       required
+                      disabled={checkCollegeValidation(prevCollege)}
                       value={college}
                       onChange={handleCollegeChange}
-                      helperText="Please select your college"
+                      helperText={
+                        !checkCollegeValidation(college) && !canEdit
+                          ? "Please select your college"
+                          : ""
+                      }
                     >
                       {colleges.map((option) => (
                         <MenuItem key={option.value} value={option.value}>
@@ -416,14 +489,20 @@ function FriendsPage() {
               <div className="checkbox-container">
                 <FormGroup>
                   <FormControlLabel
-                    control={<Checkbox defaultChecked />}
+                    control={
+                      <Checkbox
+                        checked={visibility}
+                        onChange={handleVisibilityChange}
+                        disabled={checkVisibilityValidation()}
+                      />
+                    }
                     label="Show my visibility"
                   />
                 </FormGroup>
               </div>
               <div className="save-edit-button-container">
                 <Stack direction="row" spacing={3}>
-                  {!prevGender || !prevCollege ? (
+                  {isFirstSave() ? (
                     <Button
                       variant="contained"
                       onClick={() => postDetails()}
@@ -434,7 +513,9 @@ function FriendsPage() {
                   ) : (
                     <Button
                       variant="outlined"
-                      onClick={() => postDetails()}
+                      onClick={() => {
+                        setCanEdit(true);
+                      }}
                       startIcon={<SaveAsRoundedIcon />}
                     >
                       Edit
@@ -462,7 +543,7 @@ function FriendsPage() {
               </Stack>
             </div>
           </div>
-          {/* Show friends modal  */}
+          {/* Add friends modal  */}
           <div className="modal-container">
             <Modal
               aria-labelledby="transition-modal-title"
@@ -499,6 +580,8 @@ function FriendsPage() {
                               curruser={curruser}
                               users={users}
                               setUsers={setUsers}
+                              fetchAllUserDetails={fetchAllUserDetails}
+                              fetchCurrentUserDetails={fetchCurrentUserDetails}
                             />
                           ),
                       )}
@@ -507,7 +590,7 @@ function FriendsPage() {
               </Fade>
             </Modal>
           </div>
-          {/* Add friends modal  */}
+          {/* Show friends modal  */}
           <div className="modal-container">
             <Modal
               aria-labelledby="transition-modal-title"
@@ -531,7 +614,19 @@ function FriendsPage() {
                   >
                     <CloseIcon />
                   </IconButton>
-                  <div className="friends-modal">
+                  <div
+                    className={
+                      getFriendsCount() === 0
+                        ? "zeroth-message-modal"
+                        : "friends-modal"
+                    }
+                  >
+                    {getFriendsCount() === 0 && (
+                      <h3>
+                        You haven't added any friends yet. Start building a
+                        Privacy Network
+                      </h3>
+                    )}
                     {users.length > 0 &&
                       users.map(
                         (user) =>
@@ -546,6 +641,8 @@ function FriendsPage() {
                               curruser={curruser}
                               users={users}
                               setUsers={setUsers}
+                              fetchAllUserDetails={fetchAllUserDetails}
+                              fetchCurrentUserDetails={fetchCurrentUserDetails}
                             />
                           ),
                       )}
