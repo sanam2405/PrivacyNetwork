@@ -8,6 +8,7 @@ import cors from "cors";
 import mongoDB from "./db";
 import globalCatch from "./middlewares/globalCatch";
 import pingRouter from "./routes/ping";
+import swaggerDocs from "./utils/swagger";
 
 const app = express();
 const PORT: string | number = process.env.PORT || 5050;
@@ -65,5 +66,6 @@ app.use(globalCatch);
 mongoDB().then(() => {
   app.listen(PORT, () => {
     console.log("Server is listening at port no", PORT);
+    swaggerDocs(app, PORT);
   });
 });

@@ -28,6 +28,32 @@ authRouter.post(
         .json({ errors: errors.array() });
     }
 
+    /**
+     * @openapi
+     * '/api/signup':
+     *  post:
+     *     tags:
+     *     - User
+     *     summary: Signup a user
+     *     requestBody:
+     *      required: true
+     *      content:
+     *        application/json:
+     *           schema:
+     *              $ref: '#/components/schemas/CreateUserInput'
+     *     responses:
+     *      200:
+     *        description: Success
+     *        content:
+     *          application/json:
+     *            schema:
+     *              $ref: '#/components/schemas/CreateUserResponse'
+     *      409:
+     *        description: Conflict
+     *      400:
+     *        description: Bad request
+     */
+
     const { name, username, email, password } = req.body;
     if (!name || !username || !email || !password) {
       return res
@@ -89,6 +115,30 @@ authRouter.post(
         .send({ errors: "Internal Server Error" });
     }
     try {
+      /**
+       * @openapi
+       * '/api/login':
+       *  post:
+       *     tags:
+       *     - User
+       *     summary: Login a user
+       *     requestBody:
+       *      required: true
+       *      content:
+       *        application/json:
+       *           schema:
+       *              $ref: '#/components/schemas/LoginUserInput'
+       *     responses:
+       *      200:
+       *        description: Success
+       *        content:
+       *          application/json:
+       *            schema:
+       *              $ref: '#/components/schemas/LoginUserResponse'
+       *      400:
+       *        description: Bad request
+       */
+
       const userData = await User.findOne({ email });
       if (userData) {
         const hashedPassword = userData.password;
