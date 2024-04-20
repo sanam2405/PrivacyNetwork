@@ -7,7 +7,7 @@ Social Network Applications </i>
 
 ## Architecture
 
-![](idea/architecture-with-bg.png)
+![](idea/high/architecture-with-bg.png)
 
 ![](presentation/assets/architecture.png)
 
