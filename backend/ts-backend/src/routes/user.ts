@@ -15,6 +15,38 @@ userRouter.put(
   requireLogin,
   async (req: CustomRequest, res: Response) => {
     try {
+      /**
+       * @openapi
+       * '/api/follow':
+       *  put:
+       *     tags:
+       *     - User
+       *     summary: Add an user in your friendlist through their user id
+       *     requestBody:
+       *      required: true
+       *      content:
+       *        application/json:
+       *           schema:
+       *              type: object
+       *              properties:
+       *                userID:
+       *                  type: string
+       *                  description: ID of the user, to be added in your friend list
+       *                  default: "6112345678901234456789012"
+       *     responses:
+       *       200:
+       *         description: Success
+       *         content:
+       *          application/json:
+       *           schema:
+       *              type: object
+       *              properties:
+       *                success:
+       *                  type: boolean
+       *       404:
+       *         description: User not found
+       */
+
       const toFollow = req.body.userID;
       const wantToFollow = req.user?._id?.toString();
 
@@ -42,6 +74,37 @@ userRouter.put(
   requireLogin,
   async (req: CustomRequest, res: Response) => {
     try {
+      /**
+       * @openapi
+       * '/api/unfollow':
+       *  put:
+       *     tags:
+       *     - User
+       *     summary: Remove an user from your friendlist through their user id
+       *     requestBody:
+       *      required: true
+       *      content:
+       *        application/json:
+       *           schema:
+       *              type: object
+       *              properties:
+       *                userID:
+       *                  type: string
+       *                  description: ID of the user, to be removed from your friend list
+       *                  default: "6112345678901234456789012"
+       *     responses:
+       *       200:
+       *         description: Success
+       *         content:
+       *          application/json:
+       *           schema:
+       *              type: object
+       *              properties:
+       *                success:
+       *                  type: boolean
+       *       404:
+       *         description: User not found
+       */
       const toFollow = req.body.userID;
       const wantToFollow = req.user?._id?.toString();
 
@@ -81,6 +144,28 @@ userRouter.get(
   requireLogin,
   async (req: Request, res: Response) => {
     try {
+      /**
+       * @openapi
+       * '/api/user/{id}':
+       *  get:
+       *     tags:
+       *     - User
+       *     summary: Get specific user by their user id
+       *     parameters:
+       *      - name: id
+       *        in: path
+       *        description: The id of the user
+       *        required: true
+       *     responses:
+       *       200:
+       *         description: Success
+       *         content:
+       *          application/json:
+       *           schema:
+       *              $ref: '#/components/schemas/User'
+       *       404:
+       *         description: User not found
+       */
       const { id } = req.params;
       const currUser = await User.findOne({ _id: id }).select("-password");
       res.status(HttpStatusCode.OK).json({ user: currUser });
@@ -99,6 +184,23 @@ userRouter.get(
   requireLogin,
   async (req: Request, res: Response) => {
     try {
+      /**
+       * @openapi
+       * '/api/allusers':
+       *  get:
+       *     tags:
+       *     - User
+       *     summary: Get details of all the users
+       *     responses:
+       *       200:
+       *         description: Success
+       *         content:
+       *          application/json:
+       *           schema:
+       *              $ref: '#/components/schemas/AllUsers'
+       *       404:
+       *         description: User not found
+       */
       const allUsers = await User.find({}).populate(
         "friends",
         "_id name username Photo",
@@ -144,6 +246,52 @@ userRouter.put(
   requireLogin,
   async (req: CustomRequest, res: Response) => {
     try {
+      /**
+       * @openapi
+       * '/api/setProperties':
+       *  put:
+       *     tags:
+       *     - User
+       *     summary: Set age, gender, college, visiblity for an user
+       *     requestBody:
+       *      required: true
+       *      content:
+       *        application/json:
+       *           schema:
+       *              type: object
+       *              properties:
+       *                age:
+       *                  type: number
+       *                  description: Age of the user
+       *                  default: 22
+       *                gender:
+       *                  type: string
+       *                  description: Gender of the user
+       *                  enum: [Male, Female, Non Binary]
+       *                  default: Male
+       *                college:
+       *                  type: string
+       *                  description: College of the user
+       *                  enum: [Jadavpur University, Calcutta University, Presidency University, Kalyani University]
+       *                  default: Jadavpur University
+       *                visibility:
+       *                  type: boolean
+       *                  description: Visibility mode of the user
+       *                  default: true
+       *     responses:
+       *       200:
+       *         description: Success
+       *         content:
+       *          application/json:
+       *           schema:
+       *              type: object
+       *              properties:
+       *                success:
+       *                  type: boolean
+       *       404:
+       *         description: User not found
+       */
+
       const { age, gender, college, visibility } = req.body;
 
       if (!age || !gender || !college || visibility === null) {
