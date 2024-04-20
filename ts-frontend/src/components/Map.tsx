@@ -151,7 +151,13 @@ export const Map = () => {
   const [gender, setGender] = useState("Male");
   const [college, setCollege] = useState("Jadavpur University");
   const [sliderValue, setSliderValue] = useState(50);
-  const [isMinimize] = useState<boolean>(false);
+  const [isMinimize, setIsMinimize] = useState<boolean>(false);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsMinimize(true);
+    }, 2500);
+  }, []);
 
   const containerStyle = {
     width: isMinimize ? "60vw" : "100vw",

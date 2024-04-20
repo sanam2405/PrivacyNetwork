@@ -204,7 +204,7 @@ function FriendsPage() {
     setShowImage(false);
     setTimeout(() => {
       setShowImage(true);
-    }, 2000);
+    }, 2500);
   }, []);
 
   useEffect(() => {
