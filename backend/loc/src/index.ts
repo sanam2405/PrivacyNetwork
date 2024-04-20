@@ -17,8 +17,9 @@ app.get("/", (req: Request, res: Response) => {
 	<pre> ~ Built with &#x1F499 by sanam </pre>`);
 });
 
-supabase().then(() => {
+supabase().then((client) => {
   app.listen(PORT, () => {
     console.log("Server is listening at port no", PORT);
-  });
+  });  
 });
+
