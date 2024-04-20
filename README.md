@@ -11,6 +11,11 @@ Social Network Applications </i>
 
 ![](presentation/assets/architecture.png)
 
+## Privacy Network API Documentation
+
+_[Privacy Network API Docs](https://privacynetwork.onrender.com/docs)_
+
+<!--
 ### A. Registration - <i> User </i>
 
 ![](presentation/assets/registration.png)
@@ -37,7 +42,7 @@ Social Network Applications </i>
 
 ### G. Friend's location query
 
-![](presentation/assets/queryfriend.png)
+![](presentation/assets/queryfriend.png) -->
 
 ### Login Page
 
