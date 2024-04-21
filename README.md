@@ -15,6 +15,8 @@ Social Network Applications </i>
 
 _[Privacy Network API Docs](https://privacynetwork.onrender.com/docs)_
 
+_![OpenAPI Swagger API Docs](./idea/high/openapi.png)_
+
 <!--
 ### A. Registration - <i> User </i>
 

@@ -1,0 +1,30 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Location {
+  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  latitude  Float?
+  longitude Float?
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+  users     User[]
+}
+
+model User {
+  id         String    @id @default(dbgenerated("gen_random_uuid()"))
+  name       String
+  email      String
+  age        Float
+  gender     String
+  college    String
+  isVisible  Boolean
+  locationId String?
+  location   Location? @relation(fields: [locationId], references: [id])
+}
