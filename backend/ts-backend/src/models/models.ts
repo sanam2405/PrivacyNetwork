@@ -107,6 +107,55 @@ export interface UserDocument extends Document {
  *          type: string
  *        user:
  *          $ref: '#/components/schemas/User'
+ *    LocationInput:
+ *      type: object
+ *      properties:
+ *        userId:
+ *          type: string
+ *          default: Manasass2345w53q46f
+ *        latitude:
+ *          type: number
+ *          default: 22.40456
+ *        longitude:
+ *          type: number
+ *          default: 88.1260
+ *        thresholdDistance:
+ *          type: number
+ *          default: 70000
+ *        college:
+ *          type: string
+ *          default: College 3
+ *        age:
+ *          type: number
+ *          default: 60
+ *        gender:
+ *          type: string
+ *          default: Male
+ *    LocationResponse:
+ *      type: array
+ *      items:
+ *        type: object
+ *        properties:
+ *          id:
+ *            type: string
+ *          name:
+ *            type: string
+ *          email:
+ *            type: string
+ *          lat:
+ *            type: number
+ *          long:
+ *            type: number
+ *          college:
+ *            type: string
+ *          age:
+ *            type: number
+ *          gender:
+ *            type: string
+ *          isVisible:
+ *            type: boolean
+ *          dist_meters:
+ *            type: number
  */
 
 const userSchema: Schema<UserDocument> = new Schema({

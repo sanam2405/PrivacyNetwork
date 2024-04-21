@@ -1,10 +1,10 @@
 require("dotenv").config();
 import express, { Request, Response } from "express";
 import cors from "cors";
+import globalCatch from "./middlewares/globalCatch";
+import queryRouter from "./routes/query";
 // import globalCatch from "./middlewares/globalCatch";
 // import pingRouter from "./routes/ping";
-
-import supabase from "./supabase";
 
 const app = express();
 const PORT: string | number = process.env.PORT || 6060;
@@ -17,8 +17,10 @@ app.get("/", (_req: Request, res: Response) => {
 	<pre> ~ Built with &#x1F499 by sanam </pre>`);
 });
 
-supabase().then((client) => {
-  app.listen(PORT, () => {
-    console.log("Server is listening at port no", PORT);
-  });
+app.use("/api", queryRouter);
+
+app.use(globalCatch);
+
+app.listen(PORT, () => {
+  console.log("Server is listening at port no", PORT);
 });
