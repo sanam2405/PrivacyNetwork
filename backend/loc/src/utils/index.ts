@@ -1,9 +1,9 @@
-import wellknown, { GeoJSONPoint } from 'wellknown';
+import wellknown, { GeoJSONPoint } from "wellknown";
 
 // Function to convert latitude and longitude to WKT format
 export function coordinatesToWKT(latitude: number, longitude: number): string {
-  const point:GeoJSONPoint = {
-    type: 'Point',
+  const point: GeoJSONPoint = {
+    type: "Point",
     coordinates: [longitude, latitude], // Note: longitude first, then latitude
   };
   return wellknown.stringify(point);
@@ -16,11 +16,13 @@ export function coordinatesToWKT(latitude: number, longitude: number): string {
 // const wkt = coordinatesToWKT(latitudeOne, longitudeOne);
 // console.log('WKT:', wkt);
 
-
 // Function to parse WKT format to latitude and longitude
-export function wktToCoordinates(wkt: string): { latitude: number; longitude: number } {
-    // @ts-ignore
-  const point:any = wellknown.parse(wkt);
+export function wktToCoordinates(wkt: string): {
+  latitude: number;
+  longitude: number;
+} {
+  // @ts-ignore
+  const point: any = wellknown.parse(wkt);
   const [longitude, latitude] = point?.coordinates;
   return { latitude, longitude };
 }

@@ -20,6 +20,5 @@ app.get("/", (_req: Request, res: Response) => {
 supabase().then((client) => {
   app.listen(PORT, () => {
     console.log("Server is listening at port no", PORT);
-  });  
+  });
 });
-

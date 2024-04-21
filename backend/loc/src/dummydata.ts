@@ -1,11 +1,12 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 // Function to generate a random string as ID
 function generateRandomId(length: number) {
-  const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let result = '';
+  const characters =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let result = "";
   for (let i = 0; i < length; i++) {
     result += characters.charAt(Math.floor(Math.random() * characters.length));
   }
@@ -38,7 +39,7 @@ async function generateRandomUsers(numUsers: number) {
     const randomAge = (Math.random() * (maxAge - minAge) + minAge).toFixed(2);
     const age = parseFloat(randomAge);
 
-    const gender = Math.random() < 0.5 ? 'Male' : 'Female';
+    const gender = Math.random() < 0.5 ? "Male" : "Female";
     const college = `College ${Math.floor(Math.random() * 10)}`; // Random college
     const isVisible = Math.random() < 0.8; // 80% chance of being visible
 
@@ -64,7 +65,7 @@ async function generateAndInsertRandomLocations(numLocations: number) {
       data: {
         latitude,
         longitude,
-        createdAt: new Date(), 
+        createdAt: new Date(),
         updatedAt: new Date(),
       },
     });
@@ -74,10 +75,14 @@ async function generateAndInsertRandomLocations(numLocations: number) {
 }
 
 // Function to insert users and connect them to random locations
-async function insertUsersAndConnectToLocations(users: any[], locations: any[]) {
+async function insertUsersAndConnectToLocations(
+  users: any[],
+  locations: any[],
+) {
   const createdUsers = [];
   for (const user of users) {
-    const randomLocation = locations[Math.floor(Math.random() * locations.length)];
+    const randomLocation =
+      locations[Math.floor(Math.random() * locations.length)];
     const createdUser = await prisma.user.create({
       data: {
         ...user,
@@ -106,7 +111,7 @@ async function main() {
   // Connect users to random locations
   await insertUsersAndConnectToLocations(users, locations);
 
-  console.log('Users and locations inserted successfully!');
+  console.log("Users and locations inserted successfully!");
 }
 
 main()
