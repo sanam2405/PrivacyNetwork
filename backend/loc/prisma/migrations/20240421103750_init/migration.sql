@@ -3,7 +3,7 @@ CREATE TABLE "Location" (
     "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
     "latitude" DOUBLE PRECISION,
     "longitude" DOUBLE PRECISION,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT now(),
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "Location_pkey" PRIMARY KEY ("id")
@@ -14,7 +14,7 @@ CREATE TABLE "User" (
     "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
-    "age" INTEGER NOT NULL,
+    "age" DOUBLE PRECISION NOT NULL,
     "gender" TEXT NOT NULL,
     "college" TEXT NOT NULL,
     "isVisible" BOOLEAN NOT NULL,

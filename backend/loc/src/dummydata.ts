@@ -33,7 +33,11 @@ async function generateRandomUsers(numUsers: number) {
     const id = generateRandomId(10);
     const name = `User ${i}`;
     const email = `user${i}@example.com`;
-    const age = Math.floor(Math.random() * 100) + 18; // Random age between 18 and 117
+    const minAge = 18;
+    const maxAge = 117;
+    const randomAge = (Math.random() * (maxAge - minAge) + minAge).toFixed(2);
+    const age = parseFloat(randomAge);
+
     const gender = Math.random() < 0.5 ? 'Male' : 'Female';
     const college = `College ${Math.floor(Math.random() * 10)}`; // Random college
     const isVisible = Math.random() < 0.8; // 80% chance of being visible
@@ -90,7 +94,7 @@ async function insertUsersAndConnectToLocations(users: any[], locations: any[]) 
 }
 
 async function main() {
-  const numUsers = 100;
+  const numUsers = 500;
   const numLocations = 50; // Assuming we have 50 locations
 
   // Generate random users
