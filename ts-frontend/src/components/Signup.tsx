@@ -77,7 +77,7 @@ function Signup() {
         if (status === HttpStatusCode.OK) {
           notifyA("Sign up successful");
           setTimeout(() => {
-            navigate("/login");
+            navigate("/auth");
           }, 4000);
         } else if (status === HttpStatusCode.LENGTH_REQUIRED) {
           notifyB(`${jsonData.errors[0].msg}`);
@@ -244,7 +244,7 @@ function Signup() {
                   <br />
                   Already have an account ?
                   <br />
-                  <Link to="/login" style={{ textDecoration: "none" }}>
+                  <Link to="/auth" style={{ textDecoration: "none" }}>
                     <span
                       style={{
                         color: "#1877f2",

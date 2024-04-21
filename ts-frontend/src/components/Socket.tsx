@@ -54,7 +54,7 @@ export const Socket = () => {
 
   const userDetails = localStorage.getItem("user");
   if (!userDetails) {
-    navigate("/login");
+    navigate("/auth");
     return;
   }
 
