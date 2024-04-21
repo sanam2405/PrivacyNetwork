@@ -33,9 +33,9 @@ function App() {
             <BrowserRouter>
               <Routes>
                 <Route path="/" element={<Signup />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/friendsPage" element={<FriendsPage />} />
-                <Route path="/client" element={<Client />} />
+                <Route path="/auth" element={<Login />} />
+                <Route path="/dashboard" element={<FriendsPage />} />
+                <Route path="/map" element={<Client />} />
                 <Route path="/socket" element={<Socket />} />
               </Routes>
             </BrowserRouter>
@@ -49,9 +49,9 @@ function App() {
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Signup />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/friendsPage" element={<FriendsPage />} />
-              <Route path="/client" element={<Client />} />
+              <Route path="/auth" element={<Login />} />
+              <Route path="/dashboard" element={<FriendsPage />} />
+              <Route path="/map" element={<Client />} />
               <Route path="/socket" element={<Socket />} />
             </Routes>
           </BrowserRouter>

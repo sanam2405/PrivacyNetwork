@@ -9,7 +9,7 @@ function Client() {
       return <Map />;
       // eslint-disable-next-line no-else-return
     } else {
-      navigate("/login");
+      navigate("/auth");
     }
   };
 

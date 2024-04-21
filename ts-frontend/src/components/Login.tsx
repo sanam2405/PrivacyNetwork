@@ -5,9 +5,9 @@ import "../styles/Signup_Login.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { LoginContext } from "../context/LoginContext";
-import logo from "../../public/images/sign-up.png";
 import HttpStatusCode from "../types/HttpStatusCode";
 import Loader from "./Loader";
+import logo from "../../public/images/sign-up.png";
 
 const BASE_API_URI = import.meta.env.VITE_BACKEND_URI;
 
@@ -67,7 +67,7 @@ function Login(): JSX.Element {
         localStorage.setItem("jwt", jsonData.token);
         localStorage.setItem("user", JSON.stringify(jsonData.user));
         setTimeout(() => {
-          navigate("/friendsPage");
+          navigate("/dashboard");
         }, 2000);
       } else if (status === HttpStatusCode.UNPROCESSABLE_ENTITY) {
         notifyB(jsonData.error);

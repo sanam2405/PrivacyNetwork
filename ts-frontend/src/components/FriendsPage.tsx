@@ -360,7 +360,7 @@ function FriendsPage() {
                   variant="contained"
                   size="large"
                   onClick={() => {
-                    navigate("/client");
+                    navigate("/map");
                   }}
                   startIcon={<TravelExploreRoundedIcon />}
                 >
@@ -654,7 +654,7 @@ function FriendsPage() {
         </>
       );
     }
-    navigate("/login");
+    navigate("/auth");
   };
 
   return (

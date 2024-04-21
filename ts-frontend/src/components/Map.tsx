@@ -14,10 +14,12 @@ import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
 import "../styles/Map.css";
 import useSocket from "../hooks/ws";
 import { useNavigate } from "react-router-dom";
-import { distances } from "../constants";
+import { distances, ages } from "../constants";
 import { genders } from "../constants";
 import { colleges } from "../constants";
 import { LoginContext } from "../context/LoginContext";
+
+const BASE_API_URI = import.meta.env.VITE_BACKEND_URI;
 
 export const Map = () => {
   /*
@@ -57,7 +59,6 @@ export const Map = () => {
     id: "google-map-script",
     googleMapsApiKey: apiKey,
   });
-
   const [currentMapCenter] = useState({
     lat: 22.54905,
     lng: 88.37816,
@@ -69,7 +70,7 @@ export const Map = () => {
 
   const userDetails = localStorage.getItem("user");
   if (!userDetails) {
-    navigate("/login");
+    navigate("/auth");
     return;
   }
 
@@ -147,11 +148,38 @@ export const Map = () => {
     };
   }, [socket]);
 
-  const [age, setAge] = useState(0);
+  const [age, setAge] = useState(20);
   const [gender, setGender] = useState("Male");
   const [college, setCollege] = useState("Jadavpur University");
   const [sliderValue, setSliderValue] = useState(50);
   const [isMinimize, setIsMinimize] = useState<boolean>(false);
+  const [reqLocations, setReqLocations] = useState([]);
+
+  useEffect(() => {
+    fetch(`${BASE_API_URI}/api/query`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+      },
+      body: JSON.stringify({
+        userId: "Manasass2345w53q46f",
+        latitude: 22.40456,
+        longitude: 88.126,
+        thresholdDistance: sliderValue * 1000,
+        age,
+        gender,
+        college,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        setReqLocations([]);
+        setReqLocations(data);
+      })
+      .catch((err) => console.log(err));
+  }, [age, gender, college, sliderValue]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -164,13 +192,6 @@ export const Map = () => {
     height: "100vh",
   };
 
-  const handleAgeChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const inputValue = parseFloat(event.target.value);
-    const newAge = inputValue <= 0 || inputValue > 125 ? 1 : inputValue;
-    setAge(newAge);
-  };
   const handleGenderChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
@@ -185,15 +206,14 @@ export const Map = () => {
   const handleSliderChange = (event: any) => {
     setSliderValue(event?.target?.value);
   };
+  const handleAgeSliderChange = (event: any) => {
+    setAge(parseFloat(event?.target?.value));
+  };
 
   const { setModalOpen } = useContext(LoginContext);
   const handleClick = () => {
     setModalOpen(true);
   };
-
-  // const toggleMinimize = () => {
-  //   setIsMinimize(!isMinimize);
-  // };
 
   return isLoaded ? (
     <>
@@ -209,7 +229,6 @@ export const Map = () => {
                 key="11111"
                 position={{ lat: adminLocation.lat, lng: adminLocation.lng }}
               />
-
               {locations.map((loc, index) => {
                 return (
                   loc.lat &&
@@ -221,10 +240,18 @@ export const Map = () => {
                   )
                 );
               })}
+              {reqLocations.map((loc: any, index) => {
+                return (
+                  loc.lat &&
+                  loc.long && (
+                    <Marker
+                      key={index}
+                      position={{ lat: loc.lat, lng: loc.long }}
+                    />
+                  )
+                );
+              })}
             </GoogleMap>
-            {/* <button onClick={() => toggleMinimize()}>
-              {isMinimize ? "Maximize" : "Minimize"}
-            </button> */}
           </div>
         </Grid>
         {isMinimize && (
@@ -236,7 +263,7 @@ export const Map = () => {
                     variant="contained"
                     size="large"
                     onClick={() => {
-                      navigate("/friendsPage");
+                      navigate("/dashboard");
                     }}
                     startIcon={<AccountCircleIcon />}
                   >
@@ -263,35 +290,6 @@ export const Map = () => {
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
                   onChange={(e: any) => handleSliderChange(e)}
                 />
-              </Box>
-              <Box
-                component="form"
-                sx={{
-                  "& .MuiTextField-root": {
-                    m: 1,
-                    width: "27.5rem",
-                    marginTop: "4.5rem",
-                  },
-                }}
-                noValidate
-                autoComplete="off"
-              >
-                <div>
-                  <TextField
-                    required
-                    id="outlined-number"
-                    label="Age"
-                    type="number"
-                    value={age}
-                    onChange={(e) => handleAgeChange(e)}
-                    InputProps={{
-                      inputProps: { min: 1, max: 125 },
-                    }}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                  />
-                </div>
               </Box>
               <Box
                 component="form"
@@ -351,138 +349,20 @@ export const Map = () => {
                   </TextField>
                 </div>
               </Box>
+              <Box sx={{ marginTop: 7 }}>
+                <Slider
+                  aria-label="Custom age"
+                  step={10}
+                  valueLabelDisplay="auto"
+                  marks={ages}
+                  value={age}
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  onChange={(e: any) => handleAgeSliderChange(e)}
+                />
+              </Box>
             </div>
           </Grid>
         )}
-        {/* <Grid item xs={4.5}>
-          <div className="option-container">
-            <div>
-
-              <Stack direction="row" spacing={25}>
-                <Button
-                  variant="contained"
-                  size="large"
-                  onClick={() => {
-                    navigate("/friendsPage");
-                  }}
-                  startIcon={<AccountCircleIcon />}
-                >
-                  Profile
-                </Button>
-                <Button
-                  variant="outlined"
-                  size="large"
-                  color="success"
-                  onClick={handleClick}
-                  endIcon={<ExitToAppRoundedIcon />}
-                >
-                  Logout
-                </Button>
-              </Stack>
-            </div>
-
-            <Box sx={{ marginTop: 4 }}>
-
-              <Slider
-                aria-label="Custom marks"
-                step={10}
-                valueLabelDisplay="auto"
-                marks={distances}
-                value={sliderValue}
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                onChange={(e: any) => handleSliderChange(e)}
-              />
-            </Box>
-            <Box
-              component="form"
-              sx={{
-                "& .MuiTextField-root": {
-                  m: 1,
-                  width: "27.5rem",
-                  marginTop: "4.5rem",
-                },
-              }}
-              noValidate
-              autoComplete="off"
-            >
-              <div>
-                <TextField
-                  required
-                  id="outlined-number"
-                  label="Age"
-                  type="number"
-                  value={age}
-                  onChange={(e) => handleAgeChange(e)}
-                  InputProps={{
-                    inputProps: { min: 1, max: 125 },
-                  }}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                />
-              </div>
-            </Box>
-            <Box
-              component="form"
-              sx={{
-                "& .MuiTextField-root": {
-                  m: 1,
-                  width: "27.5rem",
-                  marginTop: "4rem",
-                },
-              }}
-              noValidate
-              autoComplete="off"
-            >
-              <div>
-                <TextField
-                  id="outlined-select-gender"
-                  select
-                  label="Gender"
-                  required
-                  value={gender}
-                  onChange={(e) => handleGenderChange(e)}
-                >
-                  {genders.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </div>
-            </Box>
-            <Box
-              component="form"
-              sx={{
-                "& .MuiTextField-root": {
-                  m: 1,
-                  width: "27.5rem",
-                  marginTop: "4rem",
-                },
-              }}
-              noValidate
-              autoComplete="off"
-            >
-              <div>
-                <TextField
-                  id="outlined-select-college"
-                  select
-                  label="College"
-                  required
-                  value={college}
-                  onChange={(e) => handleCollegeChange(e)}
-                >
-                  {colleges.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </div>
-            </Box>
-          </div>
-
-        </Grid> */}
       </Grid>
 
       {/* {socket ? <h1>{latestMessage}</h1> : <Loader />} */}
