@@ -18,6 +18,7 @@ import { distances, ages } from "../constants";
 import { genders } from "../constants";
 import { colleges } from "../constants";
 import { LoginContext } from "../context/LoginContext";
+import { useQLocations } from "../context/QLocationContext";
 
 const BASE_API_URI = import.meta.env.VITE_BACKEND_URI;
 
@@ -153,7 +154,7 @@ export const Map = () => {
   const [college, setCollege] = useState("Jadavpur University");
   const [sliderValue, setSliderValue] = useState(50);
   const [isMinimize, setIsMinimize] = useState<boolean>(false);
-  const [reqLocations, setReqLocations] = useState([]);
+  const { qLocations, setQLocations } = useQLocations();
 
   useEffect(() => {
     fetch(`${BASE_API_URI}/api/query`, {
@@ -172,13 +173,17 @@ export const Map = () => {
         college,
       }),
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Network response from LOC server was not OK");
+        }
+        return res.json();
+      })
       .then((data) => {
         console.log(data);
-        setReqLocations([]);
-        setReqLocations(data);
+        setQLocations(data);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.error(err));
   }, [age, gender, college, sliderValue]);
 
   useEffect(() => {
@@ -206,6 +211,7 @@ export const Map = () => {
   const handleSliderChange = (event: any) => {
     setSliderValue(event?.target?.value);
   };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleAgeSliderChange = (event: any) => {
     setAge(parseFloat(event?.target?.value));
   };
@@ -240,7 +246,7 @@ export const Map = () => {
                   )
                 );
               })}
-              {reqLocations.map((loc: any, index) => {
+              {qLocations.map((loc, index) => {
                 return (
                   loc.lat &&
                   loc.long && (
