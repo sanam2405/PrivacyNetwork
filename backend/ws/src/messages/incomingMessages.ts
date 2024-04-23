@@ -8,7 +8,7 @@ export enum SUPPORTED_MESSAGES {
 }
 
 export type INCOMING_MESSAGE =
-   {
+  | {
       type: SUPPORTED_MESSAGES.PONG;
       payload: PongMessageType;
     }

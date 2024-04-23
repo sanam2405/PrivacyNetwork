@@ -33,7 +33,13 @@ function onSocketPostError(e: Error) {
 }
 
 function ping(ws: WebSocket) {
-  ws.send(JSON.stringify({type: "PING", payload: {HEARTBEAT_VALUE: HEARTBEAT_VALUE}}));
+  console.log("Ping initiated from ws backend");
+  ws.send(
+    JSON.stringify({
+      type: "PING",
+      payload: { HEARTBEAT_VALUE: HEARTBEAT_VALUE },
+    }),
+  );
 }
 
 const wss = new WebSocketServer({ noServer: true });
@@ -90,7 +96,6 @@ wss.on("connection", function connection(ws: WebSocket) {
 });
 
 const interval = setInterval(() => {
-  console.log("firing interval");
   wss.clients.forEach((client: any) => {
     if (!client.isAlive) {
       client.terminate();
@@ -98,9 +103,7 @@ const interval = setInterval(() => {
     }
 
     client.isAlive = false;
-    console.log("Trying to ping client");
     ping(client);
-    console.log("Pinged client");
   });
 }, HEARTBEAT_INTERVAL);
 
@@ -110,12 +113,11 @@ wss.on("close", () => {
 
 function messageHandler(ws: WebSocket, message: INCOMING_MESSAGE) {
   if (message.type == SUPPORTED_MESSAGES.PONG) {
-    console.log("Pong received in ws backend")
+    console.log("Pong received by ws backend");
     const payload = message.payload;
-    if(payload.HEARTBEAT_VALUE==HEARTBEAT_VALUE) {
+    if (payload.HEARTBEAT_VALUE == HEARTBEAT_VALUE) {
       ws.isAlive = true;
-      console.log("conn kept alive");
-    }    
+    }
   }
 
   if (message.type == SUPPORTED_MESSAGES.JOIN_ROOM) {

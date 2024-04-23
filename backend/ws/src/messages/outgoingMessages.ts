@@ -15,7 +15,7 @@ type MESSAGE_PAYLOAD = {
 };
 
 export type OUTGOING_MESSAGE =
-    {
+  | {
       type: SUPPORTED_MESSAGES.ADD_LOCATION;
       payload: MESSAGE_PAYLOAD;
     }

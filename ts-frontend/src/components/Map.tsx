@@ -14,8 +14,7 @@ import WifiOffIcon from "@mui/icons-material/WifiOff";
 import { Grid } from "@mui/material";
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
 import "../styles/Map.css";
-// import useSocket from "../hooks/ws";
-import useSocket from "../hooks/ws/temp";
+import useSocket from "../hooks/ws";
 import { useNavigate } from "react-router-dom";
 import { distances, ages } from "../constants";
 import { genders } from "../constants";
@@ -134,17 +133,31 @@ export const Map = () => {
     }
   };
 
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let intervalId: any;
+    if (socket) {
+      socket.onopen = () => {
+        console.log("WebSocket connection established from client side");
+        socketCommJOINROOM();
+        intervalId = setInterval(() => {
+          socketCommSENDLOC();
+        }, 3000);
+      };
+    }
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [socket]);
+
   const handleSocketConnection = () => {
     // first close if already soc conn exist
 
-    console.log("Trying close conn from frontend");
     closeConnection();
-    console.log("conn closed from frontend");
 
-    console.log("Trying open conn from frontend");
     // open a new soc conn if doesn't exist
     openConnection();
-    console.log("conn opened from frontend");
   };
 
   const handleSocketDisconnection = () => {
@@ -152,7 +165,6 @@ export const Map = () => {
     closeConnection();
   };
 
-  
   const [age, setAge] = useState(50);
   const [gender, setGender] = useState("Male");
   const [college, setCollege] = useState("Jadavpur University");
