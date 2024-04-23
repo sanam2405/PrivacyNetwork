@@ -11,27 +11,65 @@ import {
 import { UserManager } from "./UserManager";
 import { InMemoryStore } from "./store/inMemoryStore";
 
-const app = express();
-const PORT: string | number = process.env.PORT || 8080;
-
-const httpServer = app.listen(PORT);
-
-const wss = new WebSocketServer({ server: httpServer });
-
 const userManager = new UserManager();
 const store = new InMemoryStore();
 
+const app = express();
+const PORT: string | number = process.env.PORT || 8080;
+
+const httpServer = app.listen(PORT, () => {
+  console.log(`HTTP Server is running on PORT ${PORT}`);
+});
+
+const HEARTBEAT_INTERVAL = 1000 * 5; // 5 seconds
+const HEARTBEAT_VALUE = 1;
+
+function onSocketPreError(e: Error) {
+  console.log(e);
+}
+
+function onSocketPostError(e: Error) {
+  console.log(e);
+}
+
+function ping(ws: WebSocket) {
+  ws.send(JSON.stringify({type: "PING", payload: {HEARTBEAT_VALUE: HEARTBEAT_VALUE}}));
+}
+
+const wss = new WebSocketServer({ noServer: true });
+
+httpServer.on("upgrade", (req, socket, head) => {
+  socket.on("error", onSocketPreError);
+
+  // perform auth
+  if (!!req.headers["BadAuth"]) {
+    socket.write("HTTP/1.1 401 Unauthorized\r\n\r\n");
+    socket.destroy();
+    return;
+  }
+
+  wss.handleUpgrade(req, socket, head, (ws) => {
+    socket.removeListener("error", onSocketPreError);
+    wss.emit("connection", ws, req);
+  });
+});
+
 wss.on("connection", function connection(ws: WebSocket) {
-  console.log(`WebSocketServer is running on PORT ${PORT}`);
-  ws.on("error", console.error);
+  console.log(
+    `HTTP Server upgraded to WSS Server and is running on PORT ${PORT}`,
+  );
+
+  ws.isAlive = true;
+
+  ws.on("error", onSocketPostError);
 
   ws.on("message", function message(data: any, isBinary: boolean) {
-    // console.log("Inside on message fn");
     try {
       // If data is binary, convert it to a string
       const dataString = data.toString();
       const jsonData = JSON.parse(dataString);
       console.log("JSON DATA : ", jsonData);
+
       messageHandler(ws, jsonData);
       //   wss.clients.forEach(function each(client) {
       //   if (client.readyState === WebSocket.OPEN) {
@@ -46,9 +84,40 @@ wss.on("connection", function connection(ws: WebSocket) {
   // ws.send(
   //   `A Privacy-Preserving Efficient Location-Sharing Scheme for Mobile Online Social Network Applications ~ Built with &#x1F499 by sanam`,
   // );
+  ws.on("close", () => {
+    console.log("Connection closed from ws server");
+  });
+});
+
+const interval = setInterval(() => {
+  console.log("firing interval");
+  wss.clients.forEach((client: any) => {
+    if (!client.isAlive) {
+      client.terminate();
+      return;
+    }
+
+    client.isAlive = false;
+    console.log("Trying to ping client");
+    ping(client);
+    console.log("Pinged client");
+  });
+}, HEARTBEAT_INTERVAL);
+
+wss.on("close", () => {
+  clearInterval(interval);
 });
 
 function messageHandler(ws: WebSocket, message: INCOMING_MESSAGE) {
+  if (message.type == SUPPORTED_MESSAGES.PONG) {
+    console.log("Pong received in ws backend")
+    const payload = message.payload;
+    if(payload.HEARTBEAT_VALUE==HEARTBEAT_VALUE) {
+      ws.isAlive = true;
+      console.log("conn kept alive");
+    }    
+  }
+
   if (message.type == SUPPORTED_MESSAGES.JOIN_ROOM) {
     const payload = message.payload;
     userManager.addUser(payload.name, payload.userId, payload.roomId, ws);

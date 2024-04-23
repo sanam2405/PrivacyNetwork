@@ -9,10 +9,13 @@ import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import ExitToAppRoundedIcon from "@mui/icons-material/ExitToAppRounded";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import WifiIcon from "@mui/icons-material/Wifi";
+import WifiOffIcon from "@mui/icons-material/WifiOff";
 import { Grid } from "@mui/material";
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
 import "../styles/Map.css";
-import useSocket from "../hooks/ws";
+// import useSocket from "../hooks/ws";
+import useSocket from "../hooks/ws/temp";
 import { useNavigate } from "react-router-dom";
 import { distances, ages } from "../constants";
 import { genders } from "../constants";
@@ -48,7 +51,8 @@ export const Map = () => {
   const BASE_WS_URI = import.meta.env.VITE_WS_URI;
   const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
 
-  const { socket, locations, sendMessage } = useSocket(BASE_WS_URI);
+  const { socket, locations, sendMessage, openConnection, closeConnection } =
+    useSocket(BASE_WS_URI);
 
   const [currentUserPosition, setCurrentUserPosition] =
     useState(getRandomPosition());
@@ -130,33 +134,34 @@ export const Map = () => {
     }
   };
 
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let intervalId: any;
-    if (socket) {
-      socket.onopen = () => {
-        // console.log("WebSocket connection established from client side");
-        socketCommJOINROOM();
-        intervalId = setInterval(() => {
-          socketCommSENDLOC();
-        }, 3000);
-      };
-    }
+  const handleSocketConnection = () => {
+    // first close if already soc conn exist
 
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, [socket]);
+    console.log("Trying close conn from frontend");
+    closeConnection();
+    console.log("conn closed from frontend");
 
-  const [age, setAge] = useState(20);
+    console.log("Trying open conn from frontend");
+    // open a new soc conn if doesn't exist
+    openConnection();
+    console.log("conn opened from frontend");
+  };
+
+  const handleSocketDisconnection = () => {
+    // close if already soc conn exist
+    closeConnection();
+  };
+
+  
+  const [age, setAge] = useState(50);
   const [gender, setGender] = useState("Male");
   const [college, setCollege] = useState("Jadavpur University");
-  const [sliderValue, setSliderValue] = useState(50);
+  const [sliderValue, setSliderValue] = useState(60);
   const [isMinimize, setIsMinimize] = useState<boolean>(false);
+
   const { qLocations, setQLocations } = useQLocations();
 
-  useEffect(() => {
+  const updateDetails = () => {
     fetch(`${BASE_API_URI}/api/query`, {
       method: "POST",
       headers: {
@@ -184,7 +189,7 @@ export const Map = () => {
         setQLocations(data);
       })
       .catch((err) => console.error(err));
-  }, [age, gender, college, sliderValue]);
+  };
 
   useEffect(() => {
     setTimeout(() => {
@@ -366,6 +371,51 @@ export const Map = () => {
                   onChange={(e: any) => handleAgeSliderChange(e)}
                 />
               </Box>
+              <Box
+                display={"flex"}
+                flex={1}
+                justifyContent={"center"}
+                alignItems={"center"}
+                height={100}
+              >
+                <Button
+                  variant="outlined"
+                  color="error"
+                  size="large"
+                  onClick={() => {
+                    updateDetails();
+                  }}
+                  sx={{ marginTop: 2 }} // Add margin-top to separate from the slider
+                >
+                  Query
+                </Button>
+              </Box>
+              <div>
+                <Stack direction="row" spacing={20} marginTop={5}>
+                  <Button
+                    variant="outlined"
+                    size="large"
+                    color="success"
+                    onClick={() => {
+                      handleSocketConnection();
+                    }}
+                    startIcon={<WifiIcon />}
+                  >
+                    Connect
+                  </Button>
+                  <Button
+                    variant="contained"
+                    size="large"
+                    color="error"
+                    onClick={() => {
+                      handleSocketDisconnection();
+                    }}
+                    endIcon={<WifiOffIcon />}
+                  >
+                    Disconnect
+                  </Button>
+                </Stack>
+              </div>
             </div>
           </Grid>
         )}

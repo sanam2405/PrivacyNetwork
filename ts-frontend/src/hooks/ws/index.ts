@@ -2,12 +2,12 @@ import { useState, useEffect } from "react";
 import { useLocations } from "../../context/LocationContext";
 
 const useSocket = (url: string) => {
-  const [socket, setSocket] = useState<WebSocket | null>(null);
+  const [socket, setSocket] = useState<WebSocketExt | null>(null);
   const [latestMessage, setLatestMessage] = useState("");
   const { locations, setLocations } = useLocations();
 
   useEffect(() => {
-    const newSocket = new WebSocket(url);
+    const newSocket = new WebSocket(url) as WebSocketExt;
 
     newSocket.onopen = () => {
       // Handle WebSocket open event
@@ -16,7 +16,7 @@ const useSocket = (url: string) => {
 
     newSocket.onclose = () => {
       // Handle WebSocket close event
-      console.log("WebSocket connection closed");
+      console.log("WebSocket connection closed from the client");
     };
 
     newSocket.onerror = (error) => {
