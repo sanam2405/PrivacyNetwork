@@ -2,6 +2,7 @@ require("dotenv").config();
 import express, { Request, Response } from "express";
 import HttpStatusCode from "../types/HttpStatusCode";
 import axios from "axios";
+import bcrypt from "bcryptjs";
 
 const LOCATION_BACKEND_URI = process.env.LOCATION_BACKEND_URI;
 
@@ -32,13 +33,15 @@ pingRouter.post("/ping", async (req: Request, res: Response) => {
    */
 
   try {
-    const bearerToken = process.env.BACKEND_INTERCOMMUNICATION_SECRET;
+    const bearerToken = process.env.BACKEND_INTERCOMMUNICATION_SECRET || "";
+    const salt = bcrypt.genSaltSync(10);
+    const hashedBearerToken = bcrypt.hashSync(bearerToken, salt);
     const response = await axios.post(
       `${LOCATION_BACKEND_URI}/api/ping`,
       {},
       {
         headers: {
-          Authorization: `Bearer ${bearerToken}`,
+          Authorization: `Bearer ${hashedBearerToken}`,
           "Content-Type": "application/json",
         },
       },

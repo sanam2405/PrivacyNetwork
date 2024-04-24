@@ -1,4 +1,5 @@
 import express, { Request, Response } from "express";
+import bcrypt from "bcryptjs";
 import HttpStatusCode from "../types/HttpStatusCode";
 
 const pingRouter = express.Router();
@@ -27,7 +28,12 @@ pingRouter.post("/ping", async (req: Request, res: Response) => {
 
   const token = authorization.replace("Bearer ", "");
 
-  if (token !== process.env.BACKEND_INTERCOMMUNICATION_SECRET) {
+  const isMatch = bcrypt.compareSync(
+    process.env.BACKEND_INTERCOMMUNICATION_SECRET,
+    token,
+  );
+
+  if (!isMatch) {
     return res
       .status(HttpStatusCode.UNAUTHORIZED)
       .send({ errors: "You are unauthorized to access this resource" });
