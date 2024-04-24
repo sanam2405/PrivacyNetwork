@@ -57,18 +57,26 @@ export class UserManager {
     return user ?? null;
   }
 
-  broadcast(roomId: string, userId: string, message: OUTGOING_MESSAGE) {
+  // broadcasts message to all the users present in the room having roomId
+  broadcastToRoom(roomId: string, userId: string, message: OUTGOING_MESSAGE) {
     const room = this.rooms.get(roomId);
     if (!room) {
       console.error("Room not found");
       return;
     }
 
-    const user = this.getUser(roomId, userId);
-    if (!user) {
-      console.error("User not found");
-      return;
+    /*
+      user need not be present in the room when broadcasting inside the room
+      consider when the user is leaving the room, the user is not in the room
+      but the message needs to be broadcasted
+      
+      const user = this.getUser(roomId, userId);
+      if (!user) {
+        console.error("User not found");
+        return;
     }
+
+    */
     room.users.forEach(({ conn, id }) => {
       if (id === userId) {
       } else {

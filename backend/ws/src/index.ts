@@ -93,7 +93,7 @@ wss.on("connection", function connection(ws: WebSocket, req) {
         // If data is binary, convert it to a string
         const dataString = data.toString();
         const jsonData = JSON.parse(dataString);
-        console.log("JSON DATA : ", jsonData);
+        console.log("JSON DATA received from client : ", jsonData);
 
         messageHandler(ws, jsonData);
         //   wss.clients.forEach(function each(client) {
@@ -145,6 +145,33 @@ function messageHandler(ws: WebSocket, message: INCOMING_MESSAGE) {
     userManager.addUser(payload.name, payload.userId, payload.roomId, ws);
   }
 
+  if (message.type == SUPPORTED_MESSAGES.LEAVE_ROOM) {
+    const payload = message.payload;
+    const user = userManager.getUser(payload.roomId, payload.userId);
+
+    if (!user) {
+      console.error("User not found in the in memory DB");
+      return;
+    }
+
+    userManager.removeUser(payload.roomId, payload.userId);
+
+    const outgoingPayload: OUTGOING_MESSAGE = {
+      type: OUTGOING_SUPPORTED_MESSAGE.LEAVE_ROOM,
+      payload: {
+        userId: payload.userId,
+        roomId: payload.roomId,
+        STATUS_CODE: 404, // 404 status code signifies that the client has disconnected. This has to be broadcasted
+      },
+    };
+
+    userManager.broadcastToRoom(
+      payload.roomId,
+      payload.userId,
+      outgoingPayload,
+    );
+  }
+
   if (message.type === SUPPORTED_MESSAGES.SEND_MESSAGE) {
     const payload = message.payload;
     const user = userManager.getUser(payload.roomId, payload.userId);
@@ -162,7 +189,11 @@ function messageHandler(ws: WebSocket, message: INCOMING_MESSAGE) {
         message: payload.message,
       },
     };
-    userManager.broadcast(payload.roomId, payload.userId, outgoingPayload);
+    userManager.broadcastToRoom(
+      payload.roomId,
+      payload.userId,
+      outgoingPayload,
+    );
   }
 
   if (message.type === SUPPORTED_MESSAGES.SEND_LOCATION) {
@@ -194,6 +225,10 @@ function messageHandler(ws: WebSocket, message: INCOMING_MESSAGE) {
         },
       },
     };
-    userManager.broadcast(payload.roomId, payload.userId, outgoingPayload);
+    userManager.broadcastToRoom(
+      payload.roomId,
+      payload.userId,
+      outgoingPayload,
+    );
   }
 }
