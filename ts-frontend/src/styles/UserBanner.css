@@ -47,8 +47,13 @@
   height: 8.5rem;
   border-radius: 50%;
   object-fit: cover;
+  transition: transform 0.3s ease;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
 }
 
 .user-profile-img:hover {
   cursor: pointer;
+  transform: scale(1.1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  opacity: 0.8;
 }

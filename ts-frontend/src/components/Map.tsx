@@ -156,7 +156,7 @@ export const Map = () => {
   const handleSocketConnection = () => {
     // first close if already soc conn exist
 
-    closeConnection();
+    closeConnection("202A", currentUserUUID);
 
     // open a new soc conn if doesn't exist
     openConnection();
@@ -164,7 +164,7 @@ export const Map = () => {
 
   const handleSocketDisconnection = () => {
     // close if already soc conn exist
-    closeConnection();
+    closeConnection("202A", currentUserUUID);
   };
 
   const [age, setAge] = useState(50);
@@ -190,6 +190,7 @@ export const Map = () => {
         age,
         gender,
         college,
+        isVisible: true, // pass false if you wish to see the invisible ones
       }),
     })
       .then((res) => {

@@ -43,6 +43,19 @@ const useSocket = (url: string) => {
         if (STATUS_CODE == 401) {
           console.log(userMessage);
         }
+
+        /*
+          Handle logic for Location Context to render updated 
+          markers after client has disconnected
+        */
+
+        // user has disconnected / 404 NOT FOUND
+        if (STATUS_CODE == 404) {
+          console.log(
+            `USER = ${userId}, from ROOM = ${roomId}, has disconnected`,
+          );
+        }
+
         if (userMessage) {
           setLatestMessage(
             `USER = ${userId}, from ROOM = ${roomId}, says: ${userMessage}`,
@@ -90,8 +103,17 @@ const useSocket = (url: string) => {
     );
   }
 
-  function closeConnection() {
+  function closeConnection(roomId: string, userId: string) {
     if (!!socket) {
+      socket.send(
+        JSON.stringify({
+          type: "LEAVE_ROOM",
+          payload: {
+            roomId: roomId,
+            userId: userId,
+          },
+        }),
+      );
       socket.close();
     }
   }

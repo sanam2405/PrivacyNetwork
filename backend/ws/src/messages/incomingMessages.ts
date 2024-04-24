@@ -3,6 +3,7 @@ import z from "zod";
 export enum SUPPORTED_MESSAGES {
   PONG = "PONG",
   JOIN_ROOM = "JOIN_ROOM",
+  LEAVE_ROOM = "LEAVE_ROOM",
   SEND_MESSAGE = "SEND_MESSAGE",
   SEND_LOCATION = "SEND_LOCATION",
 }
@@ -14,6 +15,10 @@ export type INCOMING_MESSAGE =
     }
   | {
       type: SUPPORTED_MESSAGES.JOIN_ROOM;
+      payload: InitMessageType;
+    }
+  | {
+      type: SUPPORTED_MESSAGES.LEAVE_ROOM;
       payload: InitMessageType;
     }
   | {
@@ -38,6 +43,13 @@ export const InitMessage = z.object({
 });
 
 export type InitMessageType = z.infer<typeof InitMessage>;
+
+export const ExitMessage = z.object({
+  userId: z.string(),
+  roomId: z.string(),
+});
+
+export type ExitMessageType = z.infer<typeof ExitMessage>;
 
 export const UserMessage = z.object({
   userId: z.string(),

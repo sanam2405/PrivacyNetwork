@@ -3,8 +3,7 @@ import express, { Request, Response } from "express";
 import cors from "cors";
 import globalCatch from "./middlewares/globalCatch";
 import queryRouter from "./routes/query";
-// import globalCatch from "./middlewares/globalCatch";
-// import pingRouter from "./routes/ping";
+import pingRouter from "./routes/ping";
 
 const app = express();
 const PORT: string | number = process.env.PORT || 6060;
@@ -18,6 +17,7 @@ app.get("/", (_req: Request, res: Response) => {
 });
 
 app.use("/api", queryRouter);
+app.use("/api", pingRouter);
 
 app.use(globalCatch);
 

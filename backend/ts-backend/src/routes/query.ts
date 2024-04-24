@@ -27,6 +27,7 @@ const queryRequest = z.object({
   college: z.string(),
   gender: z.string(),
   age: z.number(),
+  isVisible: z.boolean(),
 });
 
 const LOCATION_BACKEND_URI = process.env.LOCATION_BACKEND_URI;
@@ -74,7 +75,8 @@ queryRouter.post(
       return;
     }
     try {
-      const { gender, thresholdDistance, age, college } = parsedPayload.data;
+      const { gender, thresholdDistance, age, college, isVisible } =
+        parsedPayload.data;
       const bearerToken = process.env.BACKEND_INTERCOMMUNICATION_SECRET;
       const response = await axios.post(
         `${LOCATION_BACKEND_URI}/api/query`,
@@ -87,9 +89,23 @@ queryRouter.post(
         },
       );
       const privacyEntities = response.data;
+
+      /*
+
+        APPLY VISIBILITY & FRIENDs BASED FILTERING BEFORE SENDING LOCs TO THE CLIENT
+
+        If the isVisible is passed as false from the client, we get those user who 
+        have set their visibility as FALSE. Hence, we should not send their locations 
+        to the client.
+
+        However, if the client is a friend of the user, then we send back the location 
+        of that user to the client
+
+      */
+
       res.status(HttpStatusCode.OK).json(privacyEntities);
       console.log(
-        `PRIVACY ${gender} USERS NEARBY WITHIN ${thresholdDistance} meters and age less than ${age} with college ${college}`,
+        `PRIVACY ${gender} USERS NEARBY WITHIN ${thresholdDistance} meters and age less than ${age} with college ${college} and visibility set to ${isVisible}`,
       );
       console.log(privacyEntities);
     } catch (error) {

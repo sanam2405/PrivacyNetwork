@@ -3,7 +3,7 @@ import express, { Request, Response } from "express";
 
 import z from "zod";
 import HttpStatusCode from "../types/HttpStatusCode";
-import { getPrivacyEntities } from "../query";
+import { getPrivacyEntitiesWithVisibility } from "../query";
 
 /*
     {
@@ -26,6 +26,7 @@ const queryRequest = z.object({
   college: z.string(),
   gender: z.string(),
   age: z.number(),
+  isVisible: z.boolean(),
 });
 
 const queryRouter = express.Router();
@@ -76,31 +77,33 @@ queryRouter.post("/query", async (req: Request, res: Response) => {
     college,
     age,
     gender,
+    isVisible,
   } = parsedPayload.data;
 
   const entityType = "user";
 
-  const privacyEntities = await getPrivacyEntities(
+  const privacyEntitiesWithVisibility = await getPrivacyEntitiesWithVisibility(
     latitude,
     longitude,
     thresholdDistance,
     age,
     college,
     gender,
+    isVisible,
     entityType,
   );
 
-  if (!privacyEntities) {
+  if (!privacyEntitiesWithVisibility) {
     res.status(HttpStatusCode.BAD_REQUEST).json({
       msg: "The backend could not run queries on the location database",
     });
   }
 
-  res.status(HttpStatusCode.OK).json(privacyEntities);
+  res.status(HttpStatusCode.OK).json(privacyEntitiesWithVisibility);
   console.log(
-    `PRIVACY ${gender} USERS NEARBY WITHIN ${thresholdDistance} meters and age less than ${age} with college ${college}`,
+    `PRIVACY ${gender} USERS NEARBY WITHIN ${thresholdDistance} meters and age less than ${age} with college ${college} and visibility set to ${isVisible}`,
   );
-  console.log(privacyEntities);
+  console.log(privacyEntitiesWithVisibility);
 });
 
 export default queryRouter;
