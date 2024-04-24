@@ -11,6 +11,8 @@ import ExitToAppRoundedIcon from "@mui/icons-material/ExitToAppRounded";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import WifiIcon from "@mui/icons-material/Wifi";
 import WifiOffIcon from "@mui/icons-material/WifiOff";
+import IconButton from "@mui/material/IconButton";
+import Fingerprint from "@mui/icons-material/Fingerprint";
 import { Grid } from "@mui/material";
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
 import "../styles/Map.css";
@@ -390,7 +392,7 @@ export const Map = () => {
                 alignItems={"center"}
                 height={100}
               >
-                <Button
+                {/* <Button
                   variant="outlined"
                   color="error"
                   size="large"
@@ -400,7 +402,18 @@ export const Map = () => {
                   sx={{ marginTop: 2 }} // Add margin-top to separate from the slider
                 >
                   Query
-                </Button>
+                </Button> */}
+                <IconButton
+                  aria-label="fingerprint"
+                  color="secondary"
+                  size="large"
+                  onClick={() => {
+                    updateDetails();
+                  }}
+                  sx={{ marginTop: 2 }}
+                >
+                  <Fingerprint />
+                </IconButton>
               </Box>
               <div>
                 <Stack direction="row" spacing={20} marginTop={5}>
