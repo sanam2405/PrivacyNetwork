@@ -75,7 +75,8 @@ queryRouter.post(
       return;
     }
     try {
-      const { gender, thresholdDistance, age, college, isVisible } = parsedPayload.data;
+      const { gender, thresholdDistance, age, college, isVisible } =
+        parsedPayload.data;
       const bearerToken = process.env.BACKEND_INTERCOMMUNICATION_SECRET;
       const response = await axios.post(
         `${LOCATION_BACKEND_URI}/api/query`,
@@ -101,7 +102,6 @@ queryRouter.post(
         of that user to the client
 
       */
-
 
       res.status(HttpStatusCode.OK).json(privacyEntities);
       console.log(

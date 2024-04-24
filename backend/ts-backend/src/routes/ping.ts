@@ -33,8 +33,6 @@ pingRouter.post("/ping", async (req: Request, res: Response) => {
 
   try {
     const bearerToken = process.env.BACKEND_INTERCOMMUNICATION_SECRET;
-    console.log(bearerToken);
-    console.log(LOCATION_BACKEND_URI);
     const response = await axios.post(
       `${LOCATION_BACKEND_URI}/api/ping`,
       {},
@@ -47,11 +45,9 @@ pingRouter.post("/ping", async (req: Request, res: Response) => {
     );
     const locationPing = response.data;
     const locStatus = locationPing.status;
-    res
-      .status(HttpStatusCode.OK)
-      .json({
-        status: `The ts-backend mongoDB server is up and running. ${locStatus}`,
-      });
+    res.status(HttpStatusCode.OK).json({
+      status: `The ts-backend mongoDB server is up and running. ${locStatus}`,
+    });
     console.log(locationPing);
   } catch (error) {
     console.error("Error making network call:", error);
