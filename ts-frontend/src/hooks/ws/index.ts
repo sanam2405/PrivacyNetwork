@@ -35,9 +35,14 @@ const useSocket = (url: string) => {
           roomId,
           message: userMessage,
           HEARTBEAT_VALUE,
+          STATUS_CODE,
           position,
         } = jsonMessage.payload || {};
 
+        // user is not authorized
+        if (STATUS_CODE == 401) {
+          console.log(userMessage);
+        }
         if (userMessage) {
           setLatestMessage(
             `USER = ${userId}, from ROOM = ${roomId}, says: ${userMessage}`,
@@ -104,7 +109,9 @@ const useSocket = (url: string) => {
   const openConnection = () => {
     if (!socket || socket.readyState !== WebSocket.OPEN) {
       // console.log("creating new WebSocket client");
-      const newSocket = new WebSocket(url) as WebSocketExt;
+
+      const token = localStorage.getItem("jwt");
+      const newSocket = new WebSocket(`${url}?token=${token}`) as WebSocketExt;
       setSocket(newSocket);
     } else {
       // console.log("WebSocket connection is already open");

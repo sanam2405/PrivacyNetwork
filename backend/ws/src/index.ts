@@ -1,4 +1,5 @@
 import express from "express";
+import url from "url";
 import { WebSocketServer, WebSocket } from "ws";
 import {
   INCOMING_MESSAGE,
@@ -10,6 +11,7 @@ import {
 } from "./messages/outgoingMessages";
 import { UserManager } from "./UserManager";
 import { InMemoryStore } from "./store/inMemoryStore";
+import tokenIsValid from "./utils";
 
 const userManager = new UserManager();
 const store = new InMemoryStore();
@@ -47,52 +49,70 @@ const wss = new WebSocketServer({ noServer: true });
 httpServer.on("upgrade", (req, socket, head) => {
   socket.on("error", onSocketPreError);
 
-  // perform auth
-  if (!!req.headers["BadAuth"]) {
-    socket.write("HTTP/1.1 401 Unauthorized\r\n\r\n");
-    socket.destroy();
-    return;
-  }
-
   wss.handleUpgrade(req, socket, head, (ws) => {
     socket.removeListener("error", onSocketPreError);
     wss.emit("connection", ws, req);
   });
 });
 
-wss.on("connection", function connection(ws: WebSocket) {
+wss.on("connection", function connection(ws: WebSocket, req) {
   console.log(
     `HTTP Server upgraded to WSS Server and is running on PORT ${PORT}`,
   );
 
-  ws.isAlive = true;
+  // const queryParams = url.parse(req.url, true).query;
+  // const token = queryParams.token;
 
-  ws.on("error", onSocketPostError);
+  // @ts-ignore
+  const token: string = url.parse(req.url, true).query.token || "";
+  // const userId = extractUserId(token);
 
-  ws.on("message", function message(data: any, isBinary: boolean) {
-    try {
-      // If data is binary, convert it to a string
-      const dataString = data.toString();
-      const jsonData = JSON.parse(dataString);
-      console.log("JSON DATA : ", jsonData);
+  // Perform auth
+  if (!token || !tokenIsValid(token)) {
+    console.log("Unauthorized user");
+    // Send an unauthorized message to the client
+    ws.send(
+      JSON.stringify({
+        type: "UNAUTHORIZED",
+        payload: {
+          message: "You are not authorized to connect to the WebSocketServer",
+          STATUS_CODE: 401,
+        },
+      }),
+    );
+    // Close the WebSocket connection
+    ws.terminate();
+    return;
+  } else {
+    ws.isAlive = true;
 
-      messageHandler(ws, jsonData);
-      //   wss.clients.forEach(function each(client) {
-      //   if (client.readyState === WebSocket.OPEN) {
-      //     client.send(data, { binary: isBinary });
-      //   }
-      // });
-    } catch (error) {
-      console.error(error);
-    }
-  });
+    ws.on("error", onSocketPostError);
 
-  // ws.send(
-  //   `A Privacy-Preserving Efficient Location-Sharing Scheme for Mobile Online Social Network Applications ~ Built with &#x1F499 by sanam`,
-  // );
-  ws.on("close", () => {
-    console.log("Connection closed from ws server");
-  });
+    ws.on("message", function message(data: any, isBinary: boolean) {
+      try {
+        // If data is binary, convert it to a string
+        const dataString = data.toString();
+        const jsonData = JSON.parse(dataString);
+        console.log("JSON DATA : ", jsonData);
+
+        messageHandler(ws, jsonData);
+        //   wss.clients.forEach(function each(client) {
+        //   if (client.readyState === WebSocket.OPEN) {
+        //     client.send(data, { binary: isBinary });
+        //   }
+        // });
+      } catch (error) {
+        console.error(error);
+      }
+    });
+
+    // ws.send(
+    //   `A Privacy-Preserving Efficient Location-Sharing Scheme for Mobile Online Social Network Applications ~ Built with &#x1F499 by sanam`,
+    // );
+    ws.on("close", () => {
+      console.log("Connection closed from ws server");
+    });
+  }
 });
 
 const interval = setInterval(() => {
