@@ -1,12 +1,17 @@
 import z from "zod";
 
 export enum SUPPORTED_MESSAGES {
+  PONG = "PONG",
   JOIN_ROOM = "JOIN_ROOM",
   SEND_MESSAGE = "SEND_MESSAGE",
   SEND_LOCATION = "SEND_LOCATION",
 }
 
 export type INCOMING_MESSAGE =
+  | {
+      type: SUPPORTED_MESSAGES.PONG;
+      payload: PongMessageType;
+    }
   | {
       type: SUPPORTED_MESSAGES.JOIN_ROOM;
       payload: InitMessageType;
@@ -19,6 +24,12 @@ export type INCOMING_MESSAGE =
       type: SUPPORTED_MESSAGES.SEND_LOCATION;
       payload: UserLocationType;
     };
+
+export const PongMessage = z.object({
+  HEARTBEAT_VALUE: z.number(),
+});
+
+export type PongMessageType = z.infer<typeof PongMessage>;
 
 export const InitMessage = z.object({
   name: z.string(),

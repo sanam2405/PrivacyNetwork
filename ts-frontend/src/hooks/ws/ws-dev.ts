@@ -30,19 +30,17 @@ const useSocket = (url: string) => {
       socket.onmessage = (message) => {
         // Handle incoming messages
         const jsonMessage = JSON.parse(message.data);
+        console.log("Frontend got ", jsonMessage);
         const {
           userId,
           roomId,
           message: userMessage,
           HEARTBEAT_VALUE,
-          STATUS_CODE,
           position,
         } = jsonMessage.payload || {};
 
-        // user is not authorized
-        if (STATUS_CODE == 401) {
-          console.log(userMessage);
-        }
+        console.log("frontend got gb value", HEARTBEAT_VALUE);
+
         if (userMessage) {
           setLatestMessage(
             `USER = ${userId}, from ROOM = ${roomId}, says: ${userMessage}`,
@@ -55,8 +53,8 @@ const useSocket = (url: string) => {
         }
 
         if (HEARTBEAT_VALUE) {
-          console.log("Pong received by frontend client");
           if (HEARTBEAT_VALUE == CLIENT_HEARTBEAT_VALUE) {
+            console.log("calling heartbeat");
             heartbeat();
           }
         }
@@ -79,7 +77,7 @@ const useSocket = (url: string) => {
       // logic for deciding whether or not to reconnect
     }, CLIENT_HEARTBEAT_TIMEOUT);
 
-    console.log("Pong initiated from frontend client");
+    console.log("trying to send a pong");
     socket.send(
       JSON.stringify({
         type: "PONG",
@@ -92,6 +90,7 @@ const useSocket = (url: string) => {
 
   function closeConnection() {
     if (!!socket) {
+      console.log("inside conn close");
       socket.close();
     }
   }
@@ -108,13 +107,11 @@ const useSocket = (url: string) => {
 
   const openConnection = () => {
     if (!socket || socket.readyState !== WebSocket.OPEN) {
-      // console.log("creating new WebSocket client");
-
-      const token = localStorage.getItem("jwt");
-      const newSocket = new WebSocket(`${url}?token=${token}`) as WebSocketExt;
+      console.log("creating new WebSocket client");
+      const newSocket = new WebSocket(url) as WebSocketExt;
       setSocket(newSocket);
     } else {
-      // console.log("WebSocket connection is already open");
+      console.log("WebSocket connection is already open");
     }
   };
 

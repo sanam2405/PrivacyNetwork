@@ -9,6 +9,10 @@ import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import ExitToAppRoundedIcon from "@mui/icons-material/ExitToAppRounded";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import WifiIcon from "@mui/icons-material/Wifi";
+import WifiOffIcon from "@mui/icons-material/WifiOff";
+import IconButton from "@mui/material/IconButton";
+import Fingerprint from "@mui/icons-material/Fingerprint";
 import { Grid } from "@mui/material";
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
 import "../styles/Map.css";
@@ -18,6 +22,7 @@ import { distances, ages } from "../constants";
 import { genders } from "../constants";
 import { colleges } from "../constants";
 import { LoginContext } from "../context/LoginContext";
+import { useQLocations } from "../context/QLocationContext";
 
 const BASE_API_URI = import.meta.env.VITE_BACKEND_URI;
 
@@ -47,7 +52,8 @@ export const Map = () => {
   const BASE_WS_URI = import.meta.env.VITE_WS_URI;
   const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
 
-  const { socket, locations, sendMessage } = useSocket(BASE_WS_URI);
+  const { socket, locations, sendMessage, openConnection, closeConnection } =
+    useSocket(BASE_WS_URI);
 
   const [currentUserPosition, setCurrentUserPosition] =
     useState(getRandomPosition());
@@ -129,13 +135,12 @@ export const Map = () => {
     }
   };
 
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let intervalId: any;
     if (socket) {
       socket.onopen = () => {
-        // console.log("WebSocket connection established from client side");
+        console.log("WebSocket connection established from client side");
         socketCommJOINROOM();
         intervalId = setInterval(() => {
           socketCommSENDLOC();
@@ -148,14 +153,29 @@ export const Map = () => {
     };
   }, [socket]);
 
-  const [age, setAge] = useState(20);
+  const handleSocketConnection = () => {
+    // first close if already soc conn exist
+
+    closeConnection();
+
+    // open a new soc conn if doesn't exist
+    openConnection();
+  };
+
+  const handleSocketDisconnection = () => {
+    // close if already soc conn exist
+    closeConnection();
+  };
+
+  const [age, setAge] = useState(50);
   const [gender, setGender] = useState("Male");
   const [college, setCollege] = useState("Jadavpur University");
-  const [sliderValue, setSliderValue] = useState(50);
+  const [sliderValue, setSliderValue] = useState(60);
   const [isMinimize, setIsMinimize] = useState<boolean>(false);
-  const [reqLocations, setReqLocations] = useState([]);
 
-  useEffect(() => {
+  const { qLocations, setQLocations } = useQLocations();
+
+  const updateDetails = () => {
     fetch(`${BASE_API_URI}/api/query`, {
       method: "POST",
       headers: {
@@ -172,14 +192,18 @@ export const Map = () => {
         college,
       }),
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Network response from LOC server was not OK");
+        }
+        return res.json();
+      })
       .then((data) => {
         console.log(data);
-        setReqLocations([]);
-        setReqLocations(data);
+        setQLocations(data);
       })
-      .catch((err) => console.log(err));
-  }, [age, gender, college, sliderValue]);
+      .catch((err) => console.error(err));
+  };
 
   useEffect(() => {
     setTimeout(() => {
@@ -206,6 +230,7 @@ export const Map = () => {
   const handleSliderChange = (event: any) => {
     setSliderValue(event?.target?.value);
   };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleAgeSliderChange = (event: any) => {
     setAge(parseFloat(event?.target?.value));
   };
@@ -240,7 +265,7 @@ export const Map = () => {
                   )
                 );
               })}
-              {reqLocations.map((loc: any, index) => {
+              {qLocations.map((loc, index) => {
                 return (
                   loc.lat &&
                   loc.long && (
@@ -360,6 +385,62 @@ export const Map = () => {
                   onChange={(e: any) => handleAgeSliderChange(e)}
                 />
               </Box>
+              <Box
+                display={"flex"}
+                flex={1}
+                justifyContent={"center"}
+                alignItems={"center"}
+                height={100}
+              >
+                {/* <Button
+                  variant="outlined"
+                  color="error"
+                  size="large"
+                  onClick={() => {
+                    updateDetails();
+                  }}
+                  sx={{ marginTop: 2 }} // Add margin-top to separate from the slider
+                >
+                  Query
+                </Button> */}
+                <IconButton
+                  aria-label="fingerprint"
+                  color="secondary"
+                  size="large"
+                  onClick={() => {
+                    updateDetails();
+                  }}
+                  sx={{ marginTop: 2 }}
+                >
+                  <Fingerprint />
+                </IconButton>
+              </Box>
+              <div>
+                <Stack direction="row" spacing={20} marginTop={5}>
+                  <Button
+                    variant="outlined"
+                    size="large"
+                    color="success"
+                    onClick={() => {
+                      handleSocketConnection();
+                    }}
+                    startIcon={<WifiIcon />}
+                  >
+                    Connect
+                  </Button>
+                  <Button
+                    variant="contained"
+                    size="large"
+                    color="error"
+                    onClick={() => {
+                      handleSocketDisconnection();
+                    }}
+                    endIcon={<WifiOffIcon />}
+                  >
+                    Disconnect
+                  </Button>
+                </Stack>
+              </div>
             </div>
           </Grid>
         )}
