@@ -54,14 +54,41 @@ export async function getPrivacyEntities(
   return privacyEntities;
 }
 
+export async function getPrivacyEntitiesWithVisibility(
+  latitude: number,
+  longitude: number,
+  D: number,
+  age: number,
+  college: string,
+  gender: string,
+  isVisible: boolean,
+  entityType: string,
+) {
+  const wktPoint = coordinatesToWKT(latitude, longitude);
+  const privacyEntities = await prisma.$queryRaw`
+       SELECT * FROM nearby_privacy_entities_visibility(
+           ${latitude},
+            ${longitude}, 
+            ${D}, 
+            ${age}, 
+            ${college}, 
+            ${gender},
+            ${isVisible},
+            ${entityType}
+        )
+    `;
+  return privacyEntities;
+}
+
 async function main() {
   try {
     const latitude: number = 22.40456; // Example latitude
     const longitude: number = 88.126; // Example longitude
     const thresholdDistance: number = 70000; // Example limit distance in meters
     const thresholdAge: number = 60; // Example limit age in years
-    const targetCollege: string = "College 3";
+    const targetCollege: string = "Jadavpur University";
     const targetGender: string = "Male";
+    const targetVisibility: boolean = false;
     const entityType: string = "user"; // Example entity type
 
     // SELECT * FROM nearby_entities(22.40456, 88.1260, 'user')
@@ -96,7 +123,24 @@ async function main() {
     console.log(
       `PRIVACY ${targetGender} USERS NEARBY WITHIN ${thresholdDistance} meters and age less than ${thresholdAge} with college ${targetCollege}`,
     );
+
     console.log(privacyEntities);
+
+    const privacyEntitiesWithVisibility =
+      await getPrivacyEntitiesWithVisibility(
+        latitude,
+        longitude,
+        thresholdDistance,
+        thresholdAge,
+        targetCollege,
+        targetGender,
+        targetVisibility,
+        entityType,
+      );
+    console.log(
+      `PRIVACY ${targetGender} USERS NEARBY WITHIN ${thresholdDistance} meters and age less than ${thresholdAge} with college ${targetCollege} and visibility ${targetVisibility}`,
+    );
+    console.log(privacyEntitiesWithVisibility);
   } catch (error) {
     console.error("Error:", error);
   } finally {

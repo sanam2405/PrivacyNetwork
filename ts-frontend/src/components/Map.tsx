@@ -190,6 +190,7 @@ export const Map = () => {
         age,
         gender,
         college,
+        isVisible: true, // pass false if you wish to see the invisible ones
       }),
     })
       .then((res) => {
