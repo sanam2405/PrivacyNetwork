@@ -11,6 +11,7 @@ export interface UserDocument extends Document {
   college?: string;
   friends: Types.ObjectId[];
   visibility: boolean;
+  postgresId: string;
 }
 
 /**
@@ -169,6 +170,7 @@ const userSchema: Schema<UserDocument> = new Schema({
   college: { type: String },
   friends: [{ type: Schema.Types.ObjectId, ref: "user" }],
   visibility: { type: Boolean },
+  postgresId: { type: String, required: true },
 });
 
 const User = mongoose.model<UserDocument>("user", userSchema);

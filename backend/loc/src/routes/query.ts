@@ -1,6 +1,4 @@
-require("dotenv").config();
 import express, { Request, Response } from "express";
-// import bcrypt from "bcryptjs";
 import z from "zod";
 import HttpStatusCode from "../types/HttpStatusCode";
 import { getPrivacyEntitiesWithVisibility } from "../query";
@@ -8,7 +6,7 @@ import { interBackendAccess } from "../middlewares/interBackendAccess";
 
 /*
     {
-        userID: string
+        id: string
         thresholdDistance: number
         latitude: number
         longitude: number
@@ -20,7 +18,7 @@ import { interBackendAccess } from "../middlewares/interBackendAccess";
 */
 
 const queryRequest = z.object({
-  userId: z.string(),
+  id: z.string(),
   thresholdDistance: z.number(),
   latitude: z.number(),
   longitude: z.number(),
@@ -51,7 +49,7 @@ queryRouter.post(
     }
 
     const {
-      userId,
+      id,
       latitude,
       longitude,
       thresholdDistance,

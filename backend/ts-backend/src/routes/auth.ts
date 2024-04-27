@@ -1,15 +1,23 @@
 require("dotenv").config();
 import express, { Request, Response, NextFunction } from "express";
 import bcrypt from "bcryptjs";
+import axios from "axios";
 import { body, validationResult } from "express-validator";
 import jwt from "jsonwebtoken";
 import User from "../models/models";
 import HttpStatusCode from "../types/HttpStatusCode";
+import { z } from "zod";
 const SECRET_KEY = process.env.SECRET_KEY;
 
 const authRouter = express.Router();
+const LOCATION_BACKEND_URI = process.env.LOCATION_BACKEND_URI;
 
 authRouter.use(express.json());
+
+const authRequest = z.object({
+  name: z.string(),
+  email: z.string(),
+});
 
 authRouter.post(
   "/signup",
@@ -58,16 +66,47 @@ authRouter.post(
     if (!name || !username || !email || !password) {
       return res
         .status(HttpStatusCode.UNPROCESSABLE_ENTITY)
-        .json({ error: "Please add all the fields..." });
+        .json({ error: "Please add all the fields from ts-backend server" });
     }
     try {
+      const authPayload = req.body;
+      const parsedPayload = authRequest.safeParse(authPayload);
+      if (!parsedPayload.success) {
+        res.status(HttpStatusCode.LENGTH_REQUIRED).json({
+          msg: "You sent the wrong inputs from ts-backend server",
+        });
+        return;
+      }
+      const bearerToken = process.env.BACKEND_INTERCOMMUNICATION_SECRET || "";
+      const saltForLoc = bcrypt.genSaltSync(10);
+      const hashedBearerToken = bcrypt.hashSync(bearerToken, saltForLoc);
+      const response = await axios.post(
+        `${LOCATION_BACKEND_URI}/api/signup`,
+        authPayload,
+        {
+          headers: {
+            Authorization: `Bearer ${hashedBearerToken}`,
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      if (response.status !== HttpStatusCode.CREATED) {
+        res.status(HttpStatusCode.BAD_REQUEST).json({
+          msg: "User could not be created in LOC Postgres server. Response is generated from ts-backend server",
+        });
+      }
+
+      const postgresId = response.data.user?.id;
+
       const savedUser = await User.findOne({
         $or: [{ email }, { username }],
       });
       if (savedUser) {
-        return res
-          .status(HttpStatusCode.UNPROCESSABLE_ENTITY)
-          .json({ error: "A user already exists with the email or username" });
+        return res.status(HttpStatusCode.UNPROCESSABLE_ENTITY).json({
+          error:
+            "A user already exists with the email or username from ts-backend server",
+        });
       }
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
@@ -76,6 +115,7 @@ authRouter.post(
         username,
         email,
         password: hashedPassword,
+        postgresId,
       });
       await user.save();
       res.status(HttpStatusCode.OK).json({ success: true });
