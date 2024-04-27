@@ -131,7 +131,7 @@ userRouter.put(
               update: {
                 latitude: lat,
                 longitude: lng,
-                updatedAt: new Date(),
+                updatedAt: new Date().toISOString().slice(0, -5) + "Z",
               },
             },
           },
@@ -148,8 +148,8 @@ userRouter.put(
             id: uuidv4(),
             latitude: lat,
             longitude: lng,
-            createdAt: new Date(),
-            updatedAt: new Date(),
+            createdAt: new Date().toISOString().slice(0, -5) + "Z",
+            updatedAt: new Date().toISOString().slice(0, -5) + "Z",
           },
         });
 
