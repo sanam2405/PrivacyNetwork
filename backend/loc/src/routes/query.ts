@@ -6,7 +6,7 @@ import { interBackendAccess } from "../middlewares/interBackendAccess";
 
 /*
     {
-        id: string
+        userId: string
         thresholdDistance: number
         latitude: number
         longitude: number
@@ -18,7 +18,7 @@ import { interBackendAccess } from "../middlewares/interBackendAccess";
 */
 
 const queryRequest = z.object({
-  id: z.string(),
+  userId: z.string(),
   thresholdDistance: z.number(),
   latitude: z.number(),
   longitude: z.number(),
@@ -49,7 +49,7 @@ queryRouter.post(
     }
 
     const {
-      id,
+      userId,
       latitude,
       longitude,
       thresholdDistance,
