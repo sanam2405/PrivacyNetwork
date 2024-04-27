@@ -1,9 +1,13 @@
 import express, { Request, Response } from "express";
 import User, { UserDocument } from "../models/models";
+import bcrypt from "bcryptjs";
+import axios from "axios";
+import { z } from "zod";
 import requireLogin from "../middlewares/requireLogin";
 import HttpStatusCode from "../types/HttpStatusCode";
 
 const userRouter = express.Router();
+const LOCATION_BACKEND_URI = process.env.LOCATION_BACKEND_URI;
 
 interface CustomRequest extends Request {
   user?: UserDocument;
@@ -240,7 +244,15 @@ userRouter.put(
   },
 );
 
-// Posting the age, gender, college properties of a user
+const setPropertiesRequest = z.object({
+  id: z.string(),
+  age: z.number(),
+  gender: z.string(),
+  college: z.string(),
+  visibility: z.boolean(),
+});
+
+// Posting the age, gender, college, visibility properties of a user
 userRouter.put(
   "/setProperties",
   requireLogin,
@@ -300,6 +312,37 @@ userRouter.put(
           .json({ error: "Please fill up all the properties..." });
       }
 
+      const setPropertiesPayload = req.body;
+      setPropertiesPayload.id = req.user?.postgresId;
+      const parsedPayload =
+        setPropertiesRequest.safeParse(setPropertiesPayload);
+      if (!parsedPayload.success) {
+        res.status(HttpStatusCode.LENGTH_REQUIRED).json({
+          msg: "You sent the wrong inputs from ts-backend server. The postgresId could not be found",
+        });
+        return;
+      }
+
+      const bearerToken = process.env.BACKEND_INTERCOMMUNICATION_SECRET || "";
+      const saltForLoc = bcrypt.genSaltSync(10);
+      const hashedBearerToken = bcrypt.hashSync(bearerToken, saltForLoc);
+      const response = await axios.put(
+        `${LOCATION_BACKEND_URI}/api/setProperties`,
+        setPropertiesPayload,
+        {
+          headers: {
+            Authorization: `Bearer ${hashedBearerToken}`,
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      if (response.status !== HttpStatusCode.OK) {
+        res.status(HttpStatusCode.BAD_REQUEST).json({
+          msg: "User details could not be updated in LOC Postgres server. Response is generated from ts-backend server",
+        });
+      }
+
       await User.findByIdAndUpdate(
         req.user?._id,
         {
@@ -345,7 +388,7 @@ userRouter.put(
       console.log(error);
       res
         .status(HttpStatusCode.UNPROCESSABLE_ENTITY)
-        .json({ error: "Something went wrong..." });
+        .json({ error: "Something went wrong in the ts-backend server" });
     }
   },
 );

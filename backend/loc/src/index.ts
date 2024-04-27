@@ -19,7 +19,7 @@ app.get("/", (_req: Request, res: Response) => {
 });
 
 app.use("/api", pingRouter);
-app.use("/api",authRouter);
+app.use("/api", authRouter);
 app.use("/api", userRouter);
 app.use("/api", queryRouter);
 
