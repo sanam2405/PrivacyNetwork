@@ -252,7 +252,7 @@ const setPropertiesRequest = z.object({
   visibility: z.boolean(),
 });
 
-// Posting the age, gender, college, visibility properties of a user
+// Putting the age, gender, college, visibility properties of a user
 userRouter.put(
   "/setProperties",
   requireLogin,
@@ -264,7 +264,7 @@ userRouter.put(
        *  put:
        *     tags:
        *     - User
-       *     summary: Set age, gender, college, visiblity for an user
+       *     summary: Set age, gender, college, visibility for an user
        *     requestBody:
        *      required: true
        *      content:
@@ -382,6 +382,94 @@ userRouter.put(
           new: true,
         },
       );
+
+      return res.status(HttpStatusCode.OK).json({ success: true });
+    } catch (error) {
+      console.log(error);
+      res
+        .status(HttpStatusCode.UNPROCESSABLE_ENTITY)
+        .json({ error: "Something went wrong in the ts-backend server" });
+    }
+  },
+);
+
+// --------------------
+
+const setLocationRequest = z.object({
+  id: z.string(),
+  lat: z.number(),
+  lng: z.number(),
+});
+
+// Putting the new location of a user
+userRouter.put(
+  "/setLocation",
+  requireLogin,
+  async (req: CustomRequest, res: Response) => {
+    try {
+      /**
+       * @openapi
+       * '/api/setLocation':
+       *  put:
+       *     tags:
+       *     - User
+       *     summary: Set location for an user
+       *     requestBody:
+       *      required: true
+       *      content:
+       *        application/json:
+       *           schema:
+       *              type: object
+       *              properties:
+       *                lat:
+       *                  type: number
+       *                  description: Latitude of the user
+       *                lng:
+       *                  type: number
+       *                  description: Longitude of the user
+       *     responses:
+       *       200:
+       *         description: Success
+       *         content:
+       *          application/json:
+       *           schema:
+       *              type: object
+       *              properties:
+       *                success:
+       *                  type: boolean
+       *       404:
+       *         description: User not found
+       */
+
+      const setLocationPayload = req.body;
+      setLocationPayload.id = req.user?.postgresId;
+      const parsedPayload = setLocationRequest.safeParse(setLocationPayload);
+      if (!parsedPayload.success) {
+        res.status(HttpStatusCode.LENGTH_REQUIRED).json({
+          msg: "You sent the wrong inputs from ts-backend server. The postgresId could not be found",
+        });
+        return;
+      }
+
+      const bearerToken = process.env.BACKEND_INTERCOMMUNICATION_SECRET || "";
+      const saltForLoc = bcrypt.genSaltSync(10);
+      const hashedBearerToken = bcrypt.hashSync(bearerToken, saltForLoc);
+      const response = await axios.put(
+        `${LOCATION_BACKEND_URI}/api/setLocation`,
+        setLocationPayload,
+        {
+          headers: {
+            Authorization: `Bearer ${hashedBearerToken}`,
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      if (response.status !== HttpStatusCode.OK) {
+        res.status(HttpStatusCode.BAD_REQUEST).json({
+          msg: "User locations could not be updated in LOC Postgres server. Response is generated from ts-backend server",
+        });
+      }
 
       return res.status(HttpStatusCode.OK).json({ success: true });
     } catch (error) {
