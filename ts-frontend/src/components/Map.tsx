@@ -23,6 +23,7 @@ import { genders } from "../constants";
 import { colleges } from "../constants";
 import { LoginContext } from "../context/LoginContext";
 import { useQLocations } from "../context/QLocationContext";
+import { positions } from "../constants";
 
 const BASE_API_URI = import.meta.env.VITE_BACKEND_URI;
 
@@ -30,18 +31,6 @@ export const Map = () => {
   /*
         RANDOM POSITION GENERATOR
   */
-  const positions = [
-    { lat: 22.4965, lng: 88.3698 },
-    { lat: 22.5726, lng: 88.3639 },
-    { lat: 22.5353, lng: 88.3655 },
-    { lat: 22.5553, lng: 88.3645 },
-    { lat: 22.5153, lng: 88.3665 },
-    { lat: 22.4855, lng: 88.3675 },
-    { lat: 22.5256, lng: 88.3685 },
-    { lat: 22.5653, lng: 88.369 },
-    { lat: 22.5123, lng: 88.3648 },
-    { lat: 22.5393, lng: 88.365 },
-  ];
 
   const getRandomPosition = () => {
     const randomIndex = Math.floor(Math.random() * positions.length);
