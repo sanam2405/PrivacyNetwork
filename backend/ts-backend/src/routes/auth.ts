@@ -115,6 +115,10 @@ authRouter.post(
         username,
         email,
         password: hashedPassword,
+        age: 18.5,
+        gender: "Non Binary",
+        college: "Jadavpur University",
+        visibility: true,
         postgresId,
       });
       await user.save();

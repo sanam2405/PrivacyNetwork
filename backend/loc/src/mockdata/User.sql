@@ -1,3 +1,15 @@
+-- Create the User table
+create table if not EXISTS "User" (
+  "id"         UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  "name"       TEXT NOT NULL,
+  "email"      TEXT UNIQUE NOT NULL,
+  "age"        FLOAT NOT NULL,
+  "gender"     TEXT NOT NULL,
+  "college"    TEXT NOT NULL,
+  "isVisible"  BOOLEAN NOT NULL,
+  "locationId" UUID REFERENCES "Location"("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+
 insert into "User" (id, name, email, age, gender, college, "isVisible", "locationId") values ('16dc80c4-3da9-48f7-b4e8-7575df800ec1', 'Kent Petrina', 'kpetrina0@163.com', '51', 'Female', 'Calcutta University', TRUE, '86761b49-65d3-4b4a-92b0-dbe601fb9b13');
 insert into "User" (id, name, email, age, gender, college, "isVisible", "locationId") values ('414dceb4-9c7f-4a6a-b3f4-16a3f7ac2afb', 'Loleta Blakemore', 'lblakemore1@parallels.com', '3', 'Male', 'Jadavpur University', TRUE, '7f1e5f07-95a7-4d18-85ca-f47480999465');
 insert into "User" (id, name, email, age, gender, college, "isVisible", "locationId") values ('82fc9d3c-f61d-4562-8c9a-b27a41f66399', 'Elwood Devonish', 'edevonish2@cam.ac.uk', '69', 'Male', 'Calcutta University', TRUE, 'b036ebaa-6740-4830-9dbe-7c90cd4277f1');

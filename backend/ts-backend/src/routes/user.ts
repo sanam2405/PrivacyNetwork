@@ -393,8 +393,6 @@ userRouter.put(
   },
 );
 
-// --------------------
-
 const setLocationRequest = z.object({
   id: z.string(),
   lat: z.number(),
@@ -424,9 +422,11 @@ userRouter.put(
        *                lat:
        *                  type: number
        *                  description: Latitude of the user
+       *                  default: 22.123456
        *                lng:
        *                  type: number
        *                  description: Longitude of the user
+       *                  default: 88.654321
        *     responses:
        *       200:
        *         description: Success

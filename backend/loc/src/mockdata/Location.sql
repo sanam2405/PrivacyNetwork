@@ -1,3 +1,12 @@
+-- Create the Location table
+create table if not exists "Location" (
+  "id"        UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  "latitude"  FLOAT NOT NULL,
+  "longitude" FLOAT NOT NULL,
+  "createdAt" TIMESTAMP DEFAULT NOW() NOT NULL,
+  "updatedAt" TIMESTAMP NOT NULL
+);
+
 insert into "Location" (id, latitude, longitude, "createdAt", "updatedAt") values ('86761b49-65d3-4b4a-92b0-dbe601fb9b13', 23.702434, 87.758946, '2023-10-19T13:28:50Z', '2024-04-23T17:29:09Z');
 insert into "Location" (id, latitude, longitude, "createdAt", "updatedAt") values ('7f1e5f07-95a7-4d18-85ca-f47480999465', 22.885584, 87.640407, '2024-01-13T17:31:02Z', '2024-03-28T08:27:34Z');
 insert into "Location" (id, latitude, longitude, "createdAt", "updatedAt") values ('b036ebaa-6740-4830-9dbe-7c90cd4277f1', 22.569763, 86.503533, '2023-12-26T05:26:55Z', '2024-03-20T00:19:18Z');

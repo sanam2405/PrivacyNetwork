@@ -52,9 +52,9 @@ authRouter.post(
           id: uuidv4(),
           name,
           email,
-          age: 18,
+          age: 18.5,
           gender: "Non Binary",
-          college: "IIT",
+          college: "Jadavpur University",
           isVisible: true,
         },
       });

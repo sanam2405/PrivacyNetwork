@@ -58,9 +58,9 @@ userRouter.put(
           id: id,
         },
         data: {
-          age,
-          college,
-          gender,
+          age: age,
+          college: college,
+          gender: gender,
           isVisible: visibility,
         },
       });
@@ -77,8 +77,6 @@ userRouter.put(
     }
   },
 );
-
-// ---------------
 
 const userLocationUpdateRequest = z.object({
   id: z.string(),
@@ -119,8 +117,8 @@ userRouter.put(
         return;
       }
 
-      // Check if the user already has a location
-      if (existingUser.locationId) {
+      // Check if the user already has a location, the update the previous loc
+      if (existingUser.locationId !== null) {
         // Update the user's location
         const updatedUser = await prisma.user.update({
           where: {
@@ -164,14 +162,14 @@ userRouter.put(
         });
 
         res.status(HttpStatusCode.OK).json({
-          msg: "User location updated successfully",
+          msg: "User location created successfully",
           user: updatedUser,
         });
       }
     } catch (error) {
       console.error("Error updating user location:", error);
       res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
-        msg: "Failed to update user location",
+        msg: "Failed to create / update user location",
       });
     }
   },
