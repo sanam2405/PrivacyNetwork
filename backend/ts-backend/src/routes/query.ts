@@ -1,9 +1,9 @@
 require("dotenv").config();
 import express, { Request, Response } from "express";
-
 import z from "zod";
 import HttpStatusCode from "../types/HttpStatusCode";
 import axios from "axios";
+import bcrypt from "bcryptjs";
 import requireLogin from "../middlewares/requireLogin";
 
 /*
@@ -77,13 +77,16 @@ queryRouter.post(
     try {
       const { gender, thresholdDistance, age, college, isVisible } =
         parsedPayload.data;
-      const bearerToken = process.env.BACKEND_INTERCOMMUNICATION_SECRET;
+
+      const bearerToken = process.env.BACKEND_INTERCOMMUNICATION_SECRET || "";
+      const salt = bcrypt.genSaltSync(10);
+      const hashedBearerToken = bcrypt.hashSync(bearerToken, salt);
       const response = await axios.post(
         `${LOCATION_BACKEND_URI}/api/query`,
         queryPayload,
         {
           headers: {
-            Authorization: `Bearer ${bearerToken}`,
+            Authorization: `Bearer ${hashedBearerToken}`,
             "Content-Type": "application/json",
           },
         },

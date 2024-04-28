@@ -4,6 +4,8 @@ import cors from "cors";
 import globalCatch from "./middlewares/globalCatch";
 import queryRouter from "./routes/query";
 import pingRouter from "./routes/ping";
+import authRouter from "./routes/auth";
+import userRouter from "./routes/user";
 
 const app = express();
 const PORT: string | number = process.env.PORT || 6060;
@@ -16,8 +18,10 @@ app.get("/", (_req: Request, res: Response) => {
 	<pre> ~ Built with &#x1F499 by sanam </pre>`);
 });
 
-app.use("/api", queryRouter);
 app.use("/api", pingRouter);
+app.use("/api", authRouter);
+app.use("/api", userRouter);
+app.use("/api", queryRouter);
 
 app.use(globalCatch);
 
