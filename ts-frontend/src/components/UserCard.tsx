@@ -12,23 +12,23 @@ interface UserCardProps {
   username: string;
   name: string;
   dpLink: string;
-  currentUsername: string;
   user: User;
-  curruser: User;
   users?: User[];
   setUsers?: React.Dispatch<React.SetStateAction<User[]>>;
   fetchAllUserDetails: () => void;
   fetchCurrentUserDetails: () => void;
+  fetchFriendsByKeyWord: () => void;
+  fetchNonFriendsByKeyWord: () => void;
 }
 function UserCard({
   username,
   name,
   dpLink,
-  currentUsername,
   user,
-  curruser,
   fetchAllUserDetails,
   fetchCurrentUserDetails,
+  fetchFriendsByKeyWord,
+  fetchNonFriendsByKeyWord,
 }: UserCardProps) {
   // const navigate = useNavigate()
 
@@ -48,49 +48,45 @@ function UserCard({
         console.log(result);
         fetchAllUserDetails();
         fetchCurrentUserDetails();
-        // const newUsers = users.filter((u) => u._id !== id);
-        // setUsers(newUsers);
+        fetchFriendsByKeyWord();
+        fetchNonFriendsByKeyWord();
       })
       .catch((err) => console.log(err));
   };
 
   return (
     <>
-      {currentUsername !== username &&
-      curruser._id !== user._id &&
-      curruser.friends.includes(user._id) === false ? (
-        <div className="container usercard-container">
-          <div className="card_item">
-            <div className="card_inner">
-              <img src={dpLink} alt="" />
-              <div className="Name">{name}</div>
-              <div className="userName">{username}</div>
-              <div className="userUrl" />
-              <div className="detail-box">
-                <div className="gitDetail college-field">
-                  <span>College</span>
-                  {user.college ? user.college : "〰〰〰"}
-                </div>
-                <div className="gitDetail">
-                  <span>Gender</span>
-                  {user.gender ? user.gender : "〰〰〰"}
-                </div>
-                <div className="gitDetail">
-                  <span>Age</span>
-                  {user.age ? user.age : "〰〰〰"}
-                </div>
+      <div className="container usercard-container">
+        <div className="card_item">
+          <div className="card_inner">
+            <img src={dpLink} alt="" />
+            <div className="Name">{name}</div>
+            <div className="userName">{username}</div>
+            <div className="userUrl" />
+            <div className="detail-box">
+              <div className="gitDetail college-field">
+                <span>College</span>
+                {user.college ? user.college : "〰〰〰"}
               </div>
-              <button
-                type="button"
-                className="addFriend"
-                onClick={() => handleFollow(user._id)}
-              >
-                Add Friend
-              </button>
+              <div className="gitDetail">
+                <span>Gender</span>
+                {user.gender ? user.gender : "〰〰〰"}
+              </div>
+              <div className="gitDetail">
+                <span>Age</span>
+                {user.age ? user.age : "〰〰〰"}
+              </div>
             </div>
+            <button
+              type="button"
+              className="addFriend"
+              onClick={() => handleFollow(user._id)}
+            >
+              Add Friend
+            </button>
           </div>
         </div>
-      ) : null}
+      </div>
     </>
   );
 }

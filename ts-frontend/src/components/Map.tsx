@@ -24,8 +24,14 @@ import { colleges } from "../constants";
 import { LoginContext } from "../context/LoginContext";
 import { useQLocations } from "../context/QLocationContext";
 import { positions } from "../constants";
+import { ToastContainer } from "react-toastify";
 
 const BASE_API_URI = import.meta.env.VITE_BACKEND_URI;
+
+interface Location {
+  lat: number;
+  lng: number;
+}
 
 export const Map = () => {
   /*
@@ -41,11 +47,17 @@ export const Map = () => {
   const BASE_WS_URI = import.meta.env.VITE_WS_URI;
   const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
 
-  const { socket, locations, sendMessage, openConnection, closeConnection } =
-    useSocket(BASE_WS_URI);
+  const {
+    socket,
+    locations,
+    sendMessage,
+    openConnection,
+    closeConnection,
+    isWsConnected,
+  } = useSocket(BASE_WS_URI);
 
   const [currentUserPosition, setCurrentUserPosition] =
-    useState(getRandomPosition());
+    useState<Location>(getRandomPosition());
 
   if (!apiKey)
     throw new Error("GOOGLE_API_KEY environment variable is not set");
@@ -86,10 +98,33 @@ export const Map = () => {
     }
   };
 
+  const updateCurrentLocation = (position: Location) => {
+    fetch(`${BASE_API_URI}/api/setLocation`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+      },
+      body: JSON.stringify({
+        lat: position.lat,
+        lng: position.lng,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          console.log("Successfully updated current location ...");
+        }
+      })
+      .catch((err) => console.log(err));
+  };
+
   const socketCommSENDLOC = () => {
     if (socket) {
       setTimeout(() => {
-        setCurrentUserPosition(getRandomPosition());
+        // setCurrentUserPosition(getRandomPosition());
+        // const position = getRandomPosition();
+        // setCurrentUserPosition(position);
         sendMessage({
           type: "SEND_LOCATION",
           payload: {
@@ -98,29 +133,8 @@ export const Map = () => {
             position: currentUserPosition,
           },
         });
+        updateCurrentLocation(currentUserPosition);
       }, 5000);
-
-      // setTimeout(() => {
-      //   sendMessage({
-      //     type: "SEND_LOCATION",
-      //     payload: {
-      //       userId: "1b",
-      //       roomId: "202A",
-      //       position: { lat: 22.5726, lng: 88.3639 },
-      //     },
-      //   });
-      // }, 7500);
-
-      // setTimeout(() => {
-      //   sendMessage({
-      //     type: "SEND_LOCATION",
-      //     payload: {
-      //       userId: "1c",
-      //       roomId: "202A",
-      //       position: { lat: 22.5353, lng: 88.3655 },
-      //     },
-      //   });
-      // }, 11000);
     }
   };
 
@@ -189,6 +203,7 @@ export const Map = () => {
         return res.json();
       })
       .then((data) => {
+        console.log("Response raw data : ");
         console.log(data);
         setQLocations(data);
       })
@@ -241,8 +256,11 @@ export const Map = () => {
               zoom={12}
             >
               <Marker
-                key="11111"
-                position={{ lat: adminLocation.lat, lng: adminLocation.lng }}
+                key="1111"
+                position={{
+                  lat: currentUserPosition.lat,
+                  lng: currentUserPosition.lng,
+                }}
               />
               {locations.map((loc, index) => {
                 return (
@@ -416,7 +434,7 @@ export const Map = () => {
                     }}
                     startIcon={<WifiIcon />}
                   >
-                    Connect
+                    {isWsConnected ? "Connected" : "Connect"}
                   </Button>
                   <Button
                     variant="contained"
@@ -427,7 +445,7 @@ export const Map = () => {
                     }}
                     endIcon={<WifiOffIcon />}
                   >
-                    Disconnect
+                    {!isWsConnected ? "Disconnected" : "Disconnect"}
                   </Button>
                 </Stack>
               </div>
@@ -435,7 +453,7 @@ export const Map = () => {
           </Grid>
         )}
       </Grid>
-
+      <ToastContainer autoClose={1000} theme="dark" />
       {/* {socket ? <h1>{latestMessage}</h1> : <Loader />} */}
     </>
   ) : (
