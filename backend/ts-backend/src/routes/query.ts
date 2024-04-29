@@ -5,6 +5,7 @@ import HttpStatusCode from "../types/HttpStatusCode";
 import axios from "axios";
 import bcrypt from "bcryptjs";
 import requireLogin from "../middlewares/requireLogin";
+import { getFriendsOfCurrentUser, getNonFriendsOfCurrentUser } from "../utils";
 
 /*
     {
@@ -15,6 +16,7 @@ import requireLogin from "../middlewares/requireLogin";
         college: string
         gender: string
         age: number
+        isVisible: boolean
     }
 
 */
@@ -29,6 +31,30 @@ const queryRequest = z.object({
   age: z.number(),
   isVisible: z.boolean(),
 });
+
+interface Friend {
+  _id: string;
+  name: string;
+  email: string;
+  age: number;
+  gender: string;
+  college: string;
+  visibility: boolean;
+  Photo: string;
+}
+
+interface NearbyUser {
+  id: string;
+  name: string;
+  email: string;
+  age: number;
+  gender: string;
+  college: string;
+  isvisible: boolean;
+  lat: number;
+  long: number;
+  dist_meters: number;
+}
 
 const LOCATION_BACKEND_URI = process.env.LOCATION_BACKEND_URI;
 
@@ -75,7 +101,7 @@ queryRouter.post(
       return;
     }
     try {
-      const { gender, thresholdDistance, age, college, isVisible } =
+      const { userId, gender, thresholdDistance, age, college, isVisible } =
         parsedPayload.data;
 
       const bearerToken = process.env.BACKEND_INTERCOMMUNICATION_SECRET || "";
@@ -91,7 +117,19 @@ queryRouter.post(
           },
         },
       );
+
       const privacyEntities = response.data;
+      const userIdOftheClientWhoQueried = userId;
+      const friendsOftheClientWhoQueried = (
+        await getFriendsOfCurrentUser(userIdOftheClientWhoQueried)
+      ).users;
+      // const nonFriendsOfTheClientWhoQueried = (await getNonFriendsOfCurrentUser(userIdOftheClientWhoQueried)).users;
+
+      console.log("Queried clients friends: ");
+      console.log(friendsOftheClientWhoQueried);
+
+      // console.log("Queried clients non-friends: ");
+      // console.log(nonFriendsOfTheClientWhoQueried);
 
       /*
 
@@ -104,6 +142,21 @@ queryRouter.post(
         However, if the client is a friend of the user, then we send back the location 
         of that user to the client
 
+
+        Friend and Visible            ---->     Show to the client
+        Friend and Not-Visible        ---->     Show to the client 
+        Non-Friend and Visible        ---->     Show to the client with boundary mask
+        Non-Friend and Not-Visible    ---->     Do not show to the client
+
+      */
+
+      /*
+      
+      Intersection of friendsOftheClientWhoQueried, nonFriendsOfTheClientWhoQueried and privacyEntities
+      on the basis of the matching emailIds goes here. 
+
+      Note that the emailIds are unique and hence uniquely identifies each users.
+      
       */
 
       res.status(HttpStatusCode.OK).json(privacyEntities);
