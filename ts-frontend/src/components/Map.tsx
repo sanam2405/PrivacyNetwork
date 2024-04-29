@@ -186,14 +186,13 @@ export const Map = () => {
         Authorization: `Bearer ${localStorage.getItem("jwt")}`,
       },
       body: JSON.stringify({
-        userId: "Manasass2345w53q46f",
+        userId: currentUserUUID,
         latitude: 22.40456,
         longitude: 88.126,
         thresholdDistance: sliderValue * 1000,
         age,
         gender,
         college,
-        isVisible: true, // pass false if you wish to see the invisible ones
       }),
     })
       .then((res) => {
@@ -276,10 +275,11 @@ export const Map = () => {
               {qLocations.map((loc, index) => {
                 return (
                   loc.lat &&
-                  loc.long && (
+                  loc.lng && (
                     <Marker
                       key={index}
-                      position={{ lat: loc.lat, lng: loc.long }}
+                      position={{ lat: loc.lat, lng: loc.lng }}
+                      animation={google.maps.Animation.DROP}
                     />
                   )
                 );
