@@ -1,8 +1,17 @@
 import { FC, ReactNode, createContext, useContext, useState } from "react";
 
 interface Location {
+  id: string;
+  name: string;
+  email: string;
+  age: number;
+  gender: string;
+  college: string;
   lat: number;
-  long: number;
+  lng: number;
+  dist_meters: number;
+  Photo: string;
+  mask: boolean;
 }
 
 interface QLocationsContextType {

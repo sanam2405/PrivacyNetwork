@@ -165,11 +165,14 @@ queryRouter.post(
           ) {
             // custom JSON object
             const matchedEntity = {
+              id: clientFriend._id,
               name: privacyUser.name,
               email: clientFriend.email,
               age: privacyUser.age,
               gender: privacyUser.gender,
               college: privacyUser.college,
+              lat: privacyUser.lat,
+              lng: privacyUser.long,
               dist_meters: privacyUser.dist_meters,
               Photo: clientFriend.Photo || defaultPicLink,
               mask: false,
@@ -181,11 +184,14 @@ queryRouter.post(
           ) {
             // custom JSON object
             const matchedEntity = {
+              id: clientFriend._id,
               name: privacyUser.name,
               email: clientFriend.email,
               age: privacyUser.age,
               gender: privacyUser.gender,
               college: privacyUser.college,
+              lat: privacyUser.lat,
+              lng: privacyUser.long,
               dist_meters: privacyUser.dist_meters,
               Photo: clientFriend.Photo || defaultPicLink,
               mask: true,
@@ -204,11 +210,14 @@ queryRouter.post(
           ) {
             // custom JSON object
             const matchedEntity = {
+              id: clientNonFriends._id,
               name: privacyUser.name,
               email: clientNonFriends.email,
               age: privacyUser.age,
               gender: privacyUser.gender,
               college: privacyUser.college,
+              lat: privacyUser.lat,
+              lng: privacyUser.long,
               dist_meters: privacyUser.dist_meters,
               Photo: clientNonFriends.Photo || defaultPicLink,
               mask: true,
@@ -221,7 +230,7 @@ queryRouter.post(
       console.log("All the matched entities are : ");
       console.log(matchedEntities);
 
-      res.status(HttpStatusCode.OK).json(privacyEntities);
+      res.status(HttpStatusCode.OK).json(matchedEntities);
       console.log(
         `ALL PRIVACY ${gender} USERS NEARBY WITHIN ${thresholdDistance} meters and age less than ${age} with college ${college}`,
       );
