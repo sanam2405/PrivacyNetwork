@@ -132,9 +132,6 @@ export interface UserDocument extends Document {
  *        gender:
  *          type: string
  *          default: Non Binary
- *        isVisible:
- *          type: boolean
- *          default: true
  *    LocationResponse:
  *      type: array
  *      items:

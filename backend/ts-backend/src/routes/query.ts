@@ -20,6 +20,8 @@ import { getFriendsOfCurrentUser, getNonFriendsOfCurrentUser } from "../utils";
     }
 
 */
+const defaultPicLink =
+  "https://cdn-icons-png.flaticon.com/128/3177/3177440.png";
 
 const queryRequest = z.object({
   userId: z.string(),
@@ -29,21 +31,20 @@ const queryRequest = z.object({
   college: z.string(),
   gender: z.string(),
   age: z.number(),
-  isVisible: z.boolean(),
 });
 
-interface Friend {
-  _id: string;
+interface privacyResponse {
   name: string;
   email: string;
   age: number;
   gender: string;
   college: string;
-  visibility: boolean;
+  dist_meters: number;
   Photo: string;
+  mask: boolean;
 }
 
-interface NearbyUser {
+interface NearbyPrivacyUser {
   id: string;
   name: string;
   email: string;
@@ -101,7 +102,7 @@ queryRouter.post(
       return;
     }
     try {
-      const { userId, gender, thresholdDistance, age, college, isVisible } =
+      const { userId, gender, thresholdDistance, age, college } =
         parsedPayload.data;
 
       const bearerToken = process.env.BACKEND_INTERCOMMUNICATION_SECRET || "";
@@ -123,10 +124,12 @@ queryRouter.post(
       const friendsOftheClientWhoQueried = (
         await getFriendsOfCurrentUser(userIdOftheClientWhoQueried)
       ).users;
-      // const nonFriendsOfTheClientWhoQueried = (await getNonFriendsOfCurrentUser(userIdOftheClientWhoQueried)).users;
+      const nonFriendsOfTheClientWhoQueried = (
+        await getNonFriendsOfCurrentUser(userIdOftheClientWhoQueried)
+      ).users;
 
-      console.log("Queried clients friends: ");
-      console.log(friendsOftheClientWhoQueried);
+      // console.log("Queried clients friends: ");
+      // console.log(friendsOftheClientWhoQueried);
 
       // console.log("Queried clients non-friends: ");
       // console.log(nonFriendsOfTheClientWhoQueried);
@@ -135,18 +138,10 @@ queryRouter.post(
 
         APPLY VISIBILITY & FRIENDs BASED FILTERING BEFORE SENDING LOCs TO THE CLIENT
 
-        If the isVisible is passed as false from the client, we get those user who 
-        have set their visibility as FALSE. Hence, we should not send their locations 
-        to the client.
-
-        However, if the client is a friend of the user, then we send back the location 
-        of that user to the client
-
-
-        Friend and Visible            ---->     Show to the client
-        Friend and Not-Visible        ---->     Show to the client 
-        Non-Friend and Visible        ---->     Show to the client with boundary mask
-        Non-Friend and Not-Visible    ---->     Do not show to the client
+        Friend and Visible            ---->     Show to the client                          mask false
+        Friend and Not-Visible        ---->     Show to the client                          mask false
+        Non-Friend and Visible        ---->     Show to the client with boundary mask       mask true
+        Non-Friend and Not-Visible    ---->     Do not show to the client                   don't send to client
 
       */
 
@@ -156,12 +151,60 @@ queryRouter.post(
       on the basis of the matching emailIds goes here. 
 
       Note that the emailIds are unique and hence uniquely identifies each users.
-      
+
       */
+
+      const matchedEntities: privacyResponse[] = [];
+
+      friendsOftheClientWhoQueried?.forEach((clientFriend) => {
+        privacyEntities.forEach((privacyUser: NearbyPrivacyUser) => {
+          // check for emails match
+          if (clientFriend.email === privacyUser.email) {
+            // custom JSON object
+            const matchedEntity = {
+              name: privacyUser.name,
+              email: clientFriend.email,
+              age: privacyUser.age,
+              gender: privacyUser.gender,
+              college: privacyUser.college,
+              dist_meters: privacyUser.dist_meters,
+              Photo: clientFriend.Photo || defaultPicLink,
+              mask: false,
+            };
+            matchedEntities.push(matchedEntity);
+          }
+        });
+      });
+
+      nonFriendsOfTheClientWhoQueried?.forEach((clientNonFriends) => {
+        privacyEntities.forEach((privacyUser: NearbyPrivacyUser) => {
+          // check for emails match
+          if (
+            clientNonFriends.email === privacyUser.email &&
+            privacyUser.isvisible === true
+          ) {
+            // custom JSON object
+            const matchedEntity = {
+              name: privacyUser.name,
+              email: clientNonFriends.email,
+              age: privacyUser.age,
+              gender: privacyUser.gender,
+              college: privacyUser.college,
+              dist_meters: privacyUser.dist_meters,
+              Photo: clientNonFriends.Photo || defaultPicLink,
+              mask: true,
+            };
+            matchedEntities.push(matchedEntity);
+          }
+        });
+      });
+
+      console.log("All the matched entities are : ");
+      console.log(matchedEntities);
 
       res.status(HttpStatusCode.OK).json(privacyEntities);
       console.log(
-        `PRIVACY ${gender} USERS NEARBY WITHIN ${thresholdDistance} meters and age less than ${age} with college ${college} and visibility set to ${isVisible}`,
+        `ALL PRIVACY ${gender} USERS NEARBY WITHIN ${thresholdDistance} meters and age less than ${age} with college ${college}`,
       );
       console.log(privacyEntities);
     } catch (error) {
