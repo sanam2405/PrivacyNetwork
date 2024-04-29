@@ -251,3 +251,31 @@ export const monthOfTheYear = [
   "November",
   "December",
 ];
+
+export const circleOptionForFriends = {
+  strokeColor: "#0c4a6e",
+  strokeOpacity: 0.8,
+  strokeWeight: 2,
+  fillColor: "#0ea5e9",
+  fillOpacity: 0.35,
+  clickable: true,
+  draggable: false,
+  editable: false,
+  visible: true,
+  radius: 5000,
+  zIndex: 1,
+};
+
+export const circleOptionForNonFriends = {
+  strokeColor: "#FF0000",
+  strokeOpacity: 0.8,
+  strokeWeight: 2,
+  fillColor: "#FF0000",
+  fillOpacity: 0.35,
+  clickable: true,
+  draggable: false,
+  editable: false,
+  visible: true,
+  radius: 5000,
+  zIndex: 1,
+};

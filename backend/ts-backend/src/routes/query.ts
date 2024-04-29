@@ -34,12 +34,15 @@ const queryRequest = z.object({
 });
 
 interface privacyResponse {
+  id: string;
   name: string;
   email: string;
   age: number;
   gender: string;
   college: string;
   dist_meters: number;
+  lat: number;
+  lng: number;
   Photo: string;
   mask: boolean;
 }

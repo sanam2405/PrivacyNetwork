@@ -157,10 +157,11 @@ export const Socket = () => {
   };
 
   const circleOption = {
-    strokeColor: "#FF0000",
+    // strokeColor: "#FF0000",
     strokeOpacity: 0.8,
     strokeWeight: 2,
-    fillColor: "#FF0000",
+    // fillColor: "#FF0000",
+    fillColor: "yellow",
     fillOpacity: 0.35,
     clickable: false,
     draggable: false,
@@ -204,7 +205,7 @@ export const Socket = () => {
                 // animation can take values : google.maps.Animation.DROP or google.maps.Animation.BOUNCE
                 // https://developers.google.com/maps/documentation/javascript/examples/marker-animations
                 position={{ lat: positions[1].lat, lng: positions[1].lng }}
-                animation={google.maps.Animation.DROP}
+                animation={google.maps.Animation.BOUNCE}
               />
 
               <Marker
