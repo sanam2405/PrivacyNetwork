@@ -14,7 +14,13 @@ import WifiOffIcon from "@mui/icons-material/WifiOff";
 import IconButton from "@mui/material/IconButton";
 import Fingerprint from "@mui/icons-material/Fingerprint";
 import { Grid } from "@mui/material";
-import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
+import {
+  Circle,
+  GoogleMap,
+  InfoWindowF,
+  Marker,
+  useJsApiLoader,
+} from "@react-google-maps/api";
 import "../styles/Map.css";
 import useSocket from "../hooks/ws";
 import { useNavigate } from "react-router-dom";
@@ -25,6 +31,11 @@ import { LoginContext } from "../context/LoginContext";
 import { useQLocations } from "../context/QLocationContext";
 import { positions } from "../constants";
 import { ToastContainer } from "react-toastify";
+import User from "../types/types";
+import {
+  circleOptionForFriends,
+  circleOptionForNonFriends,
+} from "../constants";
 
 const BASE_API_URI = import.meta.env.VITE_BACKEND_URI;
 
@@ -74,6 +85,7 @@ export const Map = () => {
     lat: 22.54905,
     lng: 88.37816,
   });
+  const [clickedIndex, setClickedIndex] = useState<number>(-1);
 
   const userDetails = localStorage.getItem("user");
   if (!userDetails) {
@@ -170,6 +182,12 @@ export const Map = () => {
     closeConnection("202A", currentUserUUID);
   };
 
+  const DEFAULT_PROFILE_URL =
+    "https://cdn-icons-png.flaticon.com/128/3177/3177440.png";
+  const DEFAULT_MARKER_PIC =
+    "https://res.cloudinary.com/cantacloud2/image/upload/w_40,h_40,c_scale/v1714413297/hbjh5jqrguqtuvmfr7sl.png";
+
+  const [curruser, setcurrUser] = useState<User>();
   const [age, setAge] = useState(50);
   const [gender, setGender] = useState("Male");
   const [college, setCollege] = useState("Jadavpur University");
@@ -177,6 +195,28 @@ export const Map = () => {
   const [isMinimize, setIsMinimize] = useState<boolean>(false);
 
   const { qLocations, setQLocations } = useQLocations();
+
+  const fetchCurrentUserDetails = () => {
+    const userDetails = localStorage.getItem("user");
+    if (userDetails) {
+      fetch(`${BASE_API_URI}/api/user/${JSON.parse(userDetails)._id}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.error) {
+            console.log(data.error);
+          } else {
+            setcurrUser(data.user);
+            localStorage.setItem("user", JSON.stringify(data.user));
+          }
+        })
+        .catch((err) => console.log(err));
+    }
+  };
 
   const updateDetails = () => {
     fetch(`${BASE_API_URI}/api/query`, {
@@ -206,10 +246,13 @@ export const Map = () => {
         console.log(data);
         setQLocations(data);
       })
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        console.error(err);
+      });
   };
 
   useEffect(() => {
+    fetchCurrentUserDetails();
     setTimeout(() => {
       setIsMinimize(true);
     }, 2500);
@@ -244,6 +287,58 @@ export const Map = () => {
     setModalOpen(true);
   };
 
+  // Image processing and parsing
+  function insertTransformationParams(url: string): string {
+    if (url === DEFAULT_PROFILE_URL) {
+      return DEFAULT_MARKER_PIC;
+    }
+    // Find the index of "/image/upload" in the URL
+    const uploadIndex = url.indexOf("/image/upload");
+    if (uploadIndex !== -1) {
+      const modifiedUrl =
+        url.slice(0, uploadIndex + "/image/upload".length) +
+        "/w_60,h_60,c_scale" +
+        url.slice(uploadIndex + "/image/upload".length);
+      console.log(modifiedUrl);
+      return modifiedUrl;
+    } else {
+      // If "/image/upload" is not found, return the original URL
+      return url;
+    }
+  }
+
+  function ifCurrentUserMyFriend(id: string): boolean {
+    if (curruser?.friends.includes(id)) return true;
+    else return false;
+  }
+
+  function isIDExistInMyLocation(id: string): boolean {
+    const idExistsinLocation = qLocations.filter((loc) => {
+      return loc.id === id;
+    });
+    // console.log("This is the id : ", id);
+    // console.log("Array of locations : ");
+    // console.log(idExistsinLocation);
+    if (idExistsinLocation.length === 0) return false;
+    else return true;
+  }
+
+  const onLoad = (circle: google.maps.Circle) => {
+    console.log("Circle onLoad circle: ", circle);
+  };
+
+  const onUnmount = (circle: google.maps.Circle) => {
+    console.log("Circle onUnmount circle: ", circle);
+  };
+
+  const divStyle = {
+    padding: "20px",
+    border: "2px solid #ccc",
+    borderRadius: "0.33rem",
+    maxWidth: "400px",
+    margin: "auto",
+  };
+
   return isLoaded ? (
     <>
       <Grid container spacing={5}>
@@ -252,15 +347,86 @@ export const Map = () => {
             <GoogleMap
               mapContainerStyle={containerStyle}
               center={currentMapCenter}
-              zoom={12}
+              zoom={9}
             >
               <Marker
-                key="1111"
+                key={9999}
+                onClick={() => {
+                  setClickedIndex(9999);
+                }}
                 position={{
                   lat: currentUserPosition.lat,
                   lng: currentUserPosition.lng,
                 }}
+                icon={{
+                  url: curruser?.Photo
+                    ? insertTransformationParams(curruser?.Photo)
+                    : DEFAULT_PROFILE_URL,
+                  scaledSize: new google.maps.Size(40, 40),
+                  origin: new google.maps.Point(0, 0),
+                  anchor: new google.maps.Point(20, 40),
+                }}
+                animation={google.maps.Animation.BOUNCE}
               />
+              {clickedIndex === 9999 && (
+                <InfoWindowF
+                  position={{
+                    lat: currentUserPosition.lat,
+                    lng: currentUserPosition.lng,
+                  }}
+                  onCloseClick={() => {
+                    setClickedIndex(-1);
+                  }}
+                >
+                  <div style={divStyle}>
+                    <h1
+                      style={{
+                        fontSize: "1rem",
+                        marginBottom: "0.33rem",
+                        fontFamily: "Courier Prime",
+                      }}
+                    >
+                      Name: {curruser?.name}
+                    </h1>
+                    <h1
+                      style={{
+                        fontSize: "1rem",
+                        marginBottom: "0.33rem",
+                        fontFamily: "Courier Prime",
+                      }}
+                    >
+                      Email: {curruser?.email}
+                    </h1>
+                    <h1
+                      style={{
+                        fontSize: "1rem",
+                        marginBottom: "0.33rem",
+                        fontFamily: "Courier Prime",
+                      }}
+                    >
+                      Age: {curruser?.age}
+                    </h1>
+                    <h1
+                      style={{
+                        fontSize: "1rem",
+                        marginBottom: "0.33rem",
+                        fontFamily: "Courier Prime",
+                      }}
+                    >
+                      Gender: {curruser?.gender}
+                    </h1>
+                    <h1
+                      style={{
+                        fontSize: "1rem",
+                        marginBottom: "0.33rem",
+                        fontFamily: "Courier Prime",
+                      }}
+                    >
+                      College: {curruser?.college}
+                    </h1>
+                  </div>
+                </InfoWindowF>
+              )}
               {locations.map((loc, index) => {
                 return (
                   loc.lat &&
@@ -273,16 +439,187 @@ export const Map = () => {
                 );
               })}
               {qLocations.map((loc, index) => {
-                return (
+                if (
                   loc.lat &&
-                  loc.lng && (
-                    <Marker
-                      key={index}
-                      position={{ lat: loc.lat, lng: loc.lng }}
-                      animation={google.maps.Animation.DROP}
-                    />
-                  )
-                );
+                  loc.lng &&
+                  loc.hasOwnProperty("mask") &&
+                  loc.mask === true &&
+                  isIDExistInMyLocation(loc.id)
+                ) {
+                  // Who mark their visibility as false (friends / non-friends)
+                  return (
+                    <>
+                      <Circle
+                        key={index}
+                        onLoad={onLoad}
+                        onCenterChanged={() => {}}
+                        onUnmount={onUnmount}
+                        onClick={() => {
+                          setClickedIndex(index);
+                        }}
+                        // onRightClick={() => {
+                        //   setClickedIndex(index);
+                        // }}
+                        center={{
+                          lat: loc.lat,
+                          lng: loc.lng,
+                        }}
+                        options={
+                          ifCurrentUserMyFriend(loc.id)
+                            ? circleOptionForFriends
+                            : circleOptionForNonFriends
+                        }
+                      />
+                      {clickedIndex === index && (
+                        <InfoWindowF
+                          position={{
+                            lat: loc.lat,
+                            lng: loc.lng,
+                          }}
+                          onCloseClick={() => {
+                            setClickedIndex(-1);
+                          }}
+                        >
+                          <div style={divStyle}>
+                            <h1
+                              style={{
+                                fontSize: "1rem",
+                                marginBottom: "0.33rem",
+                                fontFamily: "Courier Prime",
+                              }}
+                            >
+                              Name: {loc?.name}
+                            </h1>
+                            <h1
+                              style={{
+                                fontSize: "1rem",
+                                marginBottom: "0.33rem",
+                                fontFamily: "Courier Prime",
+                              }}
+                            >
+                              Email: {loc?.email}
+                            </h1>
+                            <h1
+                              style={{
+                                fontSize: "1rem",
+                                marginBottom: "0.33rem",
+                                fontFamily: "Courier Prime",
+                              }}
+                            >
+                              Age: {loc?.age}
+                            </h1>
+                            <h1
+                              style={{
+                                fontSize: "1rem",
+                                marginBottom: "0.33rem",
+                                fontFamily: "Courier Prime",
+                              }}
+                            >
+                              Gender: {loc?.gender}
+                            </h1>
+                            <h1
+                              style={{
+                                fontSize: "1rem",
+                                marginBottom: "0.33rem",
+                                fontFamily: "Courier Prime",
+                              }}
+                            >
+                              College: {loc?.college}
+                            </h1>
+                          </div>
+                        </InfoWindowF>
+                      )}
+                    </>
+                  );
+                } else if (
+                  loc.lat &&
+                  loc.lng &&
+                  loc.hasOwnProperty("mask") &&
+                  loc.mask === false
+                ) {
+                  // Who are friends and mark their visibility as true
+                  return (
+                    <>
+                      <Marker
+                        key={index}
+                        // icon={{
+                        //   url: loc?.Photo
+                        //     ? insertTransformationParams(loc?.Photo)
+                        //     : DEFAULT_MARKER_PIC,
+                        //   scaledSize: new google.maps.Size(40, 40),
+                        //   origin: new google.maps.Point(0, 0),
+                        //   anchor: new google.maps.Point(20, 40),
+                        // }}
+                        position={{ lat: loc.lat, lng: loc.lng }}
+                        label={loc.name[0]}
+                        animation={google.maps.Animation.DROP}
+                        onClick={() => {
+                          setClickedIndex(index);
+                        }}
+                      />
+                      {clickedIndex === index && (
+                        <InfoWindowF
+                          position={{
+                            lat: loc.lat,
+                            lng: loc.lng,
+                          }}
+                          onCloseClick={() => {
+                            setClickedIndex(-1);
+                          }}
+                        >
+                          <div style={divStyle}>
+                            <h1
+                              style={{
+                                fontSize: "1rem",
+                                marginBottom: "0.33rem",
+                                fontFamily: "Courier Prime",
+                              }}
+                            >
+                              Name: {loc?.name}
+                            </h1>
+                            <h1
+                              style={{
+                                fontSize: "1rem",
+                                marginBottom: "0.33rem",
+                                fontFamily: "Courier Prime",
+                              }}
+                            >
+                              Email: {loc?.email}
+                            </h1>
+                            <h1
+                              style={{
+                                fontSize: "1rem",
+                                marginBottom: "0.33rem",
+                                fontFamily: "Courier Prime",
+                              }}
+                            >
+                              Age: {loc?.age}
+                            </h1>
+                            <h1
+                              style={{
+                                fontSize: "1rem",
+                                marginBottom: "0.33rem",
+                                fontFamily: "Courier Prime",
+                              }}
+                            >
+                              Gender: {loc?.gender}
+                            </h1>
+                            <h1
+                              style={{
+                                fontSize: "1rem",
+                                marginBottom: "0.33rem",
+                                fontFamily: "Courier Prime",
+                              }}
+                            >
+                              College: {loc?.college}
+                            </h1>
+                          </div>
+                        </InfoWindowF>
+                      )}
+                    </>
+                  );
+                }
+                // Optionally handle other cases
               })}
             </GoogleMap>
           </div>

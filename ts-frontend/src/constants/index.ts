@@ -236,3 +236,31 @@ export const positions = [
   { lat: 22.109867, lng: 88.320873 },
   { lat: 22.141517, lng: 88.389205 },
 ];
+
+export const circleOptionForFriends = {
+  strokeColor: "#0c4a6e",
+  strokeOpacity: 0.8,
+  strokeWeight: 2,
+  fillColor: "#0ea5e9",
+  fillOpacity: 0.35,
+  clickable: true,
+  draggable: false,
+  editable: false,
+  visible: true,
+  radius: 5000,
+  zIndex: 1,
+};
+
+export const circleOptionForNonFriends = {
+  strokeColor: "#FF0000",
+  strokeOpacity: 0.8,
+  strokeWeight: 2,
+  fillColor: "#FF0000",
+  fillOpacity: 0.35,
+  clickable: true,
+  draggable: false,
+  editable: false,
+  visible: true,
+  radius: 5000,
+  zIndex: 1,
+};
