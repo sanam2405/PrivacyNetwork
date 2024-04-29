@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import "./App.css";
 import { useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import Signup from "./components/Signup";
 import Login from "./components/Login";
@@ -39,6 +39,7 @@ function App() {
                 <Route path="/feed" element={<Feed />} />
                 <Route path="/map" element={<Client />} />
                 <Route path="/socket" element={<Socket />} />
+                <Route path="*" element={<Navigate to="/auth" />} />
               </Routes>
             </BrowserRouter>
             {modalOpen ? <LogoutModal /> : ""}
@@ -56,6 +57,7 @@ function App() {
               <Route path="/feed" element={<Feed />} />
               <Route path="/map" element={<Client />} />
               <Route path="/socket" element={<Socket />} />
+              <Route path="*" element={<Navigate to="/auth" />} />
             </Routes>
           </BrowserRouter>
           {modalOpen ? <LogoutModal /> : ""}
