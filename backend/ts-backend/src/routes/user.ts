@@ -251,7 +251,7 @@ userRouter.get(
       if (!currentUser) {
         return res
           .status(HttpStatusCode.NOT_FOUND)
-          .json({ error: "User not found" });
+          .json({ error: "Current user has not friends" });
       }
 
       // Extract friends' IDs
@@ -302,7 +302,7 @@ userRouter.get(
       if (!currentUser) {
         return res
           .status(HttpStatusCode.NOT_FOUND)
-          .json({ error: "User not found" });
+          .json({ error: "Current user has no non-friends" });
       }
 
       // Extract friends' IDs
