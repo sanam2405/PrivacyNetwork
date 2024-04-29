@@ -6,7 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 // import { GoogleLogin, GoogleLoginProps } from '@react-oauth/google'
 // import jwtDecode from 'jwt-decode'
 // import { LoginContext } from '../context/LoginContext'
-import logo from "../../public/images/sign-up.png";
+import logo from "/sign-up.png";
 import HttpStatusCode from "../types/HttpStatusCode";
 import Loader from "./Loader";
 

@@ -10,6 +10,7 @@ import Client from "./components/Client";
 import LogoutModal from "./components/LogoutModal";
 import { LoginContext } from "./context/LoginContext";
 import { Socket } from "./components/Socket";
+import { Feed } from "./pages/Feed";
 // import 'dotenv/config';
 
 // require('dotenv').config()
@@ -35,6 +36,7 @@ function App() {
                 <Route path="/" element={<Signup />} />
                 <Route path="/auth" element={<Login />} />
                 <Route path="/dashboard" element={<FriendsPage />} />
+                <Route path="/feed" element={<Feed />} />
                 <Route path="/map" element={<Client />} />
                 <Route path="/socket" element={<Socket />} />
               </Routes>
@@ -51,6 +53,7 @@ function App() {
               <Route path="/" element={<Signup />} />
               <Route path="/auth" element={<Login />} />
               <Route path="/dashboard" element={<FriendsPage />} />
+              <Route path="/feed" element={<Feed />} />
               <Route path="/map" element={<Client />} />
               <Route path="/socket" element={<Socket />} />
             </Routes>

@@ -121,3 +121,18 @@ export const colleges = [
     label: "Kalyani University",
   },
 ];
+
+export const monthOfTheYear = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
