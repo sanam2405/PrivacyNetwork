@@ -139,7 +139,7 @@ queryRouter.post(
         APPLY VISIBILITY & FRIENDs BASED FILTERING BEFORE SENDING LOCs TO THE CLIENT
 
         Friend and Visible            ---->     Show to the client                          mask false
-        Friend and Not-Visible        ---->     Show to the client                          mask false
+        Friend and Not-Visible        ---->     Show to the client                          mask true
         Non-Friend and Visible        ---->     Show to the client with boundary mask       mask true
         Non-Friend and Not-Visible    ---->     Do not show to the client                   don't send to client
 
@@ -159,7 +159,10 @@ queryRouter.post(
       friendsOftheClientWhoQueried?.forEach((clientFriend) => {
         privacyEntities.forEach((privacyUser: NearbyPrivacyUser) => {
           // check for emails match
-          if (clientFriend.email === privacyUser.email) {
+          if (
+            clientFriend.email === privacyUser.email &&
+            privacyUser.isvisible === true
+          ) {
             // custom JSON object
             const matchedEntity = {
               name: privacyUser.name,
@@ -170,6 +173,22 @@ queryRouter.post(
               dist_meters: privacyUser.dist_meters,
               Photo: clientFriend.Photo || defaultPicLink,
               mask: false,
+            };
+            matchedEntities.push(matchedEntity);
+          } else if (
+            clientFriend.email === privacyUser.email &&
+            privacyUser.isvisible === false
+          ) {
+            // custom JSON object
+            const matchedEntity = {
+              name: privacyUser.name,
+              email: clientFriend.email,
+              age: privacyUser.age,
+              gender: privacyUser.gender,
+              college: privacyUser.college,
+              dist_meters: privacyUser.dist_meters,
+              Photo: clientFriend.Photo || defaultPicLink,
+              mask: true,
             };
             matchedEntities.push(matchedEntity);
           }
