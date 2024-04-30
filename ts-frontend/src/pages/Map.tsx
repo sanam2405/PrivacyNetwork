@@ -17,7 +17,6 @@ import { Grid } from "@mui/material";
 import {
   Circle,
   GoogleMap,
-  InfoWindowF,
   Marker,
   useJsApiLoader,
 } from "@react-google-maps/api";
@@ -29,12 +28,15 @@ import { genders } from "../constants";
 import { colleges } from "../constants";
 import { LoginContext } from "../context/LoginContext";
 import { useQLocations } from "../context/QLocationContext";
+import DetailsDialogBox, { Details } from "../components/DetailsDialogBox";
 import { positions } from "../constants";
 import { ToastContainer } from "react-toastify";
 import User from "../types/types";
 import {
   circleOptionForFriends,
   circleOptionForNonFriends,
+  DEFAULT_MARKER_PIC,
+  DEFAULT_PROFILE_URL,
 } from "../constants";
 
 const BASE_API_URI = import.meta.env.VITE_BACKEND_URI;
@@ -45,6 +47,7 @@ interface Location {
 }
 
 export const Map = () => {
+  const navigate = useNavigate();
   /*
         RANDOM POSITION GENERATOR
   */
@@ -53,8 +56,6 @@ export const Map = () => {
     const randomIndex = Math.floor(Math.random() * positions.length);
     return positions[randomIndex];
   };
-
-  const navigate = useNavigate();
   const BASE_WS_URI = import.meta.env.VITE_WS_URI;
   const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
 
@@ -67,8 +68,7 @@ export const Map = () => {
     isWsConnected,
   } = useSocket(BASE_WS_URI);
 
-  const [currentUserPosition, setCurrentUserPosition] =
-    useState<Location>(getRandomPosition());
+  const [currentUserPosition] = useState<Location>(getRandomPosition());
 
   if (!apiKey)
     throw new Error("GOOGLE_API_KEY environment variable is not set");
@@ -78,10 +78,6 @@ export const Map = () => {
     googleMapsApiKey: apiKey,
   });
   const [currentMapCenter] = useState({
-    lat: 22.54905,
-    lng: 88.37816,
-  });
-  const [adminLocation] = useState({
     lat: 22.54905,
     lng: 88.37816,
   });
@@ -168,6 +164,12 @@ export const Map = () => {
     };
   }, [socket]);
 
+  useEffect(() => {
+    if (!localStorage.getItem("user")) {
+      navigate("/auth");
+    }
+  }, []);
+
   const handleSocketConnection = () => {
     // first close if already soc conn exist
 
@@ -182,10 +184,9 @@ export const Map = () => {
     closeConnection("202A", currentUserUUID);
   };
 
-  const DEFAULT_PROFILE_URL =
-    "https://cdn-icons-png.flaticon.com/128/3177/3177440.png";
-  const DEFAULT_MARKER_PIC =
-    "https://res.cloudinary.com/cantacloud2/image/upload/w_40,h_40,c_scale/v1714413297/hbjh5jqrguqtuvmfr7sl.png";
+  const handleCloseDialogBox = () => {
+    setClickedIndex(-1);
+  };
 
   const [curruser, setcurrUser] = useState<User>();
   const [age, setAge] = useState(50);
@@ -218,7 +219,7 @@ export const Map = () => {
     }
   };
 
-  const updateDetails = () => {
+  const updateDetailsOfQueriedUsers = () => {
     fetch(`${BASE_API_URI}/api/query`, {
       method: "POST",
       headers: {
@@ -331,14 +332,6 @@ export const Map = () => {
     console.log("Circle onUnmount circle: ", circle);
   };
 
-  const divStyle = {
-    padding: "20px",
-    border: "2px solid #ccc",
-    borderRadius: "0.33rem",
-    maxWidth: "400px",
-    margin: "auto",
-  };
-
   return isLoaded ? (
     <>
       <Grid container spacing={5}>
@@ -350,9 +343,9 @@ export const Map = () => {
               zoom={9}
             >
               <Marker
-                key={9999}
+                key={qLocations.length}
                 onClick={() => {
-                  setClickedIndex(9999);
+                  setClickedIndex(qLocations.length);
                 }}
                 position={{
                   lat: currentUserPosition.lat,
@@ -368,64 +361,15 @@ export const Map = () => {
                 }}
                 animation={google.maps.Animation.BOUNCE}
               />
-              {clickedIndex === 9999 && (
-                <InfoWindowF
+              {clickedIndex === qLocations.length && (
+                <DetailsDialogBox
+                  details={curruser as Details}
                   position={{
                     lat: currentUserPosition.lat,
                     lng: currentUserPosition.lng,
                   }}
-                  onCloseClick={() => {
-                    setClickedIndex(-1);
-                  }}
-                >
-                  <div style={divStyle}>
-                    <h1
-                      style={{
-                        fontSize: "1rem",
-                        marginBottom: "0.33rem",
-                        fontFamily: "Courier Prime",
-                      }}
-                    >
-                      Name: {curruser?.name}
-                    </h1>
-                    <h1
-                      style={{
-                        fontSize: "1rem",
-                        marginBottom: "0.33rem",
-                        fontFamily: "Courier Prime",
-                      }}
-                    >
-                      Email: {curruser?.email}
-                    </h1>
-                    <h1
-                      style={{
-                        fontSize: "1rem",
-                        marginBottom: "0.33rem",
-                        fontFamily: "Courier Prime",
-                      }}
-                    >
-                      Age: {curruser?.age}
-                    </h1>
-                    <h1
-                      style={{
-                        fontSize: "1rem",
-                        marginBottom: "0.33rem",
-                        fontFamily: "Courier Prime",
-                      }}
-                    >
-                      Gender: {curruser?.gender}
-                    </h1>
-                    <h1
-                      style={{
-                        fontSize: "1rem",
-                        marginBottom: "0.33rem",
-                        fontFamily: "Courier Prime",
-                      }}
-                    >
-                      College: {curruser?.college}
-                    </h1>
-                  </div>
-                </InfoWindowF>
+                  handleCloseDialogBox={handleCloseDialogBox}
+                />
               )}
               {locations.map((loc, index) => {
                 return (
@@ -457,9 +401,6 @@ export const Map = () => {
                         onClick={() => {
                           setClickedIndex(index);
                         }}
-                        // onRightClick={() => {
-                        //   setClickedIndex(index);
-                        // }}
                         center={{
                           lat: loc.lat,
                           lng: loc.lng,
@@ -471,63 +412,11 @@ export const Map = () => {
                         }
                       />
                       {clickedIndex === index && (
-                        <InfoWindowF
-                          position={{
-                            lat: loc.lat,
-                            lng: loc.lng,
-                          }}
-                          onCloseClick={() => {
-                            setClickedIndex(-1);
-                          }}
-                        >
-                          <div style={divStyle}>
-                            <h1
-                              style={{
-                                fontSize: "1rem",
-                                marginBottom: "0.33rem",
-                                fontFamily: "Courier Prime",
-                              }}
-                            >
-                              Name: {loc?.name}
-                            </h1>
-                            <h1
-                              style={{
-                                fontSize: "1rem",
-                                marginBottom: "0.33rem",
-                                fontFamily: "Courier Prime",
-                              }}
-                            >
-                              Email: {loc?.email}
-                            </h1>
-                            <h1
-                              style={{
-                                fontSize: "1rem",
-                                marginBottom: "0.33rem",
-                                fontFamily: "Courier Prime",
-                              }}
-                            >
-                              Age: {loc?.age}
-                            </h1>
-                            <h1
-                              style={{
-                                fontSize: "1rem",
-                                marginBottom: "0.33rem",
-                                fontFamily: "Courier Prime",
-                              }}
-                            >
-                              Gender: {loc?.gender}
-                            </h1>
-                            <h1
-                              style={{
-                                fontSize: "1rem",
-                                marginBottom: "0.33rem",
-                                fontFamily: "Courier Prime",
-                              }}
-                            >
-                              College: {loc?.college}
-                            </h1>
-                          </div>
-                        </InfoWindowF>
+                        <DetailsDialogBox
+                          details={loc}
+                          position={{ lat: loc.lat, lng: loc.lng }}
+                          handleCloseDialogBox={handleCloseDialogBox}
+                        />
                       )}
                     </>
                   );
@@ -558,63 +447,11 @@ export const Map = () => {
                         }}
                       />
                       {clickedIndex === index && (
-                        <InfoWindowF
-                          position={{
-                            lat: loc.lat,
-                            lng: loc.lng,
-                          }}
-                          onCloseClick={() => {
-                            setClickedIndex(-1);
-                          }}
-                        >
-                          <div style={divStyle}>
-                            <h1
-                              style={{
-                                fontSize: "1rem",
-                                marginBottom: "0.33rem",
-                                fontFamily: "Courier Prime",
-                              }}
-                            >
-                              Name: {loc?.name}
-                            </h1>
-                            <h1
-                              style={{
-                                fontSize: "1rem",
-                                marginBottom: "0.33rem",
-                                fontFamily: "Courier Prime",
-                              }}
-                            >
-                              Email: {loc?.email}
-                            </h1>
-                            <h1
-                              style={{
-                                fontSize: "1rem",
-                                marginBottom: "0.33rem",
-                                fontFamily: "Courier Prime",
-                              }}
-                            >
-                              Age: {loc?.age}
-                            </h1>
-                            <h1
-                              style={{
-                                fontSize: "1rem",
-                                marginBottom: "0.33rem",
-                                fontFamily: "Courier Prime",
-                              }}
-                            >
-                              Gender: {loc?.gender}
-                            </h1>
-                            <h1
-                              style={{
-                                fontSize: "1rem",
-                                marginBottom: "0.33rem",
-                                fontFamily: "Courier Prime",
-                              }}
-                            >
-                              College: {loc?.college}
-                            </h1>
-                          </div>
-                        </InfoWindowF>
+                        <DetailsDialogBox
+                          details={loc}
+                          position={{ lat: loc.lat, lng: loc.lng }}
+                          handleCloseDialogBox={handleCloseDialogBox}
+                        />
                       )}
                     </>
                   );
@@ -737,23 +574,12 @@ export const Map = () => {
                 alignItems={"center"}
                 height={100}
               >
-                {/* <Button
-                  variant="outlined"
-                  color="error"
-                  size="large"
-                  onClick={() => {
-                    updateDetails();
-                  }}
-                  sx={{ marginTop: 2 }} // Add margin-top to separate from the slider
-                >
-                  Query
-                </Button> */}
                 <IconButton
                   aria-label="fingerprint"
                   color="secondary"
                   size="large"
                   onClick={() => {
-                    updateDetails();
+                    updateDetailsOfQueriedUsers();
                   }}
                   sx={{ marginTop: 2 }}
                 >
