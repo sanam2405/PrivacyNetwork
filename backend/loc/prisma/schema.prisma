@@ -9,22 +9,22 @@ datasource db {
 }
 
 model Location {
-  id        String   @id @default(dbgenerated("gen_random_uuid()"))
-  latitude  Float?
-  longitude Float?
-  createdAt DateTime @default(now())
-  updatedAt DateTime
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  latitude  Float
+  longitude Float
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @db.Timestamp(6)
   users     User[]
 }
 
 model User {
-  id         String    @id @default(dbgenerated("gen_random_uuid()"))
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name       String
-  email      String
+  email      String    @unique
   age        Float
   gender     String
   college    String
   isVisible  Boolean
-  locationId String?
-  location   Location? @relation(fields: [locationId], references: [id])
+  locationId String?   @db.Uuid
+  location   Location? @relation(fields: [locationId], references: [id], onDelete: Cascade)
 }
