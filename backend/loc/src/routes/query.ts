@@ -1,7 +1,8 @@
 import express, { Request, Response } from "express";
 import z from "zod";
 import HttpStatusCode from "../types/HttpStatusCode";
-import { getPrivacyEntitiesWithVisibility } from "../query";
+import { getPrivacyEntities } from "../query";
+// import { getPrivacyEntitiesWithVisibility } from "../query";
 import { interBackendAccess } from "../middlewares/interBackendAccess";
 
 /*
@@ -25,7 +26,6 @@ const queryRequest = z.object({
   college: z.string(),
   gender: z.string(),
   age: z.number(),
-  isVisible: z.boolean(),
 });
 
 const queryRouter = express.Router();
@@ -56,34 +56,49 @@ queryRouter.post(
       college,
       age,
       gender,
-      isVisible,
     } = parsedPayload.data;
 
     const entityType = "user";
 
-    const privacyEntitiesWithVisibility =
-      await getPrivacyEntitiesWithVisibility(
-        latitude,
-        longitude,
-        thresholdDistance,
-        age,
-        college,
-        gender,
-        isVisible,
-        entityType,
-      );
+    // const privacyEntitiesWithVisibility =
+    //   await getPrivacyEntitiesWithVisibility(
+    //     latitude,
+    //     longitude,
+    //     thresholdDistance,
+    //     age,
+    //     college,
+    //     gender,
+    //     isVisible,
+    //     entityType,
+    //   );
 
-    if (!privacyEntitiesWithVisibility) {
+    // if (!privacyEntitiesWithVisibility) {
+    //   res.status(HttpStatusCode.BAD_REQUEST).json({
+    //     msg: "The backend could not run queries on the location database",
+    //   });
+    // }
+
+    const privacyEntities = await getPrivacyEntities(
+      latitude,
+      longitude,
+      thresholdDistance,
+      age,
+      college,
+      gender,
+      entityType,
+    );
+
+    if (!privacyEntities) {
       res.status(HttpStatusCode.BAD_REQUEST).json({
         msg: "The backend could not run queries on the location database",
       });
     }
 
-    res.status(HttpStatusCode.OK).json(privacyEntitiesWithVisibility);
+    res.status(HttpStatusCode.OK).json(privacyEntities);
     console.log(
-      `PRIVACY ${gender} USERS NEARBY WITHIN ${thresholdDistance} meters and age less than ${age} with college ${college} and visibility set to ${isVisible}`,
+      `PRIVACY ${gender} USERS NEARBY WITHIN ${thresholdDistance} meters and age less than ${age} with college ${college}`,
     );
-    console.log(privacyEntitiesWithVisibility);
+    console.log(privacyEntities);
   },
 );
 

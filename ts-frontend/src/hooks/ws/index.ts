@@ -2,13 +2,23 @@
 /* eslint-disable no-extra-boolean-cast */
 import { useState, useEffect } from "react";
 import { useLocations } from "../../context/LocationContext";
+// import { toast } from "react-toastify";
 const CLIENT_HEARTBEAT_TIMEOUT = 1000 * 5 + 1000 * 60; // 5 + 60 second (timeout + buffer time for server response)
 const CLIENT_HEARTBEAT_VALUE = 1;
 
 const useSocket = (url: string) => {
   const [socket, setSocket] = useState<WebSocketExt | null>(null);
+  const [isWsConnected, setIsWsConnected] = useState<boolean>(false);
   const [latestMessage, setLatestMessage] = useState("");
   const { locations, setLocations } = useLocations();
+  const { locationsUserIdSet, setLocationsUserIdSet } = useLocations();
+
+  // const notifyA = (message: string): void => {
+  //   toast.success(message);
+  // };
+  // const notifyB = (message: string): void => {
+  //   toast.error(message);
+  // };
 
   useEffect(() => {
     if (socket) {
@@ -54,6 +64,20 @@ const useSocket = (url: string) => {
           console.log(
             `USER = ${userId}, from ROOM = ${roomId}, has disconnected`,
           );
+          console.log("Previous Locations : ");
+          console.log(locations);
+          const newLocations = locations.filter((loc) => {
+            return userId !== loc.userId;
+          });
+          const userKey = userId.toString();
+          if (locationsUserIdSet.has(userKey)) {
+            console.log("Its my time to leave the world ...");
+            locationsUserIdSet.delete(userKey);
+            setLocationsUserIdSet(locationsUserIdSet);
+          }
+          console.log("After locations : ");
+          console.log(newLocations);
+          setLocations(newLocations);
         }
 
         if (userMessage) {
@@ -64,7 +88,24 @@ const useSocket = (url: string) => {
 
         if (position) {
           const { lat, lng } = position;
-          setLocations((prevLocations) => [...prevLocations, { lat, lng }]);
+          // Update state
+          // also give a check at hashset
+          const userKey = userId.toString();
+          if (!locationsUserIdSet.has(userKey)) {
+            console.log("User id is completely new to set ...");
+            setLocations((prevLocations) => [
+              ...prevLocations,
+              { userId, lat, lng },
+            ]);
+            locationsUserIdSet.add(userKey);
+            setLocationsUserIdSet(locationsUserIdSet);
+            setTimeout(() => {
+              console.log("Position : ");
+              console.log(position);
+              console.log("Location array after updation : ");
+              console.log(locations);
+            }, 2000);
+          }
         }
 
         if (HEARTBEAT_VALUE) {
@@ -77,7 +118,7 @@ const useSocket = (url: string) => {
     }
 
     return () => {};
-  }, [socket, setLocations]);
+  }, [socket, locations]);
 
   function heartbeat() {
     if (!socket) {
@@ -114,6 +155,7 @@ const useSocket = (url: string) => {
           },
         }),
       );
+      setLocations([]);
       socket.close();
     }
   }
@@ -147,6 +189,8 @@ const useSocket = (url: string) => {
     sendMessage,
     openConnection,
     closeConnection,
+    isWsConnected,
+    setIsWsConnected,
   };
 };
 

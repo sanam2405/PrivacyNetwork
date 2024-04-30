@@ -14,7 +14,12 @@ import WifiOffIcon from "@mui/icons-material/WifiOff";
 import IconButton from "@mui/material/IconButton";
 import Fingerprint from "@mui/icons-material/Fingerprint";
 import { Grid } from "@mui/material";
-import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
+import {
+  Circle,
+  GoogleMap,
+  Marker,
+  useJsApiLoader,
+} from "@react-google-maps/api";
 import "../styles/Map.css";
 import useSocket from "../hooks/ws";
 import { useNavigate } from "react-router-dom";
@@ -23,11 +28,26 @@ import { genders } from "../constants";
 import { colleges } from "../constants";
 import { LoginContext } from "../context/LoginContext";
 import { useQLocations } from "../context/QLocationContext";
+import DetailsDialogBox, { Details } from "../components/DetailsDialogBox";
 import { positions } from "../constants";
+import { ToastContainer } from "react-toastify";
+import User from "../types/types";
+import {
+  circleOptionForFriends,
+  circleOptionForNonFriends,
+  DEFAULT_MARKER_PIC,
+  DEFAULT_PROFILE_URL,
+} from "../constants";
 
 const BASE_API_URI = import.meta.env.VITE_BACKEND_URI;
 
+interface Location {
+  lat: number;
+  lng: number;
+}
+
 export const Map = () => {
+  const navigate = useNavigate();
   /*
         RANDOM POSITION GENERATOR
   */
@@ -36,16 +56,19 @@ export const Map = () => {
     const randomIndex = Math.floor(Math.random() * positions.length);
     return positions[randomIndex];
   };
-
-  const navigate = useNavigate();
   const BASE_WS_URI = import.meta.env.VITE_WS_URI;
   const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
 
-  const { socket, locations, sendMessage, openConnection, closeConnection } =
-    useSocket(BASE_WS_URI);
+  const {
+    socket,
+    locations,
+    sendMessage,
+    openConnection,
+    closeConnection,
+    isWsConnected,
+  } = useSocket(BASE_WS_URI);
 
-  const [currentUserPosition, setCurrentUserPosition] =
-    useState(getRandomPosition());
+  const [currentUserPosition] = useState<Location>(getRandomPosition());
 
   if (!apiKey)
     throw new Error("GOOGLE_API_KEY environment variable is not set");
@@ -58,10 +81,7 @@ export const Map = () => {
     lat: 22.54905,
     lng: 88.37816,
   });
-  const [adminLocation] = useState({
-    lat: 22.54905,
-    lng: 88.37816,
-  });
+  const [clickedIndex, setClickedIndex] = useState<number>(-1);
 
   const userDetails = localStorage.getItem("user");
   if (!userDetails) {
@@ -86,10 +106,33 @@ export const Map = () => {
     }
   };
 
+  const updateCurrentLocation = (position: Location) => {
+    fetch(`${BASE_API_URI}/api/setLocation`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+      },
+      body: JSON.stringify({
+        lat: position.lat,
+        lng: position.lng,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          console.log("Successfully updated current location ...");
+        }
+      })
+      .catch((err) => console.log(err));
+  };
+
   const socketCommSENDLOC = () => {
     if (socket) {
       setTimeout(() => {
-        setCurrentUserPosition(getRandomPosition());
+        // setCurrentUserPosition(getRandomPosition());
+        // const position = getRandomPosition();
+        // setCurrentUserPosition(position);
         sendMessage({
           type: "SEND_LOCATION",
           payload: {
@@ -98,29 +141,8 @@ export const Map = () => {
             position: currentUserPosition,
           },
         });
+        updateCurrentLocation(currentUserPosition);
       }, 5000);
-
-      // setTimeout(() => {
-      //   sendMessage({
-      //     type: "SEND_LOCATION",
-      //     payload: {
-      //       userId: "1b",
-      //       roomId: "202A",
-      //       position: { lat: 22.5726, lng: 88.3639 },
-      //     },
-      //   });
-      // }, 7500);
-
-      // setTimeout(() => {
-      //   sendMessage({
-      //     type: "SEND_LOCATION",
-      //     payload: {
-      //       userId: "1c",
-      //       roomId: "202A",
-      //       position: { lat: 22.5353, lng: 88.3655 },
-      //     },
-      //   });
-      // }, 11000);
     }
   };
 
@@ -142,6 +164,12 @@ export const Map = () => {
     };
   }, [socket]);
 
+  useEffect(() => {
+    if (!localStorage.getItem("user")) {
+      navigate("/auth");
+    }
+  }, []);
+
   const handleSocketConnection = () => {
     // first close if already soc conn exist
 
@@ -156,6 +184,11 @@ export const Map = () => {
     closeConnection("202A", currentUserUUID);
   };
 
+  const handleCloseDialogBox = () => {
+    setClickedIndex(-1);
+  };
+
+  const [curruser, setcurrUser] = useState<User>();
   const [age, setAge] = useState(50);
   const [gender, setGender] = useState("Male");
   const [college, setCollege] = useState("Jadavpur University");
@@ -164,7 +197,29 @@ export const Map = () => {
 
   const { qLocations, setQLocations } = useQLocations();
 
-  const updateDetails = () => {
+  const fetchCurrentUserDetails = () => {
+    const userDetails = localStorage.getItem("user");
+    if (userDetails) {
+      fetch(`${BASE_API_URI}/api/user/${JSON.parse(userDetails)._id}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.error) {
+            console.log(data.error);
+          } else {
+            setcurrUser(data.user);
+            localStorage.setItem("user", JSON.stringify(data.user));
+          }
+        })
+        .catch((err) => console.log(err));
+    }
+  };
+
+  const updateDetailsOfQueriedUsers = () => {
     fetch(`${BASE_API_URI}/api/query`, {
       method: "POST",
       headers: {
@@ -172,14 +227,13 @@ export const Map = () => {
         Authorization: `Bearer ${localStorage.getItem("jwt")}`,
       },
       body: JSON.stringify({
-        userId: "Manasass2345w53q46f",
+        userId: currentUserUUID,
         latitude: 22.40456,
         longitude: 88.126,
         thresholdDistance: sliderValue * 1000,
         age,
         gender,
         college,
-        isVisible: true, // pass false if you wish to see the invisible ones
       }),
     })
       .then((res) => {
@@ -189,13 +243,17 @@ export const Map = () => {
         return res.json();
       })
       .then((data) => {
+        console.log("Response raw data : ");
         console.log(data);
         setQLocations(data);
       })
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        console.error(err);
+      });
   };
 
   useEffect(() => {
+    fetchCurrentUserDetails();
     setTimeout(() => {
       setIsMinimize(true);
     }, 2500);
@@ -230,6 +288,50 @@ export const Map = () => {
     setModalOpen(true);
   };
 
+  // Image processing and parsing
+  function insertTransformationParams(url: string): string {
+    if (url === DEFAULT_PROFILE_URL) {
+      return DEFAULT_MARKER_PIC;
+    }
+    // Find the index of "/image/upload" in the URL
+    const uploadIndex = url.indexOf("/image/upload");
+    if (uploadIndex !== -1) {
+      const modifiedUrl =
+        url.slice(0, uploadIndex + "/image/upload".length) +
+        "/w_60,h_60,c_scale" +
+        url.slice(uploadIndex + "/image/upload".length);
+      console.log(modifiedUrl);
+      return modifiedUrl;
+    } else {
+      // If "/image/upload" is not found, return the original URL
+      return url;
+    }
+  }
+
+  function ifCurrentUserMyFriend(id: string): boolean {
+    if (curruser?.friends.includes(id)) return true;
+    else return false;
+  }
+
+  function isIDExistInMyLocation(id: string): boolean {
+    const idExistsinLocation = qLocations.filter((loc) => {
+      return loc.id === id;
+    });
+    // console.log("This is the id : ", id);
+    // console.log("Array of locations : ");
+    // console.log(idExistsinLocation);
+    if (idExistsinLocation.length === 0) return false;
+    else return true;
+  }
+
+  const onLoad = (circle: google.maps.Circle) => {
+    console.log("Circle onLoad circle: ", circle);
+  };
+
+  const onUnmount = (circle: google.maps.Circle) => {
+    console.log("Circle onUnmount circle: ", circle);
+  };
+
   return isLoaded ? (
     <>
       <Grid container spacing={5}>
@@ -238,12 +340,37 @@ export const Map = () => {
             <GoogleMap
               mapContainerStyle={containerStyle}
               center={currentMapCenter}
-              zoom={12}
+              zoom={9}
             >
               <Marker
-                key="11111"
-                position={{ lat: adminLocation.lat, lng: adminLocation.lng }}
+                key={qLocations.length}
+                onClick={() => {
+                  setClickedIndex(qLocations.length);
+                }}
+                position={{
+                  lat: currentUserPosition.lat,
+                  lng: currentUserPosition.lng,
+                }}
+                icon={{
+                  url: curruser?.Photo
+                    ? insertTransformationParams(curruser?.Photo)
+                    : DEFAULT_PROFILE_URL,
+                  scaledSize: new google.maps.Size(40, 40),
+                  origin: new google.maps.Point(0, 0),
+                  anchor: new google.maps.Point(20, 40),
+                }}
+                animation={google.maps.Animation.BOUNCE}
               />
+              {clickedIndex === qLocations.length && (
+                <DetailsDialogBox
+                  details={curruser as Details}
+                  position={{
+                    lat: currentUserPosition.lat,
+                    lng: currentUserPosition.lng,
+                  }}
+                  handleCloseDialogBox={handleCloseDialogBox}
+                />
+              )}
               {locations.map((loc, index) => {
                 return (
                   loc.lat &&
@@ -256,15 +383,80 @@ export const Map = () => {
                 );
               })}
               {qLocations.map((loc, index) => {
-                return (
+                if (
                   loc.lat &&
-                  loc.long && (
-                    <Marker
-                      key={index}
-                      position={{ lat: loc.lat, lng: loc.long }}
-                    />
-                  )
-                );
+                  loc.lng &&
+                  loc.hasOwnProperty("mask") &&
+                  loc.mask === true &&
+                  isIDExistInMyLocation(loc.id)
+                ) {
+                  // Who mark their visibility as false (friends / non-friends)
+                  return (
+                    <>
+                      <Circle
+                        key={index}
+                        onLoad={onLoad}
+                        onCenterChanged={() => {}}
+                        onUnmount={onUnmount}
+                        onClick={() => {
+                          setClickedIndex(index);
+                        }}
+                        center={{
+                          lat: loc.lat,
+                          lng: loc.lng,
+                        }}
+                        options={
+                          ifCurrentUserMyFriend(loc.id)
+                            ? circleOptionForFriends
+                            : circleOptionForNonFriends
+                        }
+                      />
+                      {clickedIndex === index && (
+                        <DetailsDialogBox
+                          details={loc}
+                          position={{ lat: loc.lat, lng: loc.lng }}
+                          handleCloseDialogBox={handleCloseDialogBox}
+                        />
+                      )}
+                    </>
+                  );
+                } else if (
+                  loc.lat &&
+                  loc.lng &&
+                  loc.hasOwnProperty("mask") &&
+                  loc.mask === false
+                ) {
+                  // Who are friends and mark their visibility as true
+                  return (
+                    <>
+                      <Marker
+                        key={index}
+                        // icon={{
+                        //   url: loc?.Photo
+                        //     ? insertTransformationParams(loc?.Photo)
+                        //     : DEFAULT_MARKER_PIC,
+                        //   scaledSize: new google.maps.Size(40, 40),
+                        //   origin: new google.maps.Point(0, 0),
+                        //   anchor: new google.maps.Point(20, 40),
+                        // }}
+                        position={{ lat: loc.lat, lng: loc.lng }}
+                        label={loc.name[0]}
+                        animation={google.maps.Animation.DROP}
+                        onClick={() => {
+                          setClickedIndex(index);
+                        }}
+                      />
+                      {clickedIndex === index && (
+                        <DetailsDialogBox
+                          details={loc}
+                          position={{ lat: loc.lat, lng: loc.lng }}
+                          handleCloseDialogBox={handleCloseDialogBox}
+                        />
+                      )}
+                    </>
+                  );
+                }
+                // Optionally handle other cases
               })}
             </GoogleMap>
           </div>
@@ -382,23 +574,12 @@ export const Map = () => {
                 alignItems={"center"}
                 height={100}
               >
-                {/* <Button
-                  variant="outlined"
-                  color="error"
-                  size="large"
-                  onClick={() => {
-                    updateDetails();
-                  }}
-                  sx={{ marginTop: 2 }} // Add margin-top to separate from the slider
-                >
-                  Query
-                </Button> */}
                 <IconButton
                   aria-label="fingerprint"
                   color="secondary"
                   size="large"
                   onClick={() => {
-                    updateDetails();
+                    updateDetailsOfQueriedUsers();
                   }}
                   sx={{ marginTop: 2 }}
                 >
@@ -416,7 +597,7 @@ export const Map = () => {
                     }}
                     startIcon={<WifiIcon />}
                   >
-                    Connect
+                    {isWsConnected ? "Connected" : "Connect"}
                   </Button>
                   <Button
                     variant="contained"
@@ -427,7 +608,7 @@ export const Map = () => {
                     }}
                     endIcon={<WifiOffIcon />}
                   >
-                    Disconnect
+                    {!isWsConnected ? "Disconnected" : "Disconnect"}
                   </Button>
                 </Stack>
               </div>
@@ -435,7 +616,7 @@ export const Map = () => {
           </Grid>
         )}
       </Grid>
-
+      <ToastContainer autoClose={1000} theme="dark" />
       {/* {socket ? <h1>{latestMessage}</h1> : <Loader />} */}
     </>
   ) : (

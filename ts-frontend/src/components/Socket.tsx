@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import Loader from "./Loader";
-import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
+import {
+  Circle,
+  GoogleMap,
+  Marker,
+  useJsApiLoader,
+} from "@react-google-maps/api";
 import "../styles/Map.css";
 import useSocket from "../hooks/ws";
 import { useNavigate } from "react-router-dom";
@@ -137,6 +142,35 @@ export const Socket = () => {
     };
   }, [socket]);
 
+  const friendSvgMarker = {
+    path: "M-1.547 12l6.563-6.609-1.406-1.406-5.156 5.203-2.063-2.109-1.406 1.406zM0 0q2.906 0 4.945 2.039t2.039 4.945q0 1.453-0.727 3.328t-1.758 3.516-2.039 3.070-1.711 2.273l-0.75 0.797q-0.281-0.328-0.75-0.867t-1.688-2.156-2.133-3.141-1.664-3.445-0.75-3.375q0-2.906 2.039-4.945t4.945-2.039z",
+    fillColor: "blue",
+    fillOpacity: 0.6,
+    strokeWeight: 0,
+    rotation: 0,
+    scale: 2,
+  };
+
+  const circleCenter = {
+    lat: positions[4].lat,
+    lng: positions[4].lng,
+  };
+
+  const circleOption = {
+    // strokeColor: "#FF0000",
+    strokeOpacity: 0.8,
+    strokeWeight: 2,
+    // fillColor: "#FF0000",
+    fillColor: "yellow",
+    fillOpacity: 0.35,
+    clickable: false,
+    draggable: false,
+    editable: false,
+    visible: true,
+    radius: 1000,
+    zIndex: 1,
+  };
+
   return isLoaded ? (
     <>
       <div className="complete-container">
@@ -148,8 +182,60 @@ export const Socket = () => {
               zoom={12}
             >
               {/* Current Location  */}
+
               <Marker
                 position={{ lat: adminLocation.lat, lng: adminLocation.lng }}
+              />
+
+              <Marker
+                // profile photo marker with animation
+
+                // icon takes a SVG path or a URI. it can also take image component
+                // https://developers.google.com/maps/documentation/javascript/examples/icon-simple
+                icon={
+                  "https://res.cloudinary.com/cantacloud2/image/upload/w_40,h_40,c_scale/v1714385887/yylk2ptdmpdbxfdjvitx.png"
+                }
+                position={{ lat: positions[0].lat, lng: positions[0].lng }}
+                animation={google.maps.Animation.DROP}
+              />
+
+              <Marker
+                // normal marker with animation
+
+                // animation can take values : google.maps.Animation.DROP or google.maps.Animation.BOUNCE
+                // https://developers.google.com/maps/documentation/javascript/examples/marker-animations
+                position={{ lat: positions[1].lat, lng: positions[1].lng }}
+                animation={google.maps.Animation.BOUNCE}
+              />
+
+              <Marker
+                // custom vector image marker with animation
+
+                // animation can take values : google.maps.Animation.DROP or google.maps.Animation.BOUNCE
+                // https://developers.google.com/maps/documentation/javascript/examples/marker-animations
+
+                // using a custom SVG vector image
+                position={{ lat: positions[2].lat, lng: positions[2].lng }}
+                animation={google.maps.Animation.DROP}
+                icon={friendSvgMarker}
+              />
+
+              <Marker
+                // normal marker with label and animation
+                // animation can take values : google.maps.Animation.DROP or google.maps.Animation.BOUNCE
+                // https://developers.google.com/maps/documentation/javascript/examples/marker-animations
+
+                // using a custom label for Friends
+                position={{ lat: positions[3].lat, lng: positions[3].lng }}
+                animation={google.maps.Animation.DROP}
+                label={"F"}
+              />
+
+              <Circle
+                // Circle shows the masked approximate distance of the users that are not friends
+
+                center={circleCenter}
+                options={circleOption}
               />
 
               {locations.map((loc, index) => {

@@ -5,6 +5,7 @@ import HttpStatusCode from "../types/HttpStatusCode";
 import axios from "axios";
 import bcrypt from "bcryptjs";
 import requireLogin from "../middlewares/requireLogin";
+import { getFriendsOfCurrentUser, getNonFriendsOfCurrentUser } from "../utils";
 
 /*
     {
@@ -15,9 +16,12 @@ import requireLogin from "../middlewares/requireLogin";
         college: string
         gender: string
         age: number
+        isVisible: boolean
     }
 
 */
+const defaultPicLink =
+  "https://cdn-icons-png.flaticon.com/128/3177/3177440.png";
 
 const queryRequest = z.object({
   userId: z.string(),
@@ -27,8 +31,34 @@ const queryRequest = z.object({
   college: z.string(),
   gender: z.string(),
   age: z.number(),
-  isVisible: z.boolean(),
 });
+
+interface privacyResponse {
+  id: string;
+  name: string;
+  email: string;
+  age: number;
+  gender: string;
+  college: string;
+  dist_meters: number;
+  lat: number;
+  lng: number;
+  Photo: string;
+  mask: boolean;
+}
+
+interface NearbyPrivacyUser {
+  id: string;
+  name: string;
+  email: string;
+  age: number;
+  gender: string;
+  college: string;
+  isvisible: boolean;
+  lat: number;
+  long: number;
+  dist_meters: number;
+}
 
 const LOCATION_BACKEND_URI = process.env.LOCATION_BACKEND_URI;
 
@@ -75,7 +105,7 @@ queryRouter.post(
       return;
     }
     try {
-      const { gender, thresholdDistance, age, college, isVisible } =
+      const { userId, gender, thresholdDistance, age, college } =
         parsedPayload.data;
 
       const bearerToken = process.env.BACKEND_INTERCOMMUNICATION_SECRET || "";
@@ -91,24 +121,121 @@ queryRouter.post(
           },
         },
       );
+
       const privacyEntities = response.data;
+      const userIdOftheClientWhoQueried = userId;
+      const friendsOftheClientWhoQueried = (
+        await getFriendsOfCurrentUser(userIdOftheClientWhoQueried)
+      ).users;
+      const nonFriendsOfTheClientWhoQueried = (
+        await getNonFriendsOfCurrentUser(userIdOftheClientWhoQueried)
+      ).users;
+
+      // console.log("Queried clients friends: ");
+      // console.log(friendsOftheClientWhoQueried);
+
+      // console.log("Queried clients non-friends: ");
+      // console.log(nonFriendsOfTheClientWhoQueried);
 
       /*
 
         APPLY VISIBILITY & FRIENDs BASED FILTERING BEFORE SENDING LOCs TO THE CLIENT
 
-        If the isVisible is passed as false from the client, we get those user who 
-        have set their visibility as FALSE. Hence, we should not send their locations 
-        to the client.
-
-        However, if the client is a friend of the user, then we send back the location 
-        of that user to the client
+        Friend and Visible            ---->     Show to the client                          mask false
+        Friend and Not-Visible        ---->     Show to the client                          mask true
+        Non-Friend and Visible        ---->     Show to the client with boundary mask       mask true
+        Non-Friend and Not-Visible    ---->     Do not show to the client                   don't send to client
 
       */
 
-      res.status(HttpStatusCode.OK).json(privacyEntities);
+      /*
+      
+      Intersection of friendsOftheClientWhoQueried, nonFriendsOfTheClientWhoQueried and privacyEntities
+      on the basis of the matching emailIds goes here. 
+
+      Note that the emailIds are unique and hence uniquely identifies each users.
+
+      */
+
+      const matchedEntities: privacyResponse[] = [];
+
+      friendsOftheClientWhoQueried?.forEach((clientFriend) => {
+        privacyEntities.forEach((privacyUser: NearbyPrivacyUser) => {
+          // check for emails match
+          if (
+            clientFriend.email === privacyUser.email &&
+            privacyUser.isvisible === true
+          ) {
+            // custom JSON object
+            const matchedEntity = {
+              id: clientFriend._id,
+              name: privacyUser.name,
+              email: clientFriend.email,
+              age: privacyUser.age,
+              gender: privacyUser.gender,
+              college: privacyUser.college,
+              lat: privacyUser.lat,
+              lng: privacyUser.long,
+              dist_meters: privacyUser.dist_meters,
+              Photo: clientFriend.Photo || defaultPicLink,
+              mask: false,
+            };
+            matchedEntities.push(matchedEntity);
+          } else if (
+            clientFriend.email === privacyUser.email &&
+            privacyUser.isvisible === false
+          ) {
+            // custom JSON object
+            const matchedEntity = {
+              id: clientFriend._id,
+              name: privacyUser.name,
+              email: clientFriend.email,
+              age: privacyUser.age,
+              gender: privacyUser.gender,
+              college: privacyUser.college,
+              lat: privacyUser.lat,
+              lng: privacyUser.long,
+              dist_meters: privacyUser.dist_meters,
+              Photo: clientFriend.Photo || defaultPicLink,
+              mask: true,
+            };
+            matchedEntities.push(matchedEntity);
+          }
+        });
+      });
+
+      nonFriendsOfTheClientWhoQueried?.forEach((clientNonFriends) => {
+        privacyEntities.forEach((privacyUser: NearbyPrivacyUser) => {
+          // check for emails match
+          if (
+            clientNonFriends.email === privacyUser.email &&
+            privacyUser.isvisible === true
+          ) {
+            // custom JSON object
+            const matchedEntity = {
+              id: clientNonFriends._id,
+              name: privacyUser.name,
+              email: clientNonFriends.email,
+              age: privacyUser.age,
+              gender: privacyUser.gender,
+              college: privacyUser.college,
+              lat: privacyUser.lat,
+              lng: privacyUser.long,
+              dist_meters: privacyUser.dist_meters,
+              Photo: clientNonFriends.Photo || defaultPicLink,
+              mask: true,
+            };
+            matchedEntities.push(matchedEntity);
+          }
+        });
+      });
+
+      console.log("All the matched entities are : ");
+      console.log(matchedEntities);
+
+      res.status(HttpStatusCode.OK).json(matchedEntities);
       console.log(
-        `PRIVACY ${gender} USERS NEARBY WITHIN ${thresholdDistance} meters and age less than ${age} with college ${college} and visibility set to ${isVisible}`,
+        `ALL PRIVACY ${gender} USERS NEARBY WITHIN ${thresholdDistance} meters and age less than ${age} with college ${college}`,
       );
       console.log(privacyEntities);
     } catch (error) {

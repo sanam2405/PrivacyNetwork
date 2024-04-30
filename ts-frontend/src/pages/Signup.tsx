@@ -3,12 +3,9 @@ import React, { useState, ChangeEvent, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-// import { GoogleLogin, GoogleLoginProps } from '@react-oauth/google'
-// import jwtDecode from 'jwt-decode'
-// import { LoginContext } from '../context/LoginContext'
 import logo from "../../public/images/sign-up.png";
 import HttpStatusCode from "../types/HttpStatusCode";
-import Loader from "./Loader";
+import Loader from "../components/Loader";
 
 const BASE_API_URI = import.meta.env.VITE_BACKEND_URI;
 

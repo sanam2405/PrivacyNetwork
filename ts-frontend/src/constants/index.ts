@@ -236,3 +236,38 @@ export const positions = [
   { lat: 22.109867, lng: 88.320873 },
   { lat: 22.141517, lng: 88.389205 },
 ];
+
+export const circleOptionForFriends = {
+  strokeColor: "#0c4a6e",
+  strokeOpacity: 0.8,
+  strokeWeight: 2,
+  fillColor: "#0ea5e9",
+  fillOpacity: 0.35,
+  clickable: true,
+  draggable: false,
+  editable: false,
+  visible: true,
+  radius: 5000,
+  zIndex: 1,
+};
+
+export const circleOptionForNonFriends = {
+  strokeColor: "#FF0000",
+  strokeOpacity: 0.8,
+  strokeWeight: 2,
+  fillColor: "#FF0000",
+  fillOpacity: 0.35,
+  clickable: true,
+  draggable: false,
+  editable: false,
+  visible: true,
+  radius: 5000,
+  zIndex: 1,
+};
+
+export const DEFAULT_PROFILE_URL =
+  "https://cdn-icons-png.flaticon.com/128/3177/3177440.png";
+export const DEFAULT_MARKER_PIC =
+  "https://res.cloudinary.com/cantacloud2/image/upload/w_40,h_40,c_scale/v1714413297/hbjh5jqrguqtuvmfr7sl.png";
+export const defaultPicLink =
+  "https://cdn-icons-png.flaticon.com/128/3177/3177440.png";
