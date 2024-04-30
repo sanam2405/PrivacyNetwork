@@ -68,7 +68,8 @@ export const Map = () => {
     isWsConnected,
   } = useSocket(BASE_WS_URI);
 
-  const [currentUserPosition] = useState<Location>(getRandomPosition());
+  const [currentUserPosition, setCurrentUserPosition] =
+    useState<Location>(getRandomPosition());
 
   if (!apiKey)
     throw new Error("GOOGLE_API_KEY environment variable is not set");
@@ -108,7 +109,7 @@ export const Map = () => {
 
   const updateCurrentLocation = (position: Location) => {
     fetch(`${BASE_API_URI}/api/setLocation`, {
-      method: "POST",
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("jwt")}`,
@@ -129,20 +130,14 @@ export const Map = () => {
 
   const socketCommSENDLOC = () => {
     if (socket) {
-      setTimeout(() => {
-        // setCurrentUserPosition(getRandomPosition());
-        // const position = getRandomPosition();
-        // setCurrentUserPosition(position);
-        sendMessage({
-          type: "SEND_LOCATION",
-          payload: {
-            userId: currentUserUUID,
-            roomId: "202A",
-            position: currentUserPosition,
-          },
-        });
-        updateCurrentLocation(currentUserPosition);
-      }, 5000);
+      sendMessage({
+        type: "SEND_LOCATION",
+        payload: {
+          userId: currentUserUUID,
+          roomId: "202A",
+          position: currentUserPosition,
+        },
+      });
     }
   };
 
@@ -168,6 +163,14 @@ export const Map = () => {
     if (!localStorage.getItem("user")) {
       navigate("/auth");
     }
+  }, []);
+
+  useEffect(() => {
+    setInterval(() => {
+      setCurrentUserPosition(getRandomPosition());
+      updateCurrentLocation(currentUserPosition);
+      socketCommSENDLOC();
+    }, 10000);
   }, []);
 
   const handleSocketConnection = () => {
@@ -228,8 +231,8 @@ export const Map = () => {
       },
       body: JSON.stringify({
         userId: currentUserUUID,
-        latitude: 22.40456,
-        longitude: 88.126,
+        latitude: currentUserPosition.lat,
+        longitude: currentUserPosition.lng,
         thresholdDistance: sliderValue * 1000,
         age,
         gender,

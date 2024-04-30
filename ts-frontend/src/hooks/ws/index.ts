@@ -13,13 +13,6 @@ const useSocket = (url: string) => {
   const { locations, setLocations } = useLocations();
   const { locationsUserIdSet, setLocationsUserIdSet } = useLocations();
 
-  // const notifyA = (message: string): void => {
-  //   toast.success(message);
-  // };
-  // const notifyB = (message: string): void => {
-  //   toast.error(message);
-  // };
-
   useEffect(() => {
     if (socket) {
       socket.onopen = () => {
