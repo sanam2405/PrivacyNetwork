@@ -3,7 +3,6 @@ import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import "../styles/LogoutModal.css";
 import { RiCloseLine } from "react-icons/ri";
-
 import { LoginContext } from "../context/LoginContext";
 
 function LogoutModal() {
@@ -15,10 +14,10 @@ function LogoutModal() {
   };
 
   const handleLogout = () => {
-    setModalOpen(false);
-    setUserLogin(false);
     localStorage.removeItem("jwt");
     localStorage.removeItem("user");
+    setModalOpen(false);
+    setUserLogin(false);
   };
 
   return (

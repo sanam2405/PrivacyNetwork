@@ -21,13 +21,14 @@ import TravelExploreRoundedIcon from "@mui/icons-material/TravelExploreRounded";
 import ExitToAppRoundedIcon from "@mui/icons-material/ExitToAppRounded";
 import SaveRoundedIcon from "@mui/icons-material/SaveRounded";
 import SaveAsRoundedIcon from "@mui/icons-material/SaveAsRounded";
-import UserCard from "./UserCard";
-import FriendsCard from "./FriendsCard";
-import UserBanner from "./UserBanner";
+import UserCard from "../components/UserCard";
+import FriendsCard from "../components/FriendsCard";
+import UserBanner from "../components/UserBanner";
 import "../styles/FriendsPage.css";
 import { LoginContext } from "../context/LoginContext";
+import { defaultPicLink } from "../constants";
 import User from "../types/types";
-import Loader from "./Loader";
+import Loader from "../components/Loader";
 import HttpStatusCode from "../types/HttpStatusCode";
 import { colleges } from "../constants";
 import { genders } from "../constants";
@@ -36,8 +37,6 @@ import { debounce } from "lodash";
 const BASE_API_URI = import.meta.env.VITE_BACKEND_URI;
 
 function FriendsPage() {
-  const defaultPicLink =
-    "https://cdn-icons-png.flaticon.com/128/3177/3177440.png";
   const navigate = useNavigate();
   const [curruser, setcurrUser] = useState<User>();
   const [users, setUsers] = useState<User[]>([]);
