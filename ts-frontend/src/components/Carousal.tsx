@@ -9,7 +9,7 @@ import { Favorite, MoreVert } from "@mui/icons-material";
 import CommentIcon from "@mui/icons-material/Comment";
 import ShareIcon from "@mui/icons-material/Share";
 import { monthOfTheYear } from "../constants";
-import "../styles/Carousal.css";
+import CarousalCSS from "../styles/Carousal.module.css";
 
 const images = ["/sanam.jpg", "rp.jpg"];
 const avatarImage = "/rimjhim.svg";
@@ -29,8 +29,8 @@ export const Carousal: FC = () => {
   };
 
   return (
-    <div className="card">
-      <div className="card-content">
+    <div className={CarousalCSS.card}>
+      <div className={CarousalCSS.CardContent}>
         <CardHeader
           avatar={<Avatar src={avatarImage} />}
           title="__bokaboka__"
@@ -53,7 +53,11 @@ export const Carousal: FC = () => {
         >
           {images.map((image, index) => (
             <SwiperSlide key={index}>
-              <CardMedia component="img" className="card-media" image={image} />
+              <CardMedia
+                component="img"
+                className={CarousalCSS.CardMedia}
+                image={image}
+              />
             </SwiperSlide>
           ))}
         </Swiper>
