@@ -237,6 +237,7 @@ export const positions = [
   { lat: 22.141517, lng: 88.389205 },
 ];
 
+
 export const monthOfTheYear = [
   "January",
   "February",
@@ -251,6 +252,7 @@ export const monthOfTheYear = [
   "November",
   "December",
 ];
+
 
 export const circleOptionForFriends = {
   strokeColor: "#0c4a6e",
@@ -287,17 +289,3 @@ export const DEFAULT_MARKER_PIC =
 export const defaultPicLink =
   "https://cdn-icons-png.flaticon.com/128/3177/3177440.png";
 
-export const monthOfTheYear = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
