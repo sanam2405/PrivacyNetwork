@@ -237,7 +237,6 @@ export const positions = [
   { lat: 22.141517, lng: 88.389205 },
 ];
 
-
 export const monthOfTheYear = [
   "January",
   "February",
@@ -252,7 +251,6 @@ export const monthOfTheYear = [
   "November",
   "December",
 ];
-
 
 export const circleOptionForFriends = {
   strokeColor: "#0c4a6e",
@@ -288,4 +286,3 @@ export const DEFAULT_MARKER_PIC =
   "https://res.cloudinary.com/cantacloud2/image/upload/w_40,h_40,c_scale/v1714413297/hbjh5jqrguqtuvmfr7sl.png";
 export const defaultPicLink =
   "https://cdn-icons-png.flaticon.com/128/3177/3177440.png";
-

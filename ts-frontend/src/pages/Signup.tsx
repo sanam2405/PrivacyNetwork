@@ -3,7 +3,7 @@ import React, { useState, ChangeEvent, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import logo from "../../public/images/sign-up.png";
+import logo from "/sign-up.png";
 import HttpStatusCode from "../types/HttpStatusCode";
 import Loader from "../components/Loader";
 

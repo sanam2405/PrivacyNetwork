@@ -10,7 +10,6 @@ import Loader from "../components/Loader";
 
 import logo from "/sign-up.png";
 
-
 const BASE_API_URI = import.meta.env.VITE_BACKEND_URI;
 
 interface Credentials {
