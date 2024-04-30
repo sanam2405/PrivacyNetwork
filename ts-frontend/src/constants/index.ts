@@ -237,6 +237,21 @@ export const positions = [
   { lat: 22.141517, lng: 88.389205 },
 ];
 
+export const monthOfTheYear = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
 export const circleOptionForFriends = {
   strokeColor: "#0c4a6e",
   strokeOpacity: 0.8,

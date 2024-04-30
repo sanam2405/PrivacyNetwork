@@ -7,7 +7,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { LoginContext } from "../context/LoginContext";
 import HttpStatusCode from "../types/HttpStatusCode";
 import Loader from "../components/Loader";
-import logo from "../../public/images/sign-up.png";
+
+import logo from "/sign-up.png";
 
 const BASE_API_URI = import.meta.env.VITE_BACKEND_URI;
 
