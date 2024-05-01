@@ -1,5 +1,6 @@
 import express from "express";
 import url from "url";
+import axios from "axios";
 import { WebSocketServer, WebSocket } from "ws";
 import {
   INCOMING_MESSAGE,
@@ -55,7 +56,7 @@ httpServer.on("upgrade", (req, socket, head) => {
   });
 });
 
-wss.on("connection", function connection(ws: WebSocket, req) {
+wss.on("connection", async function connection(ws: WebSocket, req) {
   console.log(
     `HTTP Server upgraded to WSS Server and is running on PORT ${PORT}`,
   );
@@ -67,9 +68,10 @@ wss.on("connection", function connection(ws: WebSocket, req) {
   const token: string = url.parse(req.url, true).query.token || "";
   // const userId = extractUserId(token);
 
+  const checkIfAuthorized = await tokenIsValid(token);
   // Perform auth
-  if (!token || !tokenIsValid(token)) {
-    console.log("Unauthorized user");
+  if (!token || !checkIfAuthorized) {
+    console.log("Unauthorized user from ws backend");
     // Send an unauthorized message to the client
     ws.send(
       JSON.stringify({
@@ -95,7 +97,7 @@ wss.on("connection", function connection(ws: WebSocket, req) {
         const jsonData = JSON.parse(dataString);
         console.log("JSON DATA received from client : ", jsonData);
 
-        messageHandler(ws, jsonData);
+        messageHandler(ws, token, jsonData);
         //   wss.clients.forEach(function each(client) {
         //   if (client.readyState === WebSocket.OPEN) {
         //     client.send(data, { binary: isBinary });
@@ -131,7 +133,11 @@ wss.on("close", () => {
   clearInterval(interval);
 });
 
-function messageHandler(ws: WebSocket, message: INCOMING_MESSAGE) {
+function messageHandler(
+  ws: WebSocket,
+  token: string,
+  message: INCOMING_MESSAGE,
+) {
   if (message.type == SUPPORTED_MESSAGES.PONG) {
     console.log("Pong received by ws backend");
     const payload = message.payload;
@@ -213,6 +219,22 @@ function messageHandler(ws: WebSocket, message: INCOMING_MESSAGE) {
     if (!location) {
       return;
     }
+
+    /* 
+      Update the location to the Postgres database
+      via the ts-backend
+    */
+
+    // const response = axios.post("localhost:5050/api/addLocation",
+    //   {
+
+    //   },
+    //  {
+    //     headers : {
+    //       "Authorization": `Bearer ${token}`,
+    //       "Content-Type": "application/json"
+    //     }
+    //  });
 
     const outgoingPayload: OUTGOING_MESSAGE = {
       type: OUTGOING_SUPPORTED_MESSAGE.ADD_LOCATION,

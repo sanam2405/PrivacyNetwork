@@ -87,6 +87,11 @@
   border-radius: 20px;
 }
 
+.changePic h2 {
+  font-size: 1.2rem;
+  font-family: "Black Ops One";
+}
+
 .changePic div {
   padding: 15px 80px;
 }
@@ -96,7 +101,7 @@
   background: none;
   border: none;
   font-weight: bolder;
-
+  font-family: "Courier Prime";
   font-size: 15px;
 }
 

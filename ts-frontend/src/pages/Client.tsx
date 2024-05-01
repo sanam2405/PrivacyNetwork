@@ -7,6 +7,7 @@ function Client() {
 
   useEffect(() => {
     if (localStorage.getItem("user") || localStorage.getItem("jwt")) {
+      console.log("You are authorized!");
     } else {
       navigate("/auth");
     }
