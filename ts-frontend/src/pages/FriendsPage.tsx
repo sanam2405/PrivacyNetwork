@@ -471,11 +471,7 @@ function FriendsPage() {
                         shrink: true,
                       }}
                       disabled={checkAgeValidation(prevAge)}
-                      helperText={
-                        !canEdit
-                          ? "Please select your age"
-                          : ""
-                      }
+                      helperText={!canEdit ? "Please select your age" : ""}
                       value={age}
                       onChange={handleAgeChange}
                     />
@@ -499,11 +495,7 @@ function FriendsPage() {
                       disabled={checkGenderValidation(prevGender)}
                       value={gender}
                       onChange={handleGenderChange}
-                      helperText={
-                         !canEdit
-                          ? "Please select your gender"
-                          : ""
-                      }
+                      helperText={!canEdit ? "Please select your gender" : ""}
                     >
                       {genders.map((option) => (
                         <MenuItem key={option.value} value={option.value}>
@@ -531,11 +523,7 @@ function FriendsPage() {
                       disabled={checkCollegeValidation(prevCollege)}
                       value={college}
                       onChange={handleCollegeChange}
-                      helperText={
-                        !canEdit
-                          ? "Please select your college"
-                          : ""
-                      }
+                      helperText={!canEdit ? "Please select your college" : ""}
                     >
                       {colleges.map((option) => (
                         <MenuItem key={option.value} value={option.value}>

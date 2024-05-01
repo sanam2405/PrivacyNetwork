@@ -7,13 +7,13 @@ body {
 }
 
 .Toastify__toast--success {
-  font-family: 'Black Ops One';
+  font-family: "Black Ops One";
 }
 
 .Toastify__toast--warning {
-  font-family: 'Black Ops One';
+  font-family: "Black Ops One";
 }
 
 .Toastify__toast--error {
-  font-family: 'Black Ops One';
+  font-family: "Black Ops One";
 }

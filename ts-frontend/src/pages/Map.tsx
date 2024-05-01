@@ -71,6 +71,15 @@ export const Map = () => {
   const [currentUserPosition, setCurrentUserPosition] =
     useState<Location>(getRandomPosition());
 
+  const [curruser, setcurrUser] = useState<User>();
+  const [age, setAge] = useState(50);
+  const [gender, setGender] = useState("Non Binary");
+  const [college, setCollege] = useState("Calcutta University");
+  const [sliderValue, setSliderValue] = useState(60);
+  const [isMinimize, setIsMinimize] = useState<boolean>(false);
+
+  const { qLocations, setQLocations } = useQLocations();
+
   if (!apiKey)
     throw new Error("GOOGLE_API_KEY environment variable is not set");
 
@@ -107,27 +116,6 @@ export const Map = () => {
     }
   };
 
-  const updateCurrentLocation = (position: Location) => {
-    fetch(`${BASE_API_URI}/api/setLocation`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-      },
-      body: JSON.stringify({
-        lat: position.lat,
-        lng: position.lng,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success) {
-          console.log("Successfully updated current location ...");
-        }
-      })
-      .catch((err) => console.log(err));
-  };
-
   const socketCommSENDLOC = () => {
     if (socket) {
       sendMessage({
@@ -141,64 +129,28 @@ export const Map = () => {
     }
   };
 
-  useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let intervalId: any;
-    if (socket) {
-      socket.onopen = () => {
-        console.log("WebSocket connection established from client side");
-        socketCommJOINROOM();
-        intervalId = setInterval(() => {
-          socketCommSENDLOC();
-        }, 3000);
-      };
+  const updateCurrentLocation = (position: Location) => {
+    if (position.lat != undefined && position.lng != undefined) {
+      fetch(`${BASE_API_URI}/api/setLocation`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+        },
+        body: JSON.stringify({
+          lat: position.lat,
+          lng: position.lng,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success) {
+            console.log("Successfully updated current location ...");
+          }
+        })
+        .catch((err) => console.log(err));
     }
-
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, [socket]);
-
-  useEffect(() => {
-    if (!localStorage.getItem("user")) {
-      navigate("/auth");
-    }
-  }, []);
-
-  useEffect(() => {
-    setInterval(() => {
-      setCurrentUserPosition(getRandomPosition());
-      updateCurrentLocation(currentUserPosition);
-      socketCommSENDLOC();
-    }, 10000);
-  }, []);
-
-  const handleSocketConnection = () => {
-    // first close if already soc conn exist
-
-    closeConnection("202A", currentUserUUID);
-
-    // open a new soc conn if doesn't exist
-    openConnection();
   };
-
-  const handleSocketDisconnection = () => {
-    // close if already soc conn exist
-    closeConnection("202A", currentUserUUID);
-  };
-
-  const handleCloseDialogBox = () => {
-    setClickedIndex(-1);
-  };
-
-  const [curruser, setcurrUser] = useState<User>();
-  const [age, setAge] = useState(50);
-  const [gender, setGender] = useState("Male");
-  const [college, setCollege] = useState("Jadavpur University");
-  const [sliderValue, setSliderValue] = useState(60);
-  const [isMinimize, setIsMinimize] = useState<boolean>(false);
-
-  const { qLocations, setQLocations } = useQLocations();
 
   const fetchCurrentUserDetails = () => {
     const userDetails = localStorage.getItem("user");
@@ -234,9 +186,9 @@ export const Map = () => {
         latitude: currentUserPosition.lat,
         longitude: currentUserPosition.lng,
         thresholdDistance: sliderValue * 1000,
-        age,
-        gender,
-        college,
+        age: age,
+        gender: gender,
+        college: college,
       }),
     })
       .then((res) => {
@@ -253,6 +205,97 @@ export const Map = () => {
       .catch((err) => {
         console.error(err);
       });
+  };
+
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let intervalId: any;
+    if (socket) {
+      socket.onopen = () => {
+        console.log("WebSocket connection established from client side");
+        socketCommJOINROOM();
+        intervalId = setInterval(() => {
+          socketCommSENDLOC();
+        }, 3000);
+      };
+    }
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [socket]);
+
+  useEffect(() => {
+    if (!localStorage.getItem("user")) {
+      navigate("/auth");
+    }
+  }, []);
+
+  /* SIMULATE REAL-TIME USER MOVEMENT
+
+   This useEffect is used to simulate the real time movement 
+   of the client. This function runs after 10 seconds the first 
+   time the component mounts and then this function runs after 
+   every consecutive 10 seconds. 
+
+   1. getRandomPosition() to get a random position
+   2. setCurrentUserPosition() to the random position that was received
+   3. updateCurrentLocation() to update the location to the Postgres
+   4. socketCommSENDLOC() to send the data to the ws server
+   5. updateDetailsOfQueriedUsers() to update the queried user as per 
+      the new random location generated in a separate useEffect
+      with currentUserPosition in the dependency array
+
+*/
+
+  useEffect(() => {
+    // Initial timeout after 10 seconds
+    const initialTimeoutId = setTimeout(() => {
+      simulateRealTimeUserMovement();
+      // Set up interval for consecutive invocations every 10 seconds
+      const intervalId = setInterval(simulateRealTimeUserMovement, 10000);
+
+      // Cleanup function to clear the interval on component unmount
+      return () => clearInterval(intervalId);
+    }, 10000);
+
+    // Cleanup function to clear the initial timeout on component unmount
+    return () => clearTimeout(initialTimeoutId);
+  }, []);
+
+  const simulateRealTimeUserMovement = async () => {
+    setCurrentUserPosition(getRandomPosition());
+    updateCurrentLocation(currentUserPosition);
+    socketCommSENDLOC();
+  };
+
+  // Queries and updates the queried users automatically
+  // after 500 milliseconds on current user location change
+  useEffect(() => {
+    const initialTimeoutId = setTimeout(() => {
+      updateDetailsOfQueriedUsers();
+    }, 500);
+
+    return () => clearTimeout(initialTimeoutId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUserPosition]);
+
+  const handleSocketConnection = () => {
+    // first close if already soc conn exist
+
+    closeConnection("202A", currentUserUUID);
+
+    // open a new soc conn if doesn't exist
+    openConnection();
+  };
+
+  const handleSocketDisconnection = () => {
+    // close if already soc conn exist
+    closeConnection("202A", currentUserUUID);
+  };
+
+  const handleCloseDialogBox = () => {
+    setClickedIndex(-1);
   };
 
   useEffect(() => {
