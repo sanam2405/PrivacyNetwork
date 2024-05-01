@@ -7,7 +7,10 @@ import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
+import Switch from "@mui/material/Switch";
+// import Checkbox from "@mui/material/Checkbox";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import Backdrop from "@mui/material/Backdrop";
@@ -535,17 +538,31 @@ function FriendsPage() {
                 </Box>
               </div>
               <div className="checkbox-container">
-                <FormGroup>
+                <FormGroup style={{ display: "flex", alignItems: "center" }}>
                   <FormControlLabel
                     control={
-                      <Checkbox
+                      // <Checkbox
+                      //   checked={visibility}
+                      //   onChange={handleVisibilityChange}
+                      //   disabled={checkVisibilityValidation()}
+                      // />
+                      <Switch
                         checked={visibility}
                         onChange={handleVisibilityChange}
                         disabled={checkVisibilityValidation()}
+                        color="success"
                       />
                     }
                     label="Show my visibility"
                   />
+
+                  {visibility && checkVisibilityValidation() ? (
+                    <VisibilityIcon color="disabled" />
+                  ) : visibility ? (
+                    <VisibilityIcon color="success" />
+                  ) : (
+                    <VisibilityOffIcon color="disabled" />
+                  )}
                 </FormGroup>
               </div>
               <div className="save-edit-button-container">
