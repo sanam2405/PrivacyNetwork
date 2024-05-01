@@ -472,7 +472,7 @@ function FriendsPage() {
                       }}
                       disabled={checkAgeValidation(prevAge)}
                       helperText={
-                        !checkAgeValidation(age) && !canEdit
+                        !canEdit
                           ? "Please select your age"
                           : ""
                       }
@@ -500,7 +500,7 @@ function FriendsPage() {
                       value={gender}
                       onChange={handleGenderChange}
                       helperText={
-                        !checkGenderValidation(gender) && !canEdit
+                         !canEdit
                           ? "Please select your gender"
                           : ""
                       }
@@ -532,7 +532,7 @@ function FriendsPage() {
                       value={college}
                       onChange={handleCollegeChange}
                       helperText={
-                        !checkCollegeValidation(college) && !canEdit
+                        !canEdit
                           ? "Please select your college"
                           : ""
                       }
