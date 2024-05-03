@@ -69,8 +69,9 @@ _![OpenAPI Swagger API Docs](./idea/high/openapi.png)_
 The codebase is organized as :
 
 1. _ts-frontend_ - The react frontend
-2. _backend/ts-backend_ - The express backend
-3. _backend/ws_ - The websocket backend
+2. _backend/ts-backend_ - The primary express backend with mongoDB
+3. _backend/loc_ - The secondary express backend with Postgres
+4. _backend/ws_ - The websocket backend
 
 - Clone the PrivacyNetwork repository
 
@@ -95,12 +96,21 @@ The codebase is organized as :
     npm run dev
 ```
 
+- Run the loc backend
+
+```bash
+    cd backend/loc
+    npm install
+    npm run dev
+```
+
 - Run the websocket backend
 
 ```bash
     cd backend/ws
     npm install
-    npm run dev
+    npm run build
+    npm start
 ```
 
 ## Contributors
@@ -114,4 +124,4 @@ The codebase is organized as :
 
 ## Mentor
 
-- `Munmun Bhattacharya`
+- `Dr. Munmun Bhattacharya`
