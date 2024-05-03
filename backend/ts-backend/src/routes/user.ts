@@ -1,9 +1,13 @@
 import express, { Request, Response } from "express";
 import User, { UserDocument } from "../models/models";
+import bcrypt from "bcryptjs";
+import axios from "axios";
+import { z } from "zod";
 import requireLogin from "../middlewares/requireLogin";
 import HttpStatusCode from "../types/HttpStatusCode";
 
 const userRouter = express.Router();
+const LOCATION_BACKEND_URI = process.env.LOCATION_BACKEND_URI;
 
 interface CustomRequest extends Request {
   user?: UserDocument;
@@ -215,6 +219,276 @@ userRouter.get(
   },
 );
 
+// Fetch friends' details
+userRouter.get(
+  "/friends",
+  requireLogin,
+  async (req: CustomRequest, res: Response) => {
+    try {
+      /**
+       * @openapi
+       * '/api/friends':
+       *  get:
+       *     tags:
+       *     - User
+       *     summary: Get details of the current user's friends
+       *     responses:
+       *       200:
+       *         description: Success
+       *         content:
+       *          application/json:
+       *           schema:
+       *              $ref: '#/components/schemas/AllUsers'
+       *       404:
+       *         description: User not found
+       */
+
+      // Find the current user with its friends populated
+      const currentUser = await User.findById(req?.user?._id).populate(
+        "friends",
+      );
+
+      if (!currentUser) {
+        return res
+          .status(HttpStatusCode.NOT_FOUND)
+          .json({ error: "Current user has not friends" });
+      }
+
+      // Extract friends' IDs
+      const friendIds = currentUser.friends.map((friend) => friend._id);
+
+      // Find all users who are friends of the current user
+      const friends = await User.find({ _id: { $in: friendIds } });
+
+      res.status(HttpStatusCode.OK).json({ users: friends });
+    } catch (error) {
+      console.error(error);
+      res
+        .status(HttpStatusCode.INTERNAL_SERVER_ERROR)
+        .json({ error: "Something went wrong..." });
+    }
+  },
+);
+
+// Fetch not friends' details
+userRouter.get(
+  "/non-friends",
+  requireLogin,
+  async (req: CustomRequest, res: Response) => {
+    try {
+      /**
+       * @openapi
+       * '/api/non-friends':
+       *  get:
+       *     tags:
+       *     - User
+       *     summary: Get details of the users who are not friends of the current user
+       *     responses:
+       *       200:
+       *         description: Success
+       *         content:
+       *          application/json:
+       *           schema:
+       *              $ref: '#/components/schemas/AllUsers'
+       *       404:
+       *         description: User not found
+       */
+
+      // Find the current user with its friends populated
+      const currentUser = await User.findById(req?.user?._id).populate(
+        "friends",
+      );
+
+      if (!currentUser) {
+        return res
+          .status(HttpStatusCode.NOT_FOUND)
+          .json({ error: "Current user has no non-friends" });
+      }
+
+      // Extract friends' IDs
+      const friendIds = currentUser.friends.map((friend) => friend._id);
+
+      // Find all users who are not friends of the current user
+      const nonFriends = await User.find({
+        _id: { $nin: friendIds, $ne: req?.user?._id },
+      });
+
+      res.status(HttpStatusCode.OK).json({ users: nonFriends });
+    } catch (error) {
+      console.error(error);
+      res
+        .status(HttpStatusCode.INTERNAL_SERVER_ERROR)
+        .json({ error: "Something went wrong..." });
+    }
+  },
+);
+
+// Search friends by key (username / name / email)
+userRouter.post(
+  "/search-friends",
+  requireLogin,
+  async (req: CustomRequest, res: Response) => {
+    try {
+      /**
+       * @openapi
+       * '/api/search-friends':
+       *  post:
+       *     tags:
+       *     - User
+       *     summary: Search for friends by key in name, username, or email
+       *     requestBody:
+       *      required: true
+       *      content:
+       *        application/json:
+       *           schema:
+       *              type: object
+       *              properties:
+       *                key:
+       *                  type: string
+       *                  description: The key to search for in name, username, or email
+       *                  example: "john"
+       *     responses:
+       *       200:
+       *         description: Success
+       *         content:
+       *          application/json:
+       *           schema:
+       *              $ref: '#/components/schemas/AllUsers'
+       *       404:
+       *         description: No friends found matching the key
+       */
+
+      const { key } = req.body;
+
+      // if (!key) {
+      //   return res
+      //     .status(HttpStatusCode.BAD_REQUEST)
+      //     .json({ error: "Key not provided" });
+      // }
+
+      // Find the current user with its friends populated
+      const currentUser = await User.findById(req.user?._id).populate(
+        "friends",
+      );
+
+      if (!currentUser) {
+        return res
+          .status(HttpStatusCode.NOT_FOUND)
+          .json({ error: "User not found" });
+      }
+
+      // Extract friend IDs
+      const friendIds = currentUser.friends.map((friend) => friend._id);
+
+      // Search for friends with the key in name, username, or email
+      const friends = await User.find({
+        _id: { $in: friendIds },
+        $or: [
+          { name: { $regex: key, $options: "i" } },
+          { username: { $regex: key, $options: "i" } },
+          { email: { $regex: `^${key}(?=@)`, $options: "i" } },
+        ],
+      });
+
+      if (friends.length === 0) {
+        return res
+          .status(HttpStatusCode.NOT_FOUND)
+          .json({ error: "No friends found matching the key" });
+      }
+
+      res.status(HttpStatusCode.OK).json({ friends: friends });
+    } catch (error) {
+      console.error(error);
+      res
+        .status(HttpStatusCode.INTERNAL_SERVER_ERROR)
+        .json({ error: "Something went wrong..." });
+    }
+  },
+);
+
+// Search non-friends by key
+userRouter.post(
+  "/search-non-friends",
+  requireLogin,
+  async (req: CustomRequest, res: Response) => {
+    try {
+      /**
+       * @openapi
+       * '/api/search-non-friends':
+       *  post:
+       *     tags:
+       *     - User
+       *     summary: Search for non-friends by key in name, username, or email
+       *     requestBody:
+       *      required: true
+       *      content:
+       *        application/json:
+       *           schema:
+       *              type: object
+       *              properties:
+       *                key:
+       *                  type: string
+       *                  description: The key to search for in name, username, or email
+       *                  example: "john"
+       *     responses:
+       *       200:
+       *         description: Success
+       *         content:
+       *          application/json:
+       *           schema:
+       *              $ref: '#/components/schemas/AllUsers'
+       *       404:
+       *         description: No non-friends found matching the key
+       */
+
+      const { key } = req.body;
+
+      // if (!key) {
+      //   return res
+      //     .status(HttpStatusCode.BAD_REQUEST)
+      //     .json({ error: "Key not provided" });
+      // }
+
+      // Find the current user with its friends populated
+      const currentUser = await User.findById(req.user?._id).populate(
+        "friends",
+      );
+
+      if (!currentUser) {
+        return res
+          .status(HttpStatusCode.NOT_FOUND)
+          .json({ error: "User not found" });
+      }
+
+      // Extract friend IDs
+      const friendIds = currentUser.friends.map((friend) => friend._id);
+
+      // Find all users who are not friends of the current user
+      const nonFriends = await User.find({
+        _id: { $nin: friendIds, $ne: req.user?._id },
+        $or: [
+          { name: { $regex: key, $options: "i" } },
+          { username: { $regex: key, $options: "i" } },
+          { email: { $regex: `^${key}(?=@)`, $options: "i" } },
+        ],
+      });
+
+      if (nonFriends.length === 0) {
+        return res
+          .status(HttpStatusCode.NOT_FOUND)
+          .json({ error: "No non-friends found matching the key" });
+      }
+
+      res.status(HttpStatusCode.OK).json({ nonFriends: nonFriends });
+    } catch (error) {
+      console.error(error);
+      res
+        .status(HttpStatusCode.INTERNAL_SERVER_ERROR)
+        .json({ error: "Something went wrong..." });
+    }
+  },
+);
+
 // Save profile picture of users inside MongoDB (through cloudinary)
 userRouter.put(
   "/uploadProfilePic",
@@ -240,7 +514,15 @@ userRouter.put(
   },
 );
 
-// Posting the age, gender, college properties of a user
+const setPropertiesRequest = z.object({
+  id: z.string(),
+  age: z.number(),
+  gender: z.string(),
+  college: z.string(),
+  visibility: z.boolean(),
+});
+
+// Putting the age, gender, college, visibility properties of a user
 userRouter.put(
   "/setProperties",
   requireLogin,
@@ -252,7 +534,7 @@ userRouter.put(
        *  put:
        *     tags:
        *     - User
-       *     summary: Set age, gender, college, visiblity for an user
+       *     summary: Set age, gender, college, visibility for an user
        *     requestBody:
        *      required: true
        *      content:
@@ -300,6 +582,37 @@ userRouter.put(
           .json({ error: "Please fill up all the properties..." });
       }
 
+      const setPropertiesPayload = req.body;
+      setPropertiesPayload.id = req.user?.postgresId;
+      const parsedPayload =
+        setPropertiesRequest.safeParse(setPropertiesPayload);
+      if (!parsedPayload.success) {
+        res.status(HttpStatusCode.LENGTH_REQUIRED).json({
+          msg: "You sent the wrong inputs from ts-backend server. The postgresId could not be found",
+        });
+        return;
+      }
+
+      const bearerToken = process.env.BACKEND_INTERCOMMUNICATION_SECRET || "";
+      const saltForLoc = bcrypt.genSaltSync(10);
+      const hashedBearerToken = bcrypt.hashSync(bearerToken, saltForLoc);
+      const response = await axios.put(
+        `${LOCATION_BACKEND_URI}/api/setProperties`,
+        setPropertiesPayload,
+        {
+          headers: {
+            Authorization: `Bearer ${hashedBearerToken}`,
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      if (response.status !== HttpStatusCode.OK) {
+        res.status(HttpStatusCode.BAD_REQUEST).json({
+          msg: "User details could not be updated in LOC Postgres server. Response is generated from ts-backend server",
+        });
+      }
+
       await User.findByIdAndUpdate(
         req.user?._id,
         {
@@ -345,7 +658,95 @@ userRouter.put(
       console.log(error);
       res
         .status(HttpStatusCode.UNPROCESSABLE_ENTITY)
-        .json({ error: "Something went wrong..." });
+        .json({ error: "Something went wrong in the ts-backend server" });
+    }
+  },
+);
+
+const setLocationRequest = z.object({
+  id: z.string(),
+  lat: z.number(),
+  lng: z.number(),
+});
+
+// Putting the new location of a user
+userRouter.put(
+  "/setLocation",
+  requireLogin,
+  async (req: CustomRequest, res: Response) => {
+    try {
+      /**
+       * @openapi
+       * '/api/setLocation':
+       *  put:
+       *     tags:
+       *     - User
+       *     summary: Set location for an user
+       *     requestBody:
+       *      required: true
+       *      content:
+       *        application/json:
+       *           schema:
+       *              type: object
+       *              properties:
+       *                lat:
+       *                  type: number
+       *                  description: Latitude of the user
+       *                  default: 22.123456
+       *                lng:
+       *                  type: number
+       *                  description: Longitude of the user
+       *                  default: 88.654321
+       *     responses:
+       *       200:
+       *         description: Success
+       *         content:
+       *          application/json:
+       *           schema:
+       *              type: object
+       *              properties:
+       *                success:
+       *                  type: boolean
+       *       404:
+       *         description: User not found
+       */
+
+      const setLocationPayload = req.body;
+      setLocationPayload.id = req.user?.postgresId;
+      const parsedPayload = setLocationRequest.safeParse(setLocationPayload);
+      if (!parsedPayload.success) {
+        res.status(HttpStatusCode.LENGTH_REQUIRED).json({
+          msg: "You sent the wrong inputs from ts-backend server. The postgresId could not be found",
+        });
+        return;
+      }
+
+      const bearerToken = process.env.BACKEND_INTERCOMMUNICATION_SECRET || "";
+      const saltForLoc = bcrypt.genSaltSync(10);
+      const hashedBearerToken = bcrypt.hashSync(bearerToken, saltForLoc);
+      const response = await axios.put(
+        `${LOCATION_BACKEND_URI}/api/setLocation`,
+        setLocationPayload,
+        {
+          headers: {
+            Authorization: `Bearer ${hashedBearerToken}`,
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      if (response.status !== HttpStatusCode.OK) {
+        res.status(HttpStatusCode.BAD_REQUEST).json({
+          msg: "User locations could not be updated in LOC Postgres server. Response is generated from ts-backend server",
+        });
+      }
+
+      return res.status(HttpStatusCode.OK).json({ success: true });
+    } catch (error) {
+      console.log(error);
+      res
+        .status(HttpStatusCode.UNPROCESSABLE_ENTITY)
+        .json({ error: "Something went wrong in the ts-backend server" });
     }
   },
 );

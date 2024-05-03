@@ -37,26 +37,26 @@ function ProfilePic({ changeProfile }: ProfilePicProps) {
   };
 
   const postPic = () => {
-    if (url) {
-      // saving post to mongodb
-      fetch(`${BASE_API_URI}/api/uploadProfilePic`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-        },
-        body: JSON.stringify({
-          pic: url,
-        }),
+    // if (url) {
+    // saving post to mongodb
+    fetch(`${BASE_API_URI}/api/uploadProfilePic`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+      },
+      body: JSON.stringify({
+        pic: url,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        changeProfile();
+        window.location.reload();
       })
-        .then((res) => res.json())
-        .then((data) => {
-          console.log(data);
-          changeProfile();
-          window.location.reload();
-        })
-        .catch((err) => console.log(err));
-    }
+      .catch((err) => console.log(err));
+    // }
   };
 
   useEffect(() => {

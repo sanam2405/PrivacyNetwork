@@ -49,7 +49,10 @@ const useSocket = (url: string) => {
 
         if (position) {
           const { lat, lng } = position;
-          setLocations((prevLocations) => [...prevLocations, { lat, lng }]);
+          setLocations((prevLocations) => [
+            ...prevLocations,
+            { userId, lat, lng },
+          ]);
         }
 
         if (HEARTBEAT_VALUE) {

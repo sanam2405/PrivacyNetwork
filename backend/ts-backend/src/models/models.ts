@@ -11,6 +11,7 @@ export interface UserDocument extends Document {
   college?: string;
   friends: Types.ObjectId[];
   visibility: boolean;
+  postgresId: string;
 }
 
 /**
@@ -112,7 +113,7 @@ export interface UserDocument extends Document {
  *      properties:
  *        userId:
  *          type: string
- *          default: Manasass2345w53q46f
+ *          default: 662e1c1585a0434e41afd6ff
  *        latitude:
  *          type: number
  *          default: 22.40456
@@ -124,13 +125,13 @@ export interface UserDocument extends Document {
  *          default: 70000
  *        college:
  *          type: string
- *          default: College 3
+ *          default: Kalyani University
  *        age:
  *          type: number
  *          default: 60
  *        gender:
  *          type: string
- *          default: Male
+ *          default: Non Binary
  *    LocationResponse:
  *      type: array
  *      items:
@@ -169,6 +170,7 @@ const userSchema: Schema<UserDocument> = new Schema({
   college: { type: String },
   friends: [{ type: Schema.Types.ObjectId, ref: "user" }],
   visibility: { type: Boolean },
+  postgresId: { type: String, required: true },
 });
 
 const User = mongoose.model<UserDocument>("user", userSchema);

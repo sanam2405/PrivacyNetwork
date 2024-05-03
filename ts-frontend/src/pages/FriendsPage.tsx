@@ -7,7 +7,10 @@ import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
+import Switch from "@mui/material/Switch";
+// import Checkbox from "@mui/material/Checkbox";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import Backdrop from "@mui/material/Backdrop";
@@ -21,25 +24,27 @@ import TravelExploreRoundedIcon from "@mui/icons-material/TravelExploreRounded";
 import ExitToAppRoundedIcon from "@mui/icons-material/ExitToAppRounded";
 import SaveRoundedIcon from "@mui/icons-material/SaveRounded";
 import SaveAsRoundedIcon from "@mui/icons-material/SaveAsRounded";
-import UserCard from "./UserCard";
-import FriendsCard from "./FriendsCard";
-import UserBanner from "./UserBanner";
+import UserCard from "../components/UserCard";
+import FriendsCard from "../components/FriendsCard";
+import UserBanner from "../components/UserBanner";
 import "../styles/FriendsPage.css";
 import { LoginContext } from "../context/LoginContext";
+import { defaultPicLink } from "../constants";
 import User from "../types/types";
-import Loader from "./Loader";
+import Loader from "../components/Loader";
 import HttpStatusCode from "../types/HttpStatusCode";
 import { colleges } from "../constants";
 import { genders } from "../constants";
+import { debounce } from "lodash";
 
 const BASE_API_URI = import.meta.env.VITE_BACKEND_URI;
 
 function FriendsPage() {
-  const defaultPicLink =
-    "https://cdn-icons-png.flaticon.com/128/3177/3177440.png";
   const navigate = useNavigate();
   const [curruser, setcurrUser] = useState<User>();
   const [users, setUsers] = useState<User[]>([]);
+  const [friends, setFriends] = useState<User[]>([]);
+  const [nonFriends, setNonFriends] = useState<User[]>([]);
 
   const { setModalOpen } = useContext(LoginContext);
   const handleClick = () => {
@@ -89,6 +94,9 @@ function FriendsPage() {
   const [visibility, setVisibility] = useState<boolean>(false);
   const [canEdit, setCanEdit] = useState<boolean>(false);
   const [showImage, setShowImage] = useState<boolean>(true);
+  const [searchFriendsKeyword, setSearchFriendsKeyword] = useState<string>("");
+  const [searchNonFriendsKeyword, setSearchNonFriendsKeyword] =
+    useState<string>("");
 
   const handleAgeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = parseFloat(event.target.value);
@@ -195,9 +203,11 @@ function FriendsPage() {
 
   const handleClose = () => {
     setOpen(false);
+    setSearchNonFriendsKeyword("");
   };
   const handleClose2 = () => {
     setOpen2(false);
+    setSearchFriendsKeyword("");
   };
 
   useEffect(() => {
@@ -268,6 +278,66 @@ function FriendsPage() {
         console.log(err);
       });
   }, []);
+
+  const fetchFriendsByKeyWord = () => {
+    fetch(`${BASE_API_URI}/api/search-friends`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+      },
+      body: JSON.stringify({
+        key: searchFriendsKeyword,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) {
+          setFriends([]);
+        } else {
+          setFriends(data.friends);
+        }
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const fetchNonFriendsByKeyWord = () => {
+    fetch(`${BASE_API_URI}/api/search-non-friends`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+      },
+      body: JSON.stringify({
+        key: searchNonFriendsKeyword,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) {
+          setNonFriends([]);
+        } else {
+          setNonFriends(data.nonFriends);
+        }
+      })
+      .catch((err) => console.log(err));
+  };
+
+  useEffect(() => {
+    const debouncedSearchFriends = debounce(fetchFriendsByKeyWord, 300);
+    debouncedSearchFriends();
+    return () => {
+      debouncedSearchFriends.cancel();
+    };
+  }, [searchFriendsKeyword]);
+
+  useEffect(() => {
+    const debouncedSearchNonFriends = debounce(fetchNonFriendsByKeyWord, 300);
+    debouncedSearchNonFriends();
+    return () => {
+      debouncedSearchNonFriends.cancel();
+    };
+  }, [searchNonFriendsKeyword]);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -341,13 +411,6 @@ function FriendsPage() {
     else return false;
   };
 
-  const getFriendsCount = () => {
-    const friendSet = users.filter((user) => {
-      return curruser?.friends.includes(user._id);
-    });
-    return friendSet.length;
-  };
-
   const checker = () => {
     if (localStorage.getItem("user")) {
       return (
@@ -411,11 +474,7 @@ function FriendsPage() {
                         shrink: true,
                       }}
                       disabled={checkAgeValidation(prevAge)}
-                      helperText={
-                        !checkAgeValidation(age) && !canEdit
-                          ? "Please select your age"
-                          : ""
-                      }
+                      helperText={!canEdit ? "Please select your age" : ""}
                       value={age}
                       onChange={handleAgeChange}
                     />
@@ -439,11 +498,7 @@ function FriendsPage() {
                       disabled={checkGenderValidation(prevGender)}
                       value={gender}
                       onChange={handleGenderChange}
-                      helperText={
-                        !checkGenderValidation(gender) && !canEdit
-                          ? "Please select your gender"
-                          : ""
-                      }
+                      helperText={!canEdit ? "Please select your gender" : ""}
                     >
                       {genders.map((option) => (
                         <MenuItem key={option.value} value={option.value}>
@@ -471,11 +526,7 @@ function FriendsPage() {
                       disabled={checkCollegeValidation(prevCollege)}
                       value={college}
                       onChange={handleCollegeChange}
-                      helperText={
-                        !checkCollegeValidation(college) && !canEdit
-                          ? "Please select your college"
-                          : ""
-                      }
+                      helperText={!canEdit ? "Please select your college" : ""}
                     >
                       {colleges.map((option) => (
                         <MenuItem key={option.value} value={option.value}>
@@ -487,17 +538,31 @@ function FriendsPage() {
                 </Box>
               </div>
               <div className="checkbox-container">
-                <FormGroup>
+                <FormGroup style={{ display: "flex", alignItems: "center" }}>
                   <FormControlLabel
                     control={
-                      <Checkbox
+                      // <Checkbox
+                      //   checked={visibility}
+                      //   onChange={handleVisibilityChange}
+                      //   disabled={checkVisibilityValidation()}
+                      // />
+                      <Switch
                         checked={visibility}
                         onChange={handleVisibilityChange}
                         disabled={checkVisibilityValidation()}
+                        color="success"
                       />
                     }
                     label="Show my visibility"
                   />
+
+                  {visibility && checkVisibilityValidation() ? (
+                    <VisibilityIcon color="disabled" />
+                  ) : visibility ? (
+                    <VisibilityIcon color="success" />
+                  ) : (
+                    <VisibilityOffIcon color="disabled" />
+                  )}
                 </FormGroup>
               </div>
               <div className="save-edit-button-container">
@@ -565,9 +630,27 @@ function FriendsPage() {
                   >
                     <CloseIcon />
                   </IconButton>
-                  <div className="friends-modal">
-                    {users.length > 0 &&
-                      users.map(
+                  <div className="search-bar-container">
+                    <input
+                      type="text"
+                      className="search-input"
+                      placeholder="Search users..."
+                      value={searchNonFriendsKeyword}
+                      onChange={(e) =>
+                        setSearchNonFriendsKeyword(e.target.value)
+                      }
+                    />
+                  </div>
+                  <div
+                    className={
+                      nonFriends.length === 0
+                        ? "zeroth-message-modal"
+                        : "friends-modal"
+                    }
+                  >
+                    {nonFriends.length === 0 && <h3>No users found !!!</h3>}
+                    {nonFriends.length > 0 &&
+                      nonFriends.map(
                         (user) =>
                           curruser && (
                             <UserCard
@@ -575,13 +658,15 @@ function FriendsPage() {
                               username={user.username}
                               name={user.name}
                               dpLink={user.Photo ? user.Photo : defaultPicLink}
-                              currentUsername={curruser.username}
                               user={user}
-                              curruser={curruser}
                               users={users}
                               setUsers={setUsers}
                               fetchAllUserDetails={fetchAllUserDetails}
                               fetchCurrentUserDetails={fetchCurrentUserDetails}
+                              fetchFriendsByKeyWord={fetchFriendsByKeyWord}
+                              fetchNonFriendsByKeyWord={
+                                fetchNonFriendsByKeyWord
+                              }
                             />
                           ),
                       )}
@@ -614,35 +699,41 @@ function FriendsPage() {
                   >
                     <CloseIcon />
                   </IconButton>
+                  <div className="search-bar-container">
+                    <input
+                      type="text"
+                      className="search-input"
+                      placeholder="Search users..."
+                      value={searchFriendsKeyword}
+                      onChange={(e) => setSearchFriendsKeyword(e.target.value)}
+                    />
+                  </div>
                   <div
                     className={
-                      getFriendsCount() === 0
+                      friends.length === 0
                         ? "zeroth-message-modal"
                         : "friends-modal"
                     }
                   >
-                    {getFriendsCount() === 0 && (
-                      <h3>
-                        You haven't added any friends yet. Start building a
-                        Privacy Network
-                      </h3>
-                    )}
-                    {users.length > 0 &&
-                      users.map(
+                    {friends.length === 0 && <h3>No friends found !!!</h3>}
+                    {friends.length > 0 &&
+                      friends.map(
                         (user) =>
                           curruser && (
                             <FriendsCard
-                              key={user.username} // Ensure each FriendsCard has a unique key
+                              key={user.username}
                               username={user.username}
                               name={user.name}
                               dpLink={user.Photo ? user.Photo : defaultPicLink}
-                              currentUsername={curruser.username}
                               user={user}
-                              curruser={curruser}
                               users={users}
                               setUsers={setUsers}
                               fetchAllUserDetails={fetchAllUserDetails}
                               fetchCurrentUserDetails={fetchCurrentUserDetails}
+                              fetchFriendsByKeyWord={fetchFriendsByKeyWord}
+                              fetchNonFriendsByKeyWord={
+                                fetchNonFriendsByKeyWord
+                              }
                             />
                           ),
                       )}

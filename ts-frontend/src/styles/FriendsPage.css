@@ -12,7 +12,7 @@
 .friends-modal {
   display: grid;
   grid-template-columns: repeat(3, 20.5rem);
-  grid-template-rows: repeat(10, 28.125rem);
+  grid-template-rows: repeat(500, 28.125rem);
 }
 
 .zeroth-message-modal {
@@ -24,7 +24,7 @@
 
 .zeroth-message-modal h3 {
   font-family: var(--font-courier-prime);
-  color: "black";
+  color: black;
   font-size: var(--font-size-small);
   /* margin: '70'; */
   margin-left: "110";
@@ -36,6 +36,37 @@
   flex-direction: row;
   justify-content: flex-end;
   align-items: flex-end;
+}
+
+.search-bar-container {
+  position: relative;
+}
+
+.search-input {
+  width: 100%;
+  padding: 8px;
+  margin-top: 25px;
+  border-radius: 4px;
+  border: 2px solid transparent; /* Set border color to transparent initially */
+  outline: none;
+  color: #333;
+  font-family: var(--font-courier-prime);
+  transition: border-color 0.3s ease; /* Smooth transition for border color */
+  box-shadow: 0 0 5px black; /* Initial box shadow with transparency */
+  background-color: #e2e8f0;
+}
+
+.search-input:hover {
+  border-color: #a5f3fc; /* Change border color on hover */
+}
+
+.search-input:focus {
+  border-color: #a5f3fc; /* Change border color on focus */
+}
+
+.search-input::placeholder {
+  color: #999; /* Color for placeholder text */
+  font-family: var(--font-courier-prime);
 }
 
 .large-button {

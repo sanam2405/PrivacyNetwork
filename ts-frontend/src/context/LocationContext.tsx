@@ -1,6 +1,7 @@
 import { FC, ReactNode, createContext, useContext, useState } from "react";
 
 interface Location {
+  userId: string;
   lat: number;
   lng: number;
 }
@@ -8,6 +9,8 @@ interface Location {
 interface LocationsContextType {
   locations: Location[];
   setLocations: React.Dispatch<React.SetStateAction<Location[]>>;
+  locationsUserIdSet: Set<string>;
+  setLocationsUserIdSet: React.Dispatch<React.SetStateAction<Set<string>>>;
 }
 
 const LocationsContext = createContext<LocationsContextType | undefined>(
@@ -26,9 +29,19 @@ export const LocationsProvider: FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [locations, setLocations] = useState<Location[]>([]);
+  const [locationsUserIdSet, setLocationsUserIdSet] = useState<Set<string>>(
+    new Set(),
+  );
 
   return (
-    <LocationsContext.Provider value={{ locations, setLocations }}>
+    <LocationsContext.Provider
+      value={{
+        locations,
+        setLocations,
+        locationsUserIdSet,
+        setLocationsUserIdSet,
+      }}
+    >
       {children}
     </LocationsContext.Provider>
   );

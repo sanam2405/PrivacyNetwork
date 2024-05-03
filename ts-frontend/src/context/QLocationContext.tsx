@@ -1,13 +1,24 @@
 import { FC, ReactNode, createContext, useContext, useState } from "react";
 
 interface Location {
+  id: string;
+  name: string;
+  email: string;
+  age: number;
+  gender: string;
+  college: string;
   lat: number;
-  long: number;
+  lng: number;
+  dist_meters: number;
+  Photo: string;
+  mask: boolean;
 }
 
 interface QLocationsContextType {
   qLocations: Location[];
   setQLocations: React.Dispatch<React.SetStateAction<Location[]>>;
+  locationsUserIdSet: Set<string>;
+  setLocationsUserIdSet: React.Dispatch<React.SetStateAction<Set<string>>>;
 }
 
 const QLocationsContext = createContext<QLocationsContextType | undefined>(
@@ -26,9 +37,19 @@ export const QLocationsProvider: FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [qLocations, setQLocations] = useState<Location[]>([]);
+  const [locationsUserIdSet, setLocationsUserIdSet] = useState<Set<string>>(
+    new Set(),
+  );
 
   return (
-    <QLocationsContext.Provider value={{ qLocations, setQLocations }}>
+    <QLocationsContext.Provider
+      value={{
+        qLocations,
+        setQLocations,
+        locationsUserIdSet,
+        setLocationsUserIdSet,
+      }}
+    >
       {children}
     </QLocationsContext.Provider>
   );
