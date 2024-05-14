@@ -83,7 +83,7 @@ export const UserLocation = z.object({
   lat: z.number(),
   lng: z.number(),
   dist_meters: z.number().optional(),
-  Photo: z.string().optional(),
+  Photo: z.string(),
   mask: z.boolean().optional(),
 });
 

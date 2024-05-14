@@ -24,7 +24,7 @@ import {
 import "../styles/Map.css";
 import { useWebSocket } from "../hooks/ws";
 import { useNavigate } from "react-router-dom";
-import { distances, ages } from "../constants";
+import { distances, ages, defaultPicLink } from "../constants";
 import { genders } from "../constants";
 import { colleges } from "../constants";
 import { LoginContext } from "../context/LoginContext";
@@ -110,7 +110,7 @@ export const Map = () => {
   const currentUserAge = currentUserDetails.age;
   const currentUserGender = currentUserDetails.gender;
   const currentUserCollege = currentUserDetails.college;
-  const currentUserPhoto = currentUserDetails.Photo;
+  const currentUserPhoto = currentUserDetails.Photo || defaultPicLink;
   // const currentUserAge = currentUserDetails.age;
   // const currentUserAge = currentUserDetails.age;
   const socketCommJOINROOM = () => {

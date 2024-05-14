@@ -8,12 +8,7 @@ import {
 export const useWebSocket = (url: string) => {
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const ws = useRef<WebSocketExt | null>(null);
-  const {
-    qLocations,
-    setQLocations,
-    qLocationsUserIdSet,
-    setQLocationsUserIdSet,
-  } = useQLocations();
+  const { qLocations, setQLocations } = useQLocations();
 
   useEffect(() => {
     return () => {
@@ -88,10 +83,12 @@ export const useWebSocket = (url: string) => {
           );
 
           const userKey = userId.toString();
-          if (!qLocationsUserIdSet.has(userKey)) {
-            qLocationsUserIdSet.add(userKey);
-            setQLocationsUserIdSet(qLocationsUserIdSet);
 
+          const existingUserIds = new Set<string>(
+            qLocations.map((location) => location.id),
+          );
+          if (!existingUserIds.has(userKey)) {
+            // Add new location
             setQLocations((prevLocations) => [
               ...prevLocations,
               {
@@ -105,34 +102,24 @@ export const useWebSocket = (url: string) => {
                 lng: position.lng,
                 dist_meters: parsedData.payload.dist_meters,
                 Photo: parsedData.payload.Photo,
-                mask: parsedData.payload.mask,
+                mask: true, // mask should be dynamically assigned as per the use case
               },
             ]);
-          } else {
-            // Find the existing location by userKey
-            const existingLocationIndex = qLocations.findIndex(
-              (location) => location.id === userKey,
+            existingUserIds.add(userKey);
+            console.log(
+              `User with id ${userKey} qLocations updated from ws hook`,
             );
-
-            if (existingLocationIndex !== -1) {
-              // Update the existing location properties
-              setQLocations((prevLocations) => {
-                const updatedLocations = [...prevLocations];
-                updatedLocations[existingLocationIndex] = {
-                  ...updatedLocations[existingLocationIndex],
-                  // Update specific properties here (e.g., lat, lng, etc.)
-                  lat: position.lat,
-                  lng: position.lng,
-                  // Add other properties as needed
-                };
-                return updatedLocations;
-              });
-              console.log(`User with id ${userKey} LOCATION updated!`);
-            } else {
-              console.log(
-                `User with id ${userKey} not found. LOCATION updating failed`,
+          } else {
+            // Update existing location
+            setQLocations((prevLocations) => {
+              const updatedLocations = prevLocations.map((location) =>
+                location.id === userKey ? { ...location, lat, lng } : location,
               );
-            }
+              return updatedLocations;
+            });
+            console.log(
+              `User with id ${userKey} qLocations updated from ws hook`,
+            );
           }
         }
       });
