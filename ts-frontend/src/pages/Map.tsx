@@ -39,6 +39,7 @@ import {
   DEFAULT_MARKER_PIC,
   DEFAULT_PROFILE_URL,
 } from "../constants";
+import { useLocations } from "../context/LocationContext";
 
 const BASE_API_URI = import.meta.env.VITE_BACKEND_URI;
 
@@ -84,6 +85,7 @@ export const Map = () => {
   const [isMinimize, setIsMinimize] = useState<boolean>(false);
 
   const { qLocations, setQLocations } = useQLocations();
+  const { locations, setLocations } = useLocations();
 
   if (!apiKey)
     throw new Error("GOOGLE_API_KEY environment variable is not set");
@@ -459,17 +461,31 @@ export const Map = () => {
                   handleCloseDialogBox={handleCloseDialogBox}
                 />
               )}
-              {/* {locations.map((loc, index) => {
-                return (
-                  loc.lat &&
-                  loc.lng && (
+              {locations.map((loc, index) => {
+                if (loc.lat && loc.lng) {
+                  return (
                     <Marker
                       key={index}
-                      position={{ lat: loc.lat, lng: loc.lng }}
+                      onClick={() => {
+                        setClickedIndex(locations.length);
+                      }}
+                      position={{
+                        lat: loc.lat,
+                        lng: loc.lng,
+                      }}
+                      icon={{
+                        url: loc.Photo
+                          ? insertTransformationParams(loc.Photo)
+                          : DEFAULT_PROFILE_URL,
+                        scaledSize: new google.maps.Size(40, 40),
+                        origin: new google.maps.Point(0, 0),
+                        anchor: new google.maps.Point(20, 40),
+                      }}
+                      animation={google.maps.Animation.BOUNCE}
                     />
-                  )
-                );
-              })} */}
+                  );
+                }
+              })}
               {qLocations.map((loc, index) => {
                 if (
                   loc.lat &&

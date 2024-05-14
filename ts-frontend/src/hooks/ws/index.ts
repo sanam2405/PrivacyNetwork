@@ -1,14 +1,14 @@
 import { useState, useEffect, useRef } from "react";
-import { useQLocations } from "../../context/QLocationContext";
 import {
   CLIENT_HEARTBEAT_VALUE,
   CLIENT_HEARTBEAT_TIMEOUT,
 } from "../../constants";
+import { useLocations } from "../../context/LocationContext";
 
 export const useWebSocket = (url: string) => {
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const ws = useRef<WebSocketExt | null>(null);
-  const { qLocations, setQLocations } = useQLocations();
+  const { locations, setLocations } = useLocations();
 
   useEffect(() => {
     return () => {
@@ -85,11 +85,11 @@ export const useWebSocket = (url: string) => {
           const userKey = userId.toString();
 
           const existingUserIds = new Set<string>(
-            qLocations.map((location) => location.id),
+            locations.map((location) => location.id),
           );
           if (!existingUserIds.has(userKey)) {
             // Add new location
-            setQLocations((prevLocations) => [
+            setLocations((prevLocations) => [
               ...prevLocations,
               {
                 id: userKey,
@@ -107,18 +107,18 @@ export const useWebSocket = (url: string) => {
             ]);
             existingUserIds.add(userKey);
             console.log(
-              `User with id ${userKey} qLocations updated from ws hook`,
+              `User with id ${userKey} locations updated from ws hook`,
             );
           } else {
             // Update existing location
-            setQLocations((prevLocations) => {
+            setLocations((prevLocations) => {
               const updatedLocations = prevLocations.map((location) =>
                 location.id === userKey ? { ...location, lat, lng } : location,
               );
               return updatedLocations;
             });
             console.log(
-              `User with id ${userKey} qLocations updated from ws hook`,
+              `User with id ${userKey} locations updated from ws hook`,
             );
           }
         }

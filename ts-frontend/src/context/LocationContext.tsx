@@ -1,19 +1,27 @@
 import { FC, ReactNode, createContext, useContext, useState } from "react";
 
 interface Location {
-  userId: string;
+  id: string;
+  name: string;
+  email: string;
+  age: number;
+  gender: string;
+  college: string;
   lat: number;
   lng: number;
+  dist_meters: number;
+  Photo: string;
+  mask: boolean;
 }
 
-interface LocationsContextType {
+interface QLocationsContextType {
   locations: Location[];
   setLocations: React.Dispatch<React.SetStateAction<Location[]>>;
   locationsUserIdSet: Set<string>;
   setLocationsUserIdSet: React.Dispatch<React.SetStateAction<Set<string>>>;
 }
 
-const LocationsContext = createContext<LocationsContextType | undefined>(
+const LocationsContext = createContext<QLocationsContextType | undefined>(
   undefined,
 );
 
