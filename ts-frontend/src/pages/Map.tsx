@@ -1,43 +1,44 @@
+/* eslint-disable no-prototype-builtins */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useContext, useEffect, useState } from "react";
-import Box from "@mui/material/Box";
-import Slider from "@mui/material/Slider";
-import TextField from "@mui/material/TextField";
-import MenuItem from "@mui/material/MenuItem";
-import Stack from "@mui/material/Stack";
-import Button from "@mui/material/Button";
-import ExitToAppRoundedIcon from "@mui/icons-material/ExitToAppRounded";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import WifiIcon from "@mui/icons-material/Wifi";
-import WifiOffIcon from "@mui/icons-material/WifiOff";
-import IconButton from "@mui/material/IconButton";
-import Fingerprint from "@mui/icons-material/Fingerprint";
-import { Grid } from "@mui/material";
+import { useContext, useEffect, useState } from 'react';
+import Box from '@mui/material/Box';
+import Slider from '@mui/material/Slider';
+import TextField from '@mui/material/TextField';
+import MenuItem from '@mui/material/MenuItem';
+import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
+import ExitToAppRoundedIcon from '@mui/icons-material/ExitToAppRounded';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import WifiIcon from '@mui/icons-material/Wifi';
+import WifiOffIcon from '@mui/icons-material/WifiOff';
+import IconButton from '@mui/material/IconButton';
+import Fingerprint from '@mui/icons-material/Fingerprint';
+import { Grid } from '@mui/material';
 import {
   Circle,
   GoogleMap,
   Marker,
   useJsApiLoader,
-} from "@react-google-maps/api";
-import "../styles/Map.css";
-import useSocket from "../hooks/ws";
-import { useNavigate } from "react-router-dom";
-import { distances, ages } from "../constants";
-import { genders } from "../constants";
-import { colleges } from "../constants";
-import { LoginContext } from "../context/LoginContext";
-import { useQLocations } from "../context/QLocationContext";
-import DetailsDialogBox, { Details } from "../components/DetailsDialogBox";
-import { positions } from "../constants";
-import { ToastContainer } from "react-toastify";
-import User from "../types/types";
+} from '@react-google-maps/api';
+import '../styles/Map.css';
+import { useWebSocket } from '../hooks/ws';
+import { useNavigate } from 'react-router-dom';
+import { distances, ages } from '../constants';
+import { genders } from '../constants';
+import { colleges } from '../constants';
+import { LoginContext } from '../context/LoginContext';
+import { useQLocations } from '../context/QLocationContext';
+import DetailsDialogBox, { Details } from '../components/DetailsDialogBox';
+import { positions } from '../constants';
+import { ToastContainer } from 'react-toastify';
+import User from '../types/types';
 import {
   circleOptionForFriends,
   circleOptionForNonFriends,
   DEFAULT_MARKER_PIC,
   DEFAULT_PROFILE_URL,
-} from "../constants";
+} from '../constants';
 
 const BASE_API_URI = import.meta.env.VITE_BACKEND_URI;
 
@@ -60,31 +61,35 @@ export const Map = () => {
   const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
 
   const {
-    socket,
-    locations,
-    sendMessage,
-    openConnection,
+    // socket,
+    // locations,
+    // sendMessage,
+    // openConnection,
+    // closeConnection,
+    // isWsConnected,
+    isConnected,
+    handleConnectionOpen,
     closeConnection,
-    isWsConnected,
-  } = useSocket(BASE_WS_URI);
+    sendMessage,
+  } = useWebSocket(BASE_WS_URI);
 
   const [currentUserPosition, setCurrentUserPosition] =
     useState<Location>(getRandomPosition());
 
   const [curruser, setcurrUser] = useState<User>();
   const [age, setAge] = useState(50);
-  const [gender, setGender] = useState("Non Binary");
-  const [college, setCollege] = useState("Calcutta University");
+  const [gender, setGender] = useState('Non Binary');
+  const [college, setCollege] = useState('Calcutta University');
   const [sliderValue, setSliderValue] = useState(60);
   const [isMinimize, setIsMinimize] = useState<boolean>(false);
 
   const { qLocations, setQLocations } = useQLocations();
 
   if (!apiKey)
-    throw new Error("GOOGLE_API_KEY environment variable is not set");
+    throw new Error('GOOGLE_API_KEY environment variable is not set');
 
   const { isLoaded } = useJsApiLoader({
-    id: "google-map-script",
+    id: 'google-map-script',
     googleMapsApiKey: apiKey,
   });
   const [currentMapCenter] = useState({
@@ -93,9 +98,9 @@ export const Map = () => {
   });
   const [clickedIndex, setClickedIndex] = useState<number>(-1);
 
-  const userDetails = localStorage.getItem("user");
+  const userDetails = localStorage.getItem('user');
   if (!userDetails) {
-    navigate("/auth");
+    navigate('/auth');
     return;
   }
 
@@ -103,39 +108,34 @@ export const Map = () => {
   const currentUserName = JSON.parse(userDetails).name;
 
   const socketCommJOINROOM = () => {
-    if (socket) {
-      //  Initial messages after WebSocket connection is established
-      sendMessage({
-        type: "JOIN_ROOM",
-        payload: {
-          name: currentUserName,
-          userId: currentUserUUID,
-          roomId: "202A",
-        },
-      });
-    }
+    sendMessage({
+      type: 'JOIN_ROOM',
+      payload: {
+        name: currentUserName,
+        userId: currentUserUUID,
+        roomId: '202A',
+      },
+    });
   };
 
   const socketCommSENDLOC = () => {
-    if (socket) {
-      sendMessage({
-        type: "SEND_LOCATION",
-        payload: {
-          userId: currentUserUUID,
-          roomId: "202A",
-          position: currentUserPosition,
-        },
-      });
-    }
+    sendMessage({
+      type: 'SEND_LOCATION',
+      payload: {
+        userId: currentUserUUID,
+        roomId: '202A',
+        position: currentUserPosition,
+      },
+    });
   };
 
   const updateCurrentLocation = (position: Location) => {
     if (position.lat != undefined && position.lng != undefined) {
       fetch(`${BASE_API_URI}/api/setLocation`, {
-        method: "PUT",
+        method: 'PUT',
         headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('jwt')}`,
         },
         body: JSON.stringify({
           lat: position.lat,
@@ -145,7 +145,7 @@ export const Map = () => {
         .then((res) => res.json())
         .then((data) => {
           if (data.success) {
-            console.log("Successfully updated current location ...");
+            console.log('Successfully updated current location ...');
           }
         })
         .catch((err) => console.log(err));
@@ -153,12 +153,12 @@ export const Map = () => {
   };
 
   const fetchCurrentUserDetails = () => {
-    const userDetails = localStorage.getItem("user");
+    const userDetails = localStorage.getItem('user');
     if (userDetails) {
       fetch(`${BASE_API_URI}/api/user/${JSON.parse(userDetails)._id}`, {
         headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('jwt')}`,
         },
       })
         .then((res) => res.json())
@@ -167,7 +167,7 @@ export const Map = () => {
             console.log(data.error);
           } else {
             setcurrUser(data.user);
-            localStorage.setItem("user", JSON.stringify(data.user));
+            localStorage.setItem('user', JSON.stringify(data.user));
           }
         })
         .catch((err) => console.log(err));
@@ -176,10 +176,10 @@ export const Map = () => {
 
   const updateDetailsOfQueriedUsers = () => {
     fetch(`${BASE_API_URI}/api/query`, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('jwt')}`,
       },
       body: JSON.stringify({
         userId: currentUserUUID,
@@ -193,12 +193,12 @@ export const Map = () => {
     })
       .then((res) => {
         if (!res.ok) {
-          throw new Error("Network response from LOC server was not OK");
+          throw new Error('Network response from LOC server was not OK');
         }
         return res.json();
       })
       .then((data) => {
-        console.log("Response raw data : ");
+        console.log('Response raw data : ');
         console.log(data);
         setQLocations(data);
       })
@@ -208,26 +208,8 @@ export const Map = () => {
   };
 
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let intervalId: any;
-    if (socket) {
-      socket.onopen = () => {
-        console.log("WebSocket connection established from client side");
-        socketCommJOINROOM();
-        intervalId = setInterval(() => {
-          socketCommSENDLOC();
-        }, 3000);
-      };
-    }
-
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, [socket]);
-
-  useEffect(() => {
-    if (!localStorage.getItem("user")) {
-      navigate("/auth");
+    if (!localStorage.getItem('user')) {
+      navigate('/auth');
     }
   }, []);
 
@@ -249,7 +231,7 @@ export const Map = () => {
 */
 
   useEffect(() => {
-    // Initial timeout after 10 seconds
+    // Initial timeout after 5 seconds
     const initialTimeoutId = setTimeout(() => {
       simulateRealTimeUserMovement();
       // Set up interval for consecutive invocations every 10 seconds
@@ -257,7 +239,7 @@ export const Map = () => {
 
       // Cleanup function to clear the interval on component unmount
       return () => clearInterval(intervalId);
-    }, 10000);
+    }, 5000);
 
     // Cleanup function to clear the initial timeout on component unmount
     return () => clearTimeout(initialTimeoutId);
@@ -280,18 +262,19 @@ export const Map = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUserPosition]);
 
-  const handleSocketConnection = () => {
-    // first close if already soc conn exist
-
-    closeConnection("202A", currentUserUUID);
-
+  const handleSocketConnection = async () => {
     // open a new soc conn if doesn't exist
-    openConnection();
+    await handleConnectionOpen();
+
+    // join a room after 3 seconds
+    setTimeout(() => {
+      socketCommJOINROOM();
+    }, 3000);
   };
 
   const handleSocketDisconnection = () => {
     // close if already soc conn exist
-    closeConnection("202A", currentUserUUID);
+    closeConnection('202A', currentUserUUID);
   };
 
   const handleCloseDialogBox = () => {
@@ -306,17 +289,17 @@ export const Map = () => {
   }, []);
 
   const containerStyle = {
-    width: isMinimize ? "60vw" : "100vw",
-    height: "100vh",
+    width: isMinimize ? '60vw' : '100vw',
+    height: '100vh',
   };
 
   const handleGenderChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setGender(event.target.value);
   };
   const handleCollegeChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setCollege(event.target.value);
   };
@@ -340,12 +323,12 @@ export const Map = () => {
       return DEFAULT_MARKER_PIC;
     }
     // Find the index of "/image/upload" in the URL
-    const uploadIndex = url.indexOf("/image/upload");
+    const uploadIndex = url.indexOf('/image/upload');
     if (uploadIndex !== -1) {
       const modifiedUrl =
-        url.slice(0, uploadIndex + "/image/upload".length) +
-        "/w_60,h_60,c_scale" +
-        url.slice(uploadIndex + "/image/upload".length);
+        url.slice(0, uploadIndex + '/image/upload'.length) +
+        '/w_60,h_60,c_scale' +
+        url.slice(uploadIndex + '/image/upload'.length);
       console.log(modifiedUrl);
       return modifiedUrl;
     } else {
@@ -371,18 +354,24 @@ export const Map = () => {
   }
 
   const onLoad = (circle: google.maps.Circle) => {
-    console.log("Circle onLoad circle: ", circle);
+    console.log('Circle onLoad circle: ', circle);
   };
 
   const onUnmount = (circle: google.maps.Circle) => {
-    console.log("Circle onUnmount circle: ", circle);
+    console.log('Circle onUnmount circle: ', circle);
   };
 
   return isLoaded ? (
     <>
-      <Grid container spacing={5}>
-        <Grid item xs={isMinimize ? 7 : 12}>
-          <div className="map-container">
+      <Grid
+        container
+        spacing={5}
+      >
+        <Grid
+          item
+          xs={isMinimize ? 7 : 12}
+        >
+          <div className='map-container'>
             <GoogleMap
               mapContainerStyle={containerStyle}
               center={currentMapCenter}
@@ -417,7 +406,7 @@ export const Map = () => {
                   handleCloseDialogBox={handleCloseDialogBox}
                 />
               )}
-              {locations.map((loc, index) => {
+              {/* {locations.map((loc, index) => {
                 return (
                   loc.lat &&
                   loc.lng && (
@@ -427,12 +416,12 @@ export const Map = () => {
                     />
                   )
                 );
-              })}
+              })} */}
               {qLocations.map((loc, index) => {
                 if (
                   loc.lat &&
                   loc.lng &&
-                  loc.hasOwnProperty("mask") &&
+                  loc.hasOwnProperty('mask') &&
                   loc.mask === true &&
                   isIDExistInMyLocation(loc.id)
                 ) {
@@ -469,7 +458,7 @@ export const Map = () => {
                 } else if (
                   loc.lat &&
                   loc.lng &&
-                  loc.hasOwnProperty("mask") &&
+                  loc.hasOwnProperty('mask') &&
                   loc.mask === false
                 ) {
                   // Who are friends and mark their visibility as true
@@ -508,24 +497,30 @@ export const Map = () => {
           </div>
         </Grid>
         {isMinimize && (
-          <Grid item xs={4.5}>
-            <div className="option-container">
+          <Grid
+            item
+            xs={4.5}
+          >
+            <div className='option-container'>
               <div>
-                <Stack direction="row" spacing={25}>
+                <Stack
+                  direction='row'
+                  spacing={25}
+                >
                   <Button
-                    variant="contained"
-                    size="large"
+                    variant='contained'
+                    size='large'
                     onClick={() => {
-                      navigate("/dashboard");
+                      navigate('/dashboard');
                     }}
                     startIcon={<AccountCircleIcon />}
                   >
                     Profile
                   </Button>
                   <Button
-                    variant="outlined"
-                    size="large"
-                    color="success"
+                    variant='outlined'
+                    size='large'
+                    color='success'
                     onClick={handleClick}
                     endIcon={<ExitToAppRoundedIcon />}
                   >
@@ -535,9 +530,9 @@ export const Map = () => {
               </div>
               <Box sx={{ marginTop: 4 }}>
                 <Slider
-                  aria-label="Custom marks"
+                  aria-label='Custom marks'
                   step={10}
-                  valueLabelDisplay="auto"
+                  valueLabelDisplay='auto'
                   marks={distances}
                   value={sliderValue}
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -545,28 +540,31 @@ export const Map = () => {
                 />
               </Box>
               <Box
-                component="form"
+                component='form'
                 sx={{
-                  "& .MuiTextField-root": {
+                  '& .MuiTextField-root': {
                     m: 1,
-                    width: "27.5rem",
-                    marginTop: "4rem",
+                    width: '27.5rem',
+                    marginTop: '4rem',
                   },
                 }}
                 noValidate
-                autoComplete="off"
+                autoComplete='off'
               >
                 <div>
                   <TextField
-                    id="outlined-select-gender"
+                    id='outlined-select-gender'
                     select
-                    label="Gender"
+                    label='Gender'
                     required
                     value={gender}
                     onChange={(e) => handleGenderChange(e)}
                   >
                     {genders.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
+                      <MenuItem
+                        key={option.value}
+                        value={option.value}
+                      >
                         {option.label}
                       </MenuItem>
                     ))}
@@ -574,28 +572,31 @@ export const Map = () => {
                 </div>
               </Box>
               <Box
-                component="form"
+                component='form'
                 sx={{
-                  "& .MuiTextField-root": {
+                  '& .MuiTextField-root': {
                     m: 1,
-                    width: "27.5rem",
-                    marginTop: "4rem",
+                    width: '27.5rem',
+                    marginTop: '4rem',
                   },
                 }}
                 noValidate
-                autoComplete="off"
+                autoComplete='off'
               >
                 <div>
                   <TextField
-                    id="outlined-select-college"
+                    id='outlined-select-college'
                     select
-                    label="College"
+                    label='College'
                     required
                     value={college}
                     onChange={(e) => handleCollegeChange(e)}
                   >
                     {colleges.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
+                      <MenuItem
+                        key={option.value}
+                        value={option.value}
+                      >
                         {option.label}
                       </MenuItem>
                     ))}
@@ -604,9 +605,9 @@ export const Map = () => {
               </Box>
               <Box sx={{ marginTop: 7 }}>
                 <Slider
-                  aria-label="Custom age"
+                  aria-label='Custom age'
                   step={10}
-                  valueLabelDisplay="auto"
+                  valueLabelDisplay='auto'
                   marks={ages}
                   value={age}
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -614,16 +615,16 @@ export const Map = () => {
                 />
               </Box>
               <Box
-                display={"flex"}
+                display={'flex'}
                 flex={1}
-                justifyContent={"center"}
-                alignItems={"center"}
+                justifyContent={'center'}
+                alignItems={'center'}
                 height={100}
               >
                 <IconButton
-                  aria-label="fingerprint"
-                  color="secondary"
-                  size="large"
+                  aria-label='fingerprint'
+                  color='secondary'
+                  size='large'
                   onClick={() => {
                     updateDetailsOfQueriedUsers();
                   }}
@@ -633,28 +634,32 @@ export const Map = () => {
                 </IconButton>
               </Box>
               <div>
-                <Stack direction="row" spacing={20} marginTop={5}>
+                <Stack
+                  direction='row'
+                  spacing={20}
+                  marginTop={5}
+                >
                   <Button
-                    variant="outlined"
-                    size="large"
-                    color="success"
+                    variant='outlined'
+                    size='large'
+                    color='success'
                     onClick={() => {
                       handleSocketConnection();
                     }}
                     startIcon={<WifiIcon />}
                   >
-                    {isWsConnected ? "Connected" : "Connect"}
+                    {isConnected ? 'Connected' : 'Connect'}
                   </Button>
                   <Button
-                    variant="contained"
-                    size="large"
-                    color="error"
+                    variant='contained'
+                    size='large'
+                    color='error'
                     onClick={() => {
                       handleSocketDisconnection();
                     }}
                     endIcon={<WifiOffIcon />}
                   >
-                    {!isWsConnected ? "Disconnected" : "Disconnect"}
+                    {!isConnected ? 'Disconnected' : 'Disconnect'}
                   </Button>
                 </Stack>
               </div>
@@ -662,7 +667,10 @@ export const Map = () => {
           </Grid>
         )}
       </Grid>
-      <ToastContainer autoClose={1000} theme="dark" />
+      <ToastContainer
+        autoClose={1000}
+        theme='dark'
+      />
       {/* {socket ? <h1>{latestMessage}</h1> : <Loader />} */}
     </>
   ) : (

@@ -2,7 +2,6 @@ export enum SUPPORTED_MESSAGES {
   LEAVE_ROOM = "LEAVE_ROOM",
   SEND_MESSAGE = "SEND_MESSAGE",
   ADD_LOCATION = "ADD_LOCATION",
-  UPDATE_LOCATION = "UPDATE_LOCATION",
 }
 
 type MESSAGE_PAYLOAD = {
@@ -13,7 +12,6 @@ type MESSAGE_PAYLOAD = {
     lng: number;
   };
   message?: string;
-  STATUS_CODE?: number;
 };
 
 export type OUTGOING_MESSAGE =
@@ -23,10 +21,6 @@ export type OUTGOING_MESSAGE =
     }
   | {
       type: SUPPORTED_MESSAGES.ADD_LOCATION;
-      payload: MESSAGE_PAYLOAD;
-    }
-  | {
-      type: SUPPORTED_MESSAGES.UPDATE_LOCATION;
       payload: MESSAGE_PAYLOAD;
     }
   | {
