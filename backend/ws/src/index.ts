@@ -141,7 +141,21 @@ function messageHandler(ws: WebSocket, message: INCOMING_MESSAGE) {
   if (message.type == INCOMING_SUPPORTED_MESSAGE.JOIN_ROOM) {
     console.log(message);
     const payload = message.payload;
-    userManager.addUser(payload.name, payload.userId, payload.roomId, ws);
+    userManager.addUser(
+      payload.name,
+      payload.userId,
+      payload.roomId,
+      ws,
+      payload.email,
+      payload.age,
+      payload.gender,
+      payload.college,
+      payload.lat,
+      payload.lng,
+      payload.dist_meters ?? undefined,
+      payload.Photo ?? undefined,
+      payload.mask ?? undefined,
+    );
   }
 
   if (message.type == INCOMING_SUPPORTED_MESSAGE.LEAVE_ROOM) {
@@ -231,12 +245,20 @@ function messageHandler(ws: WebSocket, message: INCOMING_MESSAGE) {
     const outgoingPayload: OUTGOING_MESSAGE = {
       type: OUTGOING_SUPPORTED_MESSAGE.ADD_LOCATION,
       payload: {
+        name: payload.name,
         userId: payload.userId,
         roomId: payload.roomId,
         position: {
           lat: payload.position.lat,
           lng: payload.position.lng,
         },
+        email: payload.email,
+        age: payload.age,
+        gender: payload.gender,
+        college: payload.college,
+        Photo: payload.Photo,
+        mask: payload.mask,
+        dist_meters: payload.dist_meters,
       },
     };
     userManager.broadcastToRoom(

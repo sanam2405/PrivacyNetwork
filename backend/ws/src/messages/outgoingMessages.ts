@@ -5,8 +5,16 @@ export enum SUPPORTED_MESSAGES {
 }
 
 type MESSAGE_PAYLOAD = {
+  name?: string;
   userId: string;
   roomId: string;
+  email?: string;
+  age?: number;
+  gender?: string;
+  college?: string;
+  dist_meters?: number;
+  Photo?: string;
+  mask?: boolean;
   position?: {
     lat: number;
     lng: number;

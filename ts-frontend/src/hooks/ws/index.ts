@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-// import { useLocations } from "../../context/LocationContext";
+import { useQLocations } from "../../context/QLocationContext";
 import {
   CLIENT_HEARTBEAT_VALUE,
   CLIENT_HEARTBEAT_TIMEOUT,
@@ -7,8 +7,13 @@ import {
 
 export const useWebSocket = (url: string) => {
   const [isConnected, setIsConnected] = useState<boolean>(false);
-
   const ws = useRef<WebSocketExt | null>(null);
+  const {
+    qLocations,
+    setQLocations,
+    qLocationsUserIdSet,
+    setQLocationsUserIdSet,
+  } = useQLocations();
 
   useEffect(() => {
     return () => {
@@ -60,28 +65,75 @@ export const useWebSocket = (url: string) => {
 
       ws.current.addEventListener("message", (msg) => {
         console.log(`Received message: ${msg.data}`);
-
-        const MESSAGE_TYPE = JSON.parse(msg.data).type;
-        const userId = JSON.parse(msg.data).userId;
-        const roomId = JSON.parse(msg.data).roomId;
-        const position = JSON.parse(msg.data).position;
-
+        const parsedData = JSON.parse(msg.data);
+        const MESSAGE_TYPE = parsedData.type;
+        console.log(MESSAGE_TYPE);
+        const userId = parsedData.payload.userId;
+        const roomId = parsedData.payload.roomId;
+        const position = parsedData.payload.position;
         if (MESSAGE_TYPE === "PING") {
           heartbeat();
         } else if (MESSAGE_TYPE === "UNAUTHORIZED") {
-          alert(JSON.parse(msg.data).payload.message);
+          alert(parsedData.payload.message);
         } else if (MESSAGE_TYPE === "SEND_MESSAGE") {
-          console.log(
-            "Client received msg ",
-            JSON.parse(msg.data).payload.message,
-          );
+          console.log("Client received msg ", parsedData.payload.message);
         } else if (MESSAGE_TYPE === "LEAVE_ROOM") {
           console.log(`REMOVED: User ${userId} in room ${roomId}`);
         } else if (MESSAGE_TYPE === "ADD_LOCATION") {
+          // const lat = parsedData.payload.position.lat;
+          // const lng = parsedData.payload.position.lng;
           const { lat, lng } = position;
           console.log(
             `ADDED: User ${userId} in room ${roomId} has lat: ${lat}, lng: ${lng}`,
           );
+
+          const userKey = userId.toString();
+          if (!qLocationsUserIdSet.has(userKey)) {
+            qLocationsUserIdSet.add(userKey);
+            setQLocationsUserIdSet(qLocationsUserIdSet);
+
+            setQLocations((prevLocations) => [
+              ...prevLocations,
+              {
+                id: userKey,
+                name: parsedData.payload.name,
+                email: parsedData.payload.email,
+                age: parsedData.payload.age,
+                gender: parsedData.payload.gender,
+                college: parsedData.payload.college,
+                lat: position.lat,
+                lng: position.lng,
+                dist_meters: parsedData.payload.dist_meters,
+                Photo: parsedData.payload.Photo,
+                mask: parsedData.payload.mask,
+              },
+            ]);
+          } else {
+            // Find the existing location by userKey
+            const existingLocationIndex = qLocations.findIndex(
+              (location) => location.id === userKey,
+            );
+
+            if (existingLocationIndex !== -1) {
+              // Update the existing location properties
+              setQLocations((prevLocations) => {
+                const updatedLocations = [...prevLocations];
+                updatedLocations[existingLocationIndex] = {
+                  ...updatedLocations[existingLocationIndex],
+                  // Update specific properties here (e.g., lat, lng, etc.)
+                  lat: position.lat,
+                  lng: position.lng,
+                  // Add other properties as needed
+                };
+                return updatedLocations;
+              });
+              console.log(`User with id ${userKey} LOCATION updated!`);
+            } else {
+              console.log(
+                `User with id ${userKey} not found. LOCATION updating failed`,
+              );
+            }
+          }
         }
       });
     }

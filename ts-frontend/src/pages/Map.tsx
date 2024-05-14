@@ -103,10 +103,16 @@ export const Map = () => {
     navigate("/auth");
     return;
   }
-
-  const currentUserUUID = JSON.parse(userDetails)._id;
-  const currentUserName = JSON.parse(userDetails).name;
-
+  const currentUserDetails = JSON.parse(userDetails);
+  const currentUserUUID = currentUserDetails._id;
+  const currentUserName = currentUserDetails.name;
+  const currentUserEmail = currentUserDetails.email;
+  const currentUserAge = currentUserDetails.age;
+  const currentUserGender = currentUserDetails.gender;
+  const currentUserCollege = currentUserDetails.college;
+  const currentUserPhoto = currentUserDetails.Photo;
+  // const currentUserAge = currentUserDetails.age;
+  // const currentUserAge = currentUserDetails.age;
   const socketCommJOINROOM = () => {
     sendMessage({
       type: "JOIN_ROOM",
@@ -114,6 +120,13 @@ export const Map = () => {
         name: currentUserName,
         userId: currentUserUUID,
         roomId: "202A",
+        email: currentUserEmail,
+        age: currentUserAge,
+        gender: currentUserGender,
+        college: currentUserCollege,
+        lat: currentUserPosition.lat,
+        lng: currentUserPosition.lng,
+        Photo: currentUserPhoto,
       },
     });
   };
@@ -122,12 +135,57 @@ export const Map = () => {
     sendMessage({
       type: "SEND_LOCATION",
       payload: {
+        name: currentUserName,
         userId: currentUserUUID,
         roomId: "202A",
         position: currentUserPosition,
+        email: currentUserEmail,
+        age: currentUserAge,
+        gender: currentUserGender,
+        college: currentUserCollege,
+        lat: currentUserPosition.lat,
+        lng: currentUserPosition.lng,
+        Photo: currentUserPhoto,
       },
     });
   };
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  function updateQLocationsArray(data: any[]) {
+    // Create a set to track existing user IDs
+    const existingUserIds = new Set<string>(
+      qLocations.map((location) => location.id),
+    );
+    const incomingUserIds = new Set<string>();
+    // Process each item in the new data
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    data.forEach((item: any) => {
+      const userKey = item.id;
+      const lat = item.lat;
+      const lng = item.lng;
+      incomingUserIds.add(userKey);
+      if (!existingUserIds.has(userKey)) {
+        // Add new location
+        setQLocations((prevLocations) => [...prevLocations, item]);
+        existingUserIds.add(userKey);
+        console.log(`User with id ${userKey} added to qLocations`);
+      } else {
+        // Update existing location
+        setQLocations((prevLocations) => {
+          const updatedLocations = prevLocations.map((location) =>
+            location.id === userKey ? { ...location, lat, lng } : location,
+          );
+          return updatedLocations;
+        });
+        console.log(`User with id ${userKey} qLocations updated from map page`);
+      }
+    });
+
+    // Remove any locations not in the new data and update the hash set
+    setQLocations((prevLocations) =>
+      prevLocations.filter((location) => incomingUserIds.has(location.id)),
+    );
+  }
 
   const updateCurrentLocation = (position: Location) => {
     if (position.lat != undefined && position.lng != undefined) {
@@ -200,7 +258,8 @@ export const Map = () => {
       .then((data) => {
         console.log("Response raw data : ");
         console.log(data);
-        setQLocations(data);
+        // setQLocations(data);
+        updateQLocationsArray(data);
       })
       .catch((err) => {
         console.error(err);

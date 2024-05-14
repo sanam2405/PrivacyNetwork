@@ -40,6 +40,15 @@ export const InitMessage = z.object({
   name: z.string(),
   userId: z.string(),
   roomId: z.string(),
+  email: z.string(),
+  age: z.number(),
+  gender: z.string(),
+  college: z.string(),
+  lat: z.number(),
+  lng: z.number(),
+  dist_meters: z.number().optional(),
+  Photo: z.string().optional(),
+  mask: z.boolean().optional(),
 });
 
 export type InitMessageType = z.infer<typeof InitMessage>;
@@ -60,13 +69,22 @@ export const UserMessage = z.object({
 export type UserMessageType = z.infer<typeof UserMessage>;
 
 export const UserLocation = z.object({
+  name: z.string(),
   userId: z.string(),
   roomId: z.string(),
   position: z.object({
     lat: z.number(),
     lng: z.number(),
   }),
-  message: z.string(),
+  email: z.string(),
+  age: z.number(),
+  gender: z.string(),
+  college: z.string(),
+  lat: z.number(),
+  lng: z.number(),
+  dist_meters: z.number().optional(),
+  Photo: z.string().optional(),
+  mask: z.boolean().optional(),
 });
 
 export type UserLocationType = z.infer<typeof UserLocation>;
