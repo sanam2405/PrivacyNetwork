@@ -9,6 +9,8 @@ Social Network Applications </i>
 
 ![](idea/high/architecture-with-bg.png)
 
+![](idea/high/prisma-erd.svg)
+
 ![](presentation/assets/architecture.png)
 
 ## Privacy Network API Documentation
