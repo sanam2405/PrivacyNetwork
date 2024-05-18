@@ -145,8 +145,6 @@ export const Map = () => {
         age: currentUserAge,
         gender: currentUserGender,
         college: currentUserCollege,
-        lat: currentUserPosition.lat,
-        lng: currentUserPosition.lng,
         Photo: currentUserPhoto,
       },
     });
@@ -481,7 +479,7 @@ export const Map = () => {
                         origin: new google.maps.Point(0, 0),
                         anchor: new google.maps.Point(20, 40),
                       }}
-                      animation={google.maps.Animation.BOUNCE}
+                      animation={google.maps.Animation.DROP}
                     />
                   );
                 }

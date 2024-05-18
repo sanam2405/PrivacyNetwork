@@ -276,7 +276,7 @@ export const circleOptionForNonFriends = {
   draggable: false,
   editable: false,
   visible: true,
-  radius: 5000,
+  radius: 10000,
   zIndex: 1,
 };
 

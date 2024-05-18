@@ -80,8 +80,6 @@ export const UserLocation = z.object({
   age: z.number(),
   gender: z.string(),
   college: z.string(),
-  lat: z.number(),
-  lng: z.number(),
   dist_meters: z.number().optional(),
   Photo: z.string(),
   mask: z.boolean().optional(),
