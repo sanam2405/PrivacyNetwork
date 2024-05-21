@@ -26,6 +26,8 @@ Location-Sharing in a Geosocial Network </i>
 
 ![](idea/high/privacyfiltrationtable.png)
 
+![](idea/high/privacyfiltrationtwo.png)
+
 ## Privacy Network API Documentation
 
 _[Privacy Network API Docs](https://privacynetwork.onrender.com/docs)_
