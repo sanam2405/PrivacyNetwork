@@ -1,23 +1,44 @@
 # Privacy Network
 
-<i> A Privacy-Preserving Efficient Location-Sharing Scheme for Mobile Online
-Social Network Applications </i>
+<i> Design and Implementation of Security-Conscious,
+Location-Sharing in a Geosocial Network </i>
 
 [Link to the research paper](https://ieeexplore.ieee.org/abstract/document/9288801)
 
 ## Architecture
 
-![](idea/high/architecture-with-bg.png)
+### One Instance Architecture
 
+![](idea/high/one-instance-architecture-color2x.png)
+
+### Managing the MongoDB and Postgres
+
+![](idea/high/writethrough.png)
+
+### Scalable Architecture
+
+![](idea/high/architecture-with-bg.png)
 ![](idea/high/prisma-erd.svg)
 
-![](presentation/assets/architecture.png)
+<!-- ![](presentation/assets/architecture.png) -->
+
+## Privacy Filtration Logic
+
+![](idea/high/privacyfiltrationtable.png)
 
 ## Privacy Network API Documentation
 
 _[Privacy Network API Docs](https://privacynetwork.onrender.com/docs)_
 
-_![OpenAPI Swagger API Docs](./idea/high/openapi.png)_
+<!-- _![OpenAPI Swagger API Docs](./idea/high/openapi.png)_ -->
+
+### OpenAPI Swagger API Docs
+
+_![OpenAPI Swagger API Docs](./idea/high/swaggeruser.png)_
+
+### OpenAPI Swagger Schemas
+
+_![OpenAPI Swagger Schemas](./idea/high/swaggerschema.png)_
 
 <!--
 ### A. Registration - <i> User </i>
@@ -50,21 +71,46 @@ _![OpenAPI Swagger API Docs](./idea/high/openapi.png)_
 
 ### Login Page
 
-![](presentation/assets/Login_Speed.gif)
+<!-- ![](presentation/assets/Login_Speed.gif) -->
+
+![](idea/gifs/Auth2.gif)
 
 ### Landing Page
 
-![](presentation/assets/Landing_Speed.gif)
+<!-- ![](presentation/assets/Landing_Speed.gif) -->
 
-![](presentation/assets/FriendsPage_Speed.gif)
+![](idea/gifs/Dashboard.gif)
 
-### Map Page
+<!-- ![](presentation/assets/FriendsPage_Speed.gif) -->
 
-![](presentation/assets/Map_Speed.gif)
+<!-- ![](presentation/assets/Map_Speed.gif) -->
+
+### Map Page: Real-Time Location Updation
+
+![](<idea/gifs/Location%20update%20wrt%20Query%20(Fixed%20Position).gif>)
+
+![](<idea/gifs/Location%20update%20wrt%20Query%20(Movement).gif>)
+
+### Map Page: Privacy Filtration
+
+![](idea/gifs/Set%20Properties%20Simulation.gif)
+
+### Map Page: Real-Time Location Sharing
+
+![](idea/gifs/Privacy%20Network%20Final%20GIF.gif)
 
 ## Tech Stack
 
-![](presentation/assets/techstack.png)
+- TypeScript
+- React with _Google Maps API_ and _Material UI_
+- Node
+- Express
+- WebSockets
+- MongoDB
+- Postgres with PostGIS
+- Swagger
+
+<!-- ![](presentation/assets/techstack.png) -->
 
 ## Setting up locally
 
