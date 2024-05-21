@@ -117,7 +117,7 @@ userRouter.put(
         return;
       }
 
-      // Check if the user already has a location, the update the previous loc
+      // Check if the user already has a location, then update the previous loc
       if (existingUser.locationId !== null) {
         // Update the user's location
         const updatedUser = await prisma.user.update({
