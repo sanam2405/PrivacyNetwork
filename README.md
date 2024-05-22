@@ -29,6 +29,20 @@ Location-Sharing in a Geosocial Network </i>
 ![](idea/high/privacyfiltrationlogic.png)
 ![](idea/high/privacyfiltrationtwo.png)
 
+## Database Schema
+
+### Mongoose Schema
+
+![](idea/high/mongoose-schema.png)
+
+### ERD
+
+![](idea/high/prisma-erd.png)
+
+### Prisma Schema
+
+![](idea/high/prismaschema.png)
+
 ## PostGIS Query
 
 ```sql
