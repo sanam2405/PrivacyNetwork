@@ -24,14 +24,12 @@ Location-Sharing in a Geosocial Network </i>
 ## Privacy Filtration Logic
 
 ![](idea/high/privacyfiltrationtable.png)
-
+![](idea/high/privacyfiltrationlogic.png)
 ![](idea/high/privacyfiltrationtwo.png)
 
 ## Privacy Network API Documentation
 
 _[Privacy Network API Docs](https://privacynetwork.onrender.com/docs)_
-
-<!-- _![OpenAPI Swagger API Docs](./idea/high/openapi.png)_ -->
 
 ### OpenAPI Swagger API Docs
 
@@ -41,50 +39,13 @@ _![OpenAPI Swagger API Docs](./idea/high/swaggeruser.png)_
 
 _![OpenAPI Swagger Schemas](./idea/high/swaggerschema.png)_
 
-<!--
-### A. Registration - <i> User </i>
-
-![](presentation/assets/registration.png)
-
-### B. Registration - <i> LSSNS </i>
-
-![](presentation/assets/regnlssn.png)
-
-### C. <i> mSON </i> user login, authentication and key generation
-
-![](presentation/assets/auth.png)
-
-### D. <i> LSSNS </i> login, authentication and key generation
-
-![](presentation/assets/authlssns.png)
-
-### E. Distance threshold registration
-
-![](presentation/assets/distanceregistration.png)
-
-### F. User location update
-
-![](presentation/assets/updatelocation.png)
-
-### G. Friend's location query
-
-![](presentation/assets/queryfriend.png) -->
-
 ### Login Page
-
-<!-- ![](presentation/assets/Login_Speed.gif) -->
 
 ![](idea/gifs/Auth2.gif)
 
 ### Landing Page
 
-<!-- ![](presentation/assets/Landing_Speed.gif) -->
-
 ![](idea/gifs/Dashboard.gif)
-
-<!-- ![](presentation/assets/FriendsPage_Speed.gif) -->
-
-<!-- ![](presentation/assets/Map_Speed.gif) -->
 
 ### Map Page: Real-Time Location Updation
 
@@ -111,8 +72,6 @@ _![OpenAPI Swagger Schemas](./idea/high/swaggerschema.png)_
 - Postgres with PostGIS
 - Swagger
 
-<!-- ![](presentation/assets/techstack.png) -->
-
 ## Setting up locally
 
 The codebase is organized as :
@@ -129,6 +88,59 @@ The codebase is organized as :
     cd PrivacyNetwork
 ```
 
+- Configure the `.env` of the four servers
+
+```bash
+// ts-frontend
+
+VITE_BACKEND_URI=<BACKEND_API_URI: ts-backend server address>
+VITE_WS_URI=<WEBSOCKET_URI: ws WebSocket server address>
+VITE_GOOGLE_API_KEY=<GOOGLE_MAPS_API_KEY: API KEY for Google map>
+```
+
+```bash
+// ts-backend
+
+GOOGLE_CLIENT=<GOOGLE_CLIENT_ID: for logging in with Google>
+GOOGLE_API_KEY=<GOOGLE_API_KEY: for logging in with Google>
+MONGO_URI=<MONGO_URI: for mongoDB database connection>
+SECRET_KEY=<CLIENT_SECRET: for generating/verifying the JWT token>
+PORT=<PORT: at which the ts-backend server runs>
+LOCATION_BACKEND_URI=<LOCATION_BACKEND_URI: for location querying req to loc server>
+BACKEND_INTERCOMMUNICATION_SECRET=<BACKEND_INTERCOMMUNICATION_SECRET: for backend intercommunication>
+```
+
+```bash
+// loc
+
+DATABASE_URL=<DATABASE_URI: for connecting to the Postgres instance of Supabase>
+DIRECT_URL=<DIRECT_URL: for connection direct connection to Postgres instance of Supabase via ORM Prisma for migrations>
+BACKEND_INTERCOMMUNICATION_SECRET=<BACKEND_INTERCOMMUNICATION_SECRET: for backend intercommunication>
+```
+
+```bash
+// ws
+
+SECRET_KEY=<CLIENT_SECRET: verifying the JWT token>
+TS_BACKEND_URI=<TS_BACKEND_URI: for user auth from ts-backend>
+```
+
+- Database Seeding
+
+```bash
+
+// MongoDB Mock Data
+
+backend/ts-backend/src/mockdata
+└── MOCK_DATA.json
+
+// Postgres Mock Data
+
+backend/loc/src/mockdata
+├── Location.sql
+└── User.sql
+```
+
 - Run the frontend
 
 ```bash
@@ -137,7 +149,7 @@ The codebase is organized as :
     npm run dev
 ```
 
-- Run the express backend
+- Run the MongoDB backend
 
 ```bash
     cd backend/ts-backend
@@ -145,7 +157,7 @@ The codebase is organized as :
     npm run dev
 ```
 
-- Run the loc backend
+- Run the Postgres backend
 
 ```bash
     cd backend/loc
@@ -153,7 +165,7 @@ The codebase is organized as :
     npm run dev
 ```
 
-- Run the websocket backend
+- Run the WebSocket backend
 
 ```bash
     cd backend/ws
