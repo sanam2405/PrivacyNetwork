@@ -20,7 +20,6 @@ Location-Sharing in a Geosocial Network </i>
 ### Scalable Architecture
 
 ![](idea/high/architecture-with-bg.png)
-![](idea/high/prisma-erd.svg)
 
 <!-- ![](presentation/assets/architecture.png) -->
 
