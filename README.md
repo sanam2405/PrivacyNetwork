@@ -3,7 +3,9 @@
 <i> Design and Implementation of Security-Conscious,
 Location-Sharing in a Geosocial Network </i>
 
-[Link to the presentation](papers/Panel_2_Team16_PrivacyNetwork.pptx)
+[Link to the Presentation](papers/Panel_2_Team16_PrivacyNetwork.pptx)
+
+[Link to the Thesis](papers/Design_and_Implementation_of_Security_Conscious__Location_Sharing_in_a_Geosocial_Network.pdf)
 
 [Link to the reference research paper](https://ieeexplore.ieee.org/abstract/document/9288801)
 
@@ -116,7 +118,7 @@ _![OpenAPI Swagger Schemas](./idea/high/swaggerschema.png)_
 
 ![](idea/gifs/Auth2.gif)
 
-### Landing Page
+### Dashboard Page
 
 ![](idea/gifs/Dashboard.gif)
 

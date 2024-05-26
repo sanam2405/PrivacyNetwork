@@ -4,6 +4,15 @@ import { OUTGOING_MESSAGE } from "./messages/outgoingMessages";
 interface User {
   name: string;
   id: string;
+  email: string;
+  age: number;
+  gender: string;
+  college: string;
+  lat: number;
+  lng: number;
+  dist_meters?: number | undefined;
+  Photo?: string | undefined;
+  mask?: boolean | undefined;
   conn: WebSocket;
 }
 
@@ -17,7 +26,21 @@ export class UserManager {
     this.rooms = new Map<string, Room>();
   }
 
-  addUser(name: string, userId: string, roomId: string, socket: WebSocket) {
+  addUser(
+    name: string,
+    userId: string,
+    roomId: string,
+    socket: WebSocket,
+    email: string,
+    age: number,
+    gender: string,
+    college: string,
+    lat: number,
+    lng: number,
+    dist_meters: number | undefined,
+    Photo: string | undefined,
+    mask: boolean | undefined,
+  ) {
     if (!this.rooms.get(roomId)) {
       this.rooms.set(roomId, {
         users: [],
@@ -34,6 +57,15 @@ export class UserManager {
       id: userId,
       name,
       conn: socket,
+      email,
+      age,
+      gender,
+      college,
+      lat,
+      lng,
+      dist_meters,
+      Photo,
+      mask,
     });
     console.log(`User with id ${userId} added!`);
     socket.on("close", () => {

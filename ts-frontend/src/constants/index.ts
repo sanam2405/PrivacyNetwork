@@ -276,7 +276,7 @@ export const circleOptionForNonFriends = {
   draggable: false,
   editable: false,
   visible: true,
-  radius: 5000,
+  radius: 10000,
   zIndex: 1,
 };
 
@@ -286,3 +286,6 @@ export const DEFAULT_MARKER_PIC =
   "https://res.cloudinary.com/cantacloud2/image/upload/w_40,h_40,c_scale/v1714413297/hbjh5jqrguqtuvmfr7sl.png";
 export const defaultPicLink =
   "https://cdn-icons-png.flaticon.com/128/3177/3177440.png";
+
+export const CLIENT_HEARTBEAT_TIMEOUT = 1000 * 5 + 1000 * 11; // 5 + 60 second (timeout + buffer time for server response)
+export const CLIENT_HEARTBEAT_VALUE = 1;

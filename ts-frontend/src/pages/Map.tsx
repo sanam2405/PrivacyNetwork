@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useContext, useEffect, useState } from "react";
@@ -21,9 +22,9 @@ import {
   useJsApiLoader,
 } from "@react-google-maps/api";
 import "../styles/Map.css";
-import useSocket from "../hooks/ws";
+import { useWebSocket } from "../hooks/ws";
 import { useNavigate } from "react-router-dom";
-import { distances, ages } from "../constants";
+import { distances, ages, defaultPicLink } from "../constants";
 import { genders } from "../constants";
 import { colleges } from "../constants";
 import { LoginContext } from "../context/LoginContext";
@@ -38,6 +39,7 @@ import {
   DEFAULT_MARKER_PIC,
   DEFAULT_PROFILE_URL,
 } from "../constants";
+import { useLocations } from "../context/LocationContext";
 
 const BASE_API_URI = import.meta.env.VITE_BACKEND_URI;
 
@@ -60,13 +62,17 @@ export const Map = () => {
   const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
 
   const {
-    socket,
-    locations,
-    sendMessage,
-    openConnection,
+    // socket,
+    // locations,
+    // sendMessage,
+    // openConnection,
+    // closeConnection,
+    // isWsConnected,
+    isConnected,
+    handleConnectionOpen,
     closeConnection,
-    isWsConnected,
-  } = useSocket(BASE_WS_URI);
+    sendMessage,
+  } = useWebSocket(BASE_WS_URI);
 
   const [currentUserPosition, setCurrentUserPosition] =
     useState<Location>(getRandomPosition());
@@ -79,6 +85,7 @@ export const Map = () => {
   const [isMinimize, setIsMinimize] = useState<boolean>(false);
 
   const { qLocations, setQLocations } = useQLocations();
+  const { locations } = useLocations();
 
   if (!apiKey)
     throw new Error("GOOGLE_API_KEY environment variable is not set");
@@ -98,36 +105,87 @@ export const Map = () => {
     navigate("/auth");
     return;
   }
-
-  const currentUserUUID = JSON.parse(userDetails)._id;
-  const currentUserName = JSON.parse(userDetails).name;
-
+  const currentUserDetails = JSON.parse(userDetails);
+  const currentUserUUID = currentUserDetails._id;
+  const currentUserName = currentUserDetails.name;
+  const currentUserEmail = currentUserDetails.email;
+  const currentUserAge = currentUserDetails.age;
+  const currentUserGender = currentUserDetails.gender;
+  const currentUserCollege = currentUserDetails.college;
+  const currentUserPhoto = currentUserDetails.Photo || defaultPicLink;
+  // const currentUserAge = currentUserDetails.age;
+  // const currentUserAge = currentUserDetails.age;
   const socketCommJOINROOM = () => {
-    if (socket) {
-      //  Initial messages after WebSocket connection is established
-      sendMessage({
-        type: "JOIN_ROOM",
-        payload: {
-          name: currentUserName,
-          userId: currentUserUUID,
-          roomId: "202A",
-        },
-      });
-    }
+    sendMessage({
+      type: "JOIN_ROOM",
+      payload: {
+        name: currentUserName,
+        userId: currentUserUUID,
+        roomId: "202A",
+        email: currentUserEmail,
+        age: currentUserAge,
+        gender: currentUserGender,
+        college: currentUserCollege,
+        lat: currentUserPosition.lat,
+        lng: currentUserPosition.lng,
+        Photo: currentUserPhoto,
+      },
+    });
   };
 
   const socketCommSENDLOC = () => {
-    if (socket) {
-      sendMessage({
-        type: "SEND_LOCATION",
-        payload: {
-          userId: currentUserUUID,
-          roomId: "202A",
-          position: currentUserPosition,
-        },
-      });
-    }
+    sendMessage({
+      type: "SEND_LOCATION",
+      payload: {
+        name: currentUserName,
+        userId: currentUserUUID,
+        roomId: "202A",
+        position: currentUserPosition,
+        email: currentUserEmail,
+        age: currentUserAge,
+        gender: currentUserGender,
+        college: currentUserCollege,
+        Photo: currentUserPhoto,
+      },
+    });
   };
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  function updateQLocationsArray(data: any[]) {
+    // Create a set to track existing user IDs
+    const existingUserIds = new Set<string>(
+      qLocations.map((location) => location.id),
+    );
+    const incomingUserIds = new Set<string>();
+    // Process each item in the new data
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    data.forEach((item: any) => {
+      const userKey = item.id;
+      const lat = item.lat;
+      const lng = item.lng;
+      incomingUserIds.add(userKey);
+      if (!existingUserIds.has(userKey)) {
+        // Add new location
+        setQLocations((prevLocations) => [...prevLocations, item]);
+        existingUserIds.add(userKey);
+        console.log(`User with id ${userKey} added to qLocations`);
+      } else {
+        // Update existing location
+        setQLocations((prevLocations) => {
+          const updatedLocations = prevLocations.map((location) =>
+            location.id === userKey ? { ...location, lat, lng } : location,
+          );
+          return updatedLocations;
+        });
+        console.log(`User with id ${userKey} qLocations updated from map page`);
+      }
+    });
+
+    // Remove any locations not in the new data and update the hash set
+    setQLocations((prevLocations) =>
+      prevLocations.filter((location) => incomingUserIds.has(location.id)),
+    );
+  }
 
   const updateCurrentLocation = (position: Location) => {
     if (position.lat != undefined && position.lng != undefined) {
@@ -200,30 +258,13 @@ export const Map = () => {
       .then((data) => {
         console.log("Response raw data : ");
         console.log(data);
-        setQLocations(data);
+        // setQLocations(data);
+        updateQLocationsArray(data);
       })
       .catch((err) => {
         console.error(err);
       });
   };
-
-  useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let intervalId: any;
-    if (socket) {
-      socket.onopen = () => {
-        console.log("WebSocket connection established from client side");
-        socketCommJOINROOM();
-        intervalId = setInterval(() => {
-          socketCommSENDLOC();
-        }, 3000);
-      };
-    }
-
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, [socket]);
 
   useEffect(() => {
     if (!localStorage.getItem("user")) {
@@ -249,7 +290,7 @@ export const Map = () => {
 */
 
   useEffect(() => {
-    // Initial timeout after 10 seconds
+    // Initial timeout after 5 seconds
     const initialTimeoutId = setTimeout(() => {
       simulateRealTimeUserMovement();
       // Set up interval for consecutive invocations every 10 seconds
@@ -257,7 +298,7 @@ export const Map = () => {
 
       // Cleanup function to clear the interval on component unmount
       return () => clearInterval(intervalId);
-    }, 10000);
+    }, 5000);
 
     // Cleanup function to clear the initial timeout on component unmount
     return () => clearTimeout(initialTimeoutId);
@@ -280,13 +321,14 @@ export const Map = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUserPosition]);
 
-  const handleSocketConnection = () => {
-    // first close if already soc conn exist
-
-    closeConnection("202A", currentUserUUID);
-
+  const handleSocketConnection = async () => {
     // open a new soc conn if doesn't exist
-    openConnection();
+    await handleConnectionOpen();
+
+    // join a room after 3 seconds
+    setTimeout(() => {
+      socketCommJOINROOM();
+    }, 3000);
   };
 
   const handleSocketDisconnection = () => {
@@ -418,15 +460,29 @@ export const Map = () => {
                 />
               )}
               {locations.map((loc, index) => {
-                return (
-                  loc.lat &&
-                  loc.lng && (
+                if (loc.lat && loc.lng) {
+                  return (
                     <Marker
                       key={index}
-                      position={{ lat: loc.lat, lng: loc.lng }}
+                      onClick={() => {
+                        setClickedIndex(locations.length);
+                      }}
+                      position={{
+                        lat: loc.lat,
+                        lng: loc.lng,
+                      }}
+                      icon={{
+                        url: loc.Photo
+                          ? insertTransformationParams(loc.Photo)
+                          : DEFAULT_PROFILE_URL,
+                        scaledSize: new google.maps.Size(40, 40),
+                        origin: new google.maps.Point(0, 0),
+                        anchor: new google.maps.Point(20, 40),
+                      }}
+                      animation={google.maps.Animation.DROP}
                     />
-                  )
-                );
+                  );
+                }
               })}
               {qLocations.map((loc, index) => {
                 if (
@@ -643,7 +699,7 @@ export const Map = () => {
                     }}
                     startIcon={<WifiIcon />}
                   >
-                    {isWsConnected ? "Connected" : "Connect"}
+                    {isConnected ? "Connected" : "Connect"}
                   </Button>
                   <Button
                     variant="contained"
@@ -654,7 +710,7 @@ export const Map = () => {
                     }}
                     endIcon={<WifiOffIcon />}
                   >
-                    {!isWsConnected ? "Disconnected" : "Disconnect"}
+                    {!isConnected ? "Disconnected" : "Disconnect"}
                   </Button>
                 </Stack>
               </div>

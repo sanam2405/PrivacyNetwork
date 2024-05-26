@@ -9,7 +9,6 @@ import FriendsPage from "./pages/FriendsPage";
 import Client from "./pages/Client";
 import LogoutModal from "./components/LogoutModal";
 import { LoginContext } from "./context/LoginContext";
-import { Socket } from "./components/Socket";
 import { Feed } from "./pages/Feed";
 // import 'dotenv/config';
 
@@ -38,7 +37,6 @@ function App() {
                 <Route path="/dashboard" element={<FriendsPage />} />
                 <Route path="/feed" element={<Feed />} />
                 <Route path="/map" element={<Client />} />
-                <Route path="/socket" element={<Socket />} />
                 <Route path="*" element={<Navigate to="/auth" />} />
               </Routes>
             </BrowserRouter>
@@ -56,7 +54,6 @@ function App() {
               <Route path="/dashboard" element={<FriendsPage />} />
               <Route path="/feed" element={<Feed />} />
               <Route path="/map" element={<Client />} />
-              <Route path="/socket" element={<Socket />} />
               <Route path="*" element={<Navigate to="/auth" />} />
             </Routes>
           </BrowserRouter>
