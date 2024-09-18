@@ -4,8 +4,22 @@
   text-align: center;
 }
 
+@keyframes appear-scale {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 .usercard-container {
   padding: 3rem;
+  animation: appear-scale linear;
+  animation-timeline: view();
+  animation-range: entry 0% cover 40%;
 }
 
 .container .card_item:hover {
