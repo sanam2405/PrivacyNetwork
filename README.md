@@ -1,7 +1,9 @@
-# Privacy Network
+# [Privacy Network](https://manaspratimbiswas.com/PrivacyNetwork)
 
 <i> Design and Implementation of Security-Conscious,
 Location-Sharing in a Geosocial Network </i>
+
+[Link to the Gist](https://manaspratimbiswas.com/PrivacyNetwork)
 
 [Link to the Presentation](papers/Panel_2_Team16_PrivacyNetwork.pptx)
 
