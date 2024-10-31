@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  ts-backend:
+    build:
+      context: ./backend/ts-backend
+      dockerfile: Dockerfile
+    ports:
+      - '5050:5050'
+    volumes:
+      - ./backend/ts-backend:/app
+    environment:
+      env_file: './backend/ts-backend.env'
+    container_name: tracebook_ts-backend
+    networks:
+      - tracebook
+    depends_on:
+      - loc
+      - ws
+
+  loc:
+    build:
+      context: ./backend/loc
+      dockerfile: Dockerfile
+    ports:
+      - '6060:6060'
+    volumes:
+      - ./backend/loc:/app
+    environment:
+      env_file: './backend/loc.env'
+    container_name: tracebook_loc
+    networks:
+      - tracebook
+
+  ws:
+    build:
+      context: ./backend/ws
+      dockerfile: Dockerfile
+    ports:
+      - '8080:8080'
+    volumes:
+      - ./backend/ws:/app
+    environment:
+      env_file: './backend/ws.env'
+    container_name: tracebook_ws
+    networks:
+      - tracebook
+
+networks:
+  tracebook:
+    driver: bridge

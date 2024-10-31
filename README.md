@@ -153,10 +153,10 @@ _![OpenAPI Swagger Schemas](./idea/high/swaggerschema.png)_
 
 The codebase is organized as :
 
-1. _ts-frontend_ - The react frontend
-2. _backend/ts-backend_ - The primary express backend with mongoDB
-3. _backend/loc_ - The secondary express backend with Postgres
-4. _backend/ws_ - The websocket backend
+1. _ts-frontend_ - The react frontend (_default port 5173_)
+2. _backend/ts-backend_ - The primary express backend with mongoDB (_default port 5050_)
+3. _backend/loc_ - The secondary express backend with Postgres (_default port 6060_)
+4. _backend/ws_ - The websocket backend (_default port 8080_)
 
 - Clone the PrivacyNetwork repository
 
@@ -216,6 +216,12 @@ backend/ts-backend/src/mockdata
 backend/loc/src/mockdata
 ├── Location.sql
 └── User.sql
+```
+
+- Run with docker (_start all services with a single command_)
+
+```bash
+    docker compose up
 ```
 
 - Run the frontend
