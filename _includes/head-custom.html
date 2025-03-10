@@ -1,0 +1,26 @@
+<!-- Setup Google Analytics -->
+{% include head-custom-google-analytics.html %}
+
+<!-- Setup MathJax -->
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [
+        ["$", "$"],
+        ["\\(", "\\)"],
+      ],
+    },
+  };
+</script>
+<script
+  id="MathJax-script"
+  async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+></script>
+
+<!-- Favicon -->
+<link
+  rel="icon"
+  type="image/ico"
+  href="{{ '/assets/favicon.ico' | relative_url }}"
+/>
